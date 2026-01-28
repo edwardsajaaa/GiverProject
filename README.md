@@ -30,6 +30,3 @@ Project ini adalah website 3D interaktif yang dibuat menggunakan React Three Fib
 - Ganti objek 3D dengan model lain (misal: kue ulang tahun dalam format .glb/.gltf)
 - Tambahkan interaksi atau animasi pada objek
 - Tambahkan fitur lain sesuai kebutuhan
-
----
-Project ini cocok untuk showcase produk, portofolio, atau eksperimen 3D interaktif berbasis web.
