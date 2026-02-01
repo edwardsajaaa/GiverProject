@@ -17,6 +17,7 @@ function AutoOrbitCamera({ speed = 1, radius = 3, paused, syncAngle }) {
   const { camera } = useThree();
   const angleRef = useRef(0);
   const targetPosRef = useRef([camera.position.x, camera.position.y, camera.position.z]);
+  const userHeightRef = useRef(radius * 0.7); // Simpan ketinggian yang dipilih user
   const lerpAlpha = 0.08; // Semakin kecil semakin smooth
 
   // Sinkronisasi sudut saat user interaksi
@@ -26,6 +27,8 @@ function AutoOrbitCamera({ speed = 1, radius = 3, paused, syncAngle }) {
       angleRef.current = Math.atan2(pos.z, pos.x);
       // Set targetPosRef ke posisi kamera terakhir
       targetPosRef.current = [pos.x, pos.y, pos.z];
+      // Simpan ketinggian yang dipilih user
+      userHeightRef.current = pos.y;
       syncAngle.current = false;
     }
   });
@@ -35,7 +38,8 @@ function AutoOrbitCamera({ speed = 1, radius = 3, paused, syncAngle }) {
     angleRef.current += speed * delta;
     const x = radius * Math.cos(angleRef.current);
     const z = radius * Math.sin(angleRef.current);
-    const y = radius * 0.7;
+    // Gunakan ketinggian yang dipilih user, bukan nilai tetap
+    const y = userHeightRef.current;
     // Interpolasi posisi kamera
     targetPosRef.current[0] += (x - targetPosRef.current[0]) * lerpAlpha;
     targetPosRef.current[1] += (y - targetPosRef.current[1]) * lerpAlpha;
