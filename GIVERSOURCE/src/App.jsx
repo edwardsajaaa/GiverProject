@@ -63,31 +63,78 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden', border: 'none', position: 'relative' }}>
-      <Canvas camera={{ position: [3, 3, 3], fov: 60 }} style={{ background: '#181c20', width: '100vw', height: '100vh', display: 'block' }}>
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 10, 7]} intensity={1} />
-        <Box />
-        <OrbitControls
-          enablePan={false}
-          onStart={handleStart}
-          onEnd={handleEnd}
-        />
-        <AutoOrbitCamera speed={speed} radius={3} paused={paused} syncAngle={syncAngle} />
-      </Canvas>
-      <div style={{ position: 'absolute', top: 20, left: 20, background: 'rgba(30,30,30,0.8)', padding: '16px', borderRadius: '8px', color: '#fff', zIndex: 10 }}>
-        <label htmlFor="speed-slider">Kecepatan Orbit: {speed.toFixed(2)}</label>
-        <input
-          id="speed-slider"
-          type="range"
-          min={0.1}
-          max={5}
-          step={0.01}
-          value={speed}
-          onChange={e => setSpeed(Number(e.target.value))}
-          style={{ width: '200px', marginLeft: '10px' }}
-        />
+    <div style={{
+      width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden',
+      background: '#181c20', display: 'flex', alignItems: 'flex-start',
+      boxSizing: 'border-box', padding: '18px 18px', gap: 18
+    }}>
+
+      {/* Panel Kiri - Grid Slot */}
+      <div style={{
+        border: '2.5px solid rgba(200,200,200,0.55)',
+        borderRadius: 22,
+        padding: '14px 12px',
+        background: 'transparent',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gridTemplateRows: 'repeat(6, 1fr)',
+        gap: 9,
+        flexShrink: 0,
+        width: 240,
+        height: 'calc(100vh - 36px)',
+        boxSizing: 'border-box',
+      }}>
+        {Array.from({ length: 18 }).map((_, i) => (
+          <div key={i} style={{
+            background: '#1c1f24',
+            borderRadius: 14,
+            border: '1.5px solid #2a2d33',
+            width: '100%',
+            height: '100%',
+          }} />
+        ))}
       </div>
+
+      {/* Area Tengah - Canvas */}
+      <div style={{ flex: 1, position: 'relative', height: '100%' }}>
+        <Canvas
+          camera={{ position: [3, 3, 3], fov: 60 }}
+          style={{ background: 'transparent', width: '100%', height: '100%', display: 'block' }}
+        >
+          <ambientLight intensity={0.7} />
+          <directionalLight position={[5, 10, 7]} intensity={1} />
+          <Box />
+          <OrbitControls
+            enablePan={false}
+            onStart={handleStart}
+            onEnd={handleEnd}
+          />
+          <AutoOrbitCamera speed={speed} radius={3} paused={paused} syncAngle={syncAngle} />
+        </Canvas>
+        {/* Speed Slider */}
+        <div style={{
+          position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(30,30,30,0.75)', padding: '10px 20px',
+          borderRadius: 12, color: '#fff', zIndex: 10, display: 'flex', alignItems: 'center', gap: 12
+        }}>
+          <label htmlFor="speed-slider" style={{ fontSize: 13, whiteSpace: 'nowrap' }}>
+            Orbit: {speed.toFixed(2)}x
+          </label>
+          <input
+            id="speed-slider"
+            type="range"
+            min={0.1}
+            max={5}
+            step={0.01}
+            value={speed}
+            onChange={e => setSpeed(Number(e.target.value))}
+            style={{ width: 150 }}
+          />
+        </div>
+      </div>
+
+
+
     </div>
   );
 }
