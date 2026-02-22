@@ -73,21 +73,21 @@ export default function App() {
       <div style={{
         border: '2.5px solid rgba(200,200,200,0.55)',
         borderRadius: 22,
-        padding: '14px 12px',
+        padding: '60px 30px',
         background: 'transparent',
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(6, 1fr)',
-        gap: 9,
+        gridTemplateRows: 'repeat(6, 72px)',
+        gap: 10,
         flexShrink: 0,
-        width: 240,
-        height: 'calc(100vh - 36px)',
+        alignSelf: 'center',
+        width: 400,
         boxSizing: 'border-box',
       }}>
         {Array.from({ length: 18 }).map((_, i) => (
           <div key={i} style={{
             background: '#1c1f24',
-            borderRadius: 14,
+            borderRadius: 12,
             border: '1.5px solid #2a2d33',
             width: '100%',
             height: '100%',
