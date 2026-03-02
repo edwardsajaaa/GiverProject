@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -120,6 +120,7 @@ function AutoOrbitCamera({ speed = 1, radius = 3, paused, syncAngle }) {
 export default function App() {
   const [speed, setSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
+  const [inventoryOpen, setInventoryOpen] = useState(true);
   const syncAngle = useRef(false);
 
   // Callback untuk handle interaksi user
@@ -129,41 +130,17 @@ export default function App() {
     syncAngle.current = true;
   }, []);
 
+  const inventoryHeight = 220; // tinggi inventory bar
+
   return (
     <div style={{
       width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden',
-      background: '#2a2520', display: 'flex', alignItems: 'flex-start',
-      boxSizing: 'border-box', padding: '18px 18px', gap: 18
+      background: '#2a2520', display: 'flex', flexDirection: 'column',
+      boxSizing: 'border-box',
     }}>
 
-      {/* Panel Kiri - Grid Slot */}
-      <div style={{
-        border: '2.5px solid rgba(200,200,200,0.55)',
-        borderRadius: 22,
-        padding: '60px 30px',
-        background: 'transparent',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(6, 72px)',
-        gap: 10,
-        flexShrink: 0,
-        alignSelf: 'center',
-        width: 400,
-        boxSizing: 'border-box',
-      }}>
-        {Array.from({ length: 18 }).map((_, i) => (
-          <div key={i} style={{
-            background: '#1c1f24',
-            borderRadius: 12,
-            border: '1.5px solid #2a2d33',
-            width: '100%',
-            height: '100%',
-          }} />
-        ))}
-      </div>
-
-      {/* Area Tengah - Canvas */}
-      <div style={{ flex: 1, position: 'relative', height: '100%' }}>
+      {/* Area Atas - Canvas (full width) */}
+      <div style={{ flex: 1, position: 'relative', width: '100%', minHeight: 0 }}>
         <Canvas
           shadows
           camera={{ position: [5, 3, 5], fov: 60 }}
@@ -203,25 +180,109 @@ export default function App() {
           />
           <AutoOrbitCamera speed={speed} radius={5} paused={paused} syncAngle={syncAngle} />
         </Canvas>
-        {/* Speed Slider */}
+      </div>
+
+      {/* Toggle Button - Inventory */}
+      <button
+        onClick={() => setInventoryOpen(prev => !prev)}
+        style={{
+          position: 'fixed',
+          bottom: inventoryOpen ? inventoryHeight : 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 100,
+          background: 'rgba(40, 40, 46, 0.92)',
+          border: '1.5px solid rgba(200,200,200,0.3)',
+          borderBottom: 'none',
+          borderRadius: '14px 14px 0 0',
+          color: '#ccc',
+          padding: '6px 28px',
+          cursor: 'pointer',
+          fontSize: 18,
+          letterSpacing: 1,
+          backdropFilter: 'blur(8px)',
+          transition: 'bottom 0.4s cubic-bezier(0.4,0,0.2,1)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        <span style={{
+          display: 'inline-block',
+          transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
+          transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          fontSize: 16,
+        }}>▲</span>
+        <span style={{ fontSize: 13, fontWeight: 500 }}>Inventory</span>
+      </button>
+
+      {/* Bottom Bar - Inventory Grid */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: inventoryHeight,
+        transform: inventoryOpen ? 'translateY(0)' : `translateY(${inventoryHeight}px)`,
+        transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
+        zIndex: 99,
+        display: 'flex',
+        flexDirection: 'column',
+        pointerEvents: inventoryOpen ? 'auto' : 'none',
+      }}>
         <div style={{
-          position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)',
-          background: 'rgba(30,30,30,0.75)', padding: '10px 20px',
-          borderRadius: 12, color: '#fff', zIndex: 10, display: 'flex', alignItems: 'center', gap: 12
+          width: '100%',
+          height: '100%',
+          borderTop: '2px solid rgba(200,200,200,0.25)',
+          background: 'rgba(30, 32, 38, 0.95)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
+          padding: '14px 24px 10px 24px',
         }}>
-          <label htmlFor="speed-slider" style={{ fontSize: 13, whiteSpace: 'nowrap' }}>
-            Orbit: {speed.toFixed(2)}x
-          </label>
-          <input
-            id="speed-slider"
-            type="range"
-            min={0.1}
-            max={5}
-            step={0.01}
-            value={speed}
-            onChange={e => setSpeed(Number(e.target.value))}
-            style={{ width: 150 }}
-          />
+          {/* Inventory Grid */}
+          <div style={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(9, 1fr)',
+            gridTemplateRows: 'repeat(2, 1fr)',
+            gap: 10,
+          }}>
+            {Array.from({ length: 18 }).map((_, i) => (
+              <div key={i} style={{
+                background: '#1c1f24',
+                borderRadius: 12,
+                border: '1.5px solid #2a2d33',
+                width: '100%',
+                height: '100%',
+                transition: 'background 0.2s',
+                cursor: 'pointer',
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = '#2a2d36'}
+                onMouseLeave={e => e.currentTarget.style.background = '#1c1f24'}
+              />
+            ))}
+          </div>
+          {/* Orbit Speed Slider inside inventory */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 12, paddingTop: 10,
+          }}>
+            <label htmlFor="speed-slider" style={{ fontSize: 12, color: '#999', whiteSpace: 'nowrap' }}>
+              Orbit: {speed.toFixed(2)}x
+            </label>
+            <input
+              id="speed-slider"
+              type="range"
+              min={0.1}
+              max={5}
+              step={0.01}
+              value={speed}
+              onChange={e => setSpeed(Number(e.target.value))}
+              style={{ width: 160 }}
+            />
+          </div>
         </div>
       </div>
 
