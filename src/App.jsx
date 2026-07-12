@@ -987,7 +987,6 @@ export default function App() {
   const [showTutorial, setShowTutorial] = useState(() => !localStorage.getItem('giver_sandbox_onboarded_v3'));
 
   // Performance Tiering
-  const [fps, setFps] = useState(60);
   const isLowEndDevice = useMemo(() => {
     if (typeof navigator !== 'undefined' && navigator.hardwareConcurrency <= 4) return true;
     return false;
@@ -995,7 +994,6 @@ export default function App() {
   const [performanceTier, setPerformanceTier] = useState(isLowEndDevice ? 'low' : 'high');
 
   const handleFpsUpdate = useCallback((newFps) => {
-    setFps(newFps);
     if (newFps < 42 && performanceTier === 'high') setPerformanceTier('low');
   }, [performanceTier]);
 
@@ -1159,7 +1157,7 @@ export default function App() {
         transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
         zIndex: 25,
       }}>
-        {/* Left: Brand + FPS Badge */}
+        {/* Left: Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <IconGalaxy size={22} />
@@ -1170,20 +1168,6 @@ export default function App() {
             }}>
               GIVER <span style={{ color: isNight ? '#a855f7' : '#0284c7', transition: 'color 0.6s' }}>SANDBOX</span>
             </h1>
-          </div>
-          <div style={{
-            fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20,
-            background: isNight ? '#1e293b' : '#f1f5f9',
-            color: isNight ? '#94a3b8' : '#64748b',
-            display: 'flex', alignItems: 'center', gap: 8,
-            border: isNight ? '1px solid #334155' : '1px solid #e2e8f0',
-            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}>
-            <span style={{ color: fps >= 50 ? '#10b981' : '#f59e0b', fontWeight: 700 }}>● FPS: {fps}</span>
-            <span>|</span>
-            <span>Mode: {performanceTier === 'high' ? 'High Tier' : 'Low Tier'}</span>
-            <span>|</span>
-            <span>Objek: {placedObjects.length}</span>
           </div>
         </div>
 
