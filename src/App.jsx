@@ -3,12 +3,141 @@ import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { OrbitControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
+// ============ CRISP FLAT SVG ICON COMPONENTS ============
+function IconFlower({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.2" fill="#ffd700" />
+      <circle cx="12" cy="5" r="3.2" fill="#ff6b9d" />
+      <circle cx="12" cy="19" r="3.2" fill="#ff6b9d" />
+      <circle cx="5" cy="12" r="3.2" fill="#ff6b9d" />
+      <circle cx="19" cy="12" r="3.2" fill="#ff6b9d" />
+      <circle cx="7" cy="7" r="3.2" fill="#ff6b9d" />
+      <circle cx="17" cy="7" r="3.2" fill="#ff6b9d" />
+      <circle cx="7" cy="17" r="3.2" fill="#ff6b9d" />
+      <circle cx="17" cy="17" r="3.2" fill="#ff6b9d" />
+    </svg>
+  );
+}
+
+function IconTree({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M12 2L3 12h3.5l-3 7h13l-3-7H17L12 2z" fill="#4caf50" />
+      <path d="M10 19h4v3h-4z" fill="#8B5E3C" />
+    </svg>
+  );
+}
+
+function IconRock({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M4 16l3.5-9 5.5-3 6.5 5 1.5 7-6.5 5-7-1.5z" fill="#78909c" />
+      <path d="M7.5 7l5.5-3 6.5 5-3 7-5.5 2z" fill="#b0bec5" opacity="0.4" />
+    </svg>
+  );
+}
+
+function IconLamp({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M11 14h2v8h-2z" fill="#555" />
+      <path d="M8.5 10l3.5-7 3.5 7z" fill="#374151" />
+      <circle cx="12" cy="11" r="3.5" fill="#ffd54f" />
+      <circle cx="12" cy="11" r="5" fill="#ffd54f" opacity="0.35" />
+      <path d="M12 3v-1M6.5 6l-1-1M17.5 6l1-1" stroke="#ffd54f" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconSun({ size = 16 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="5.2" fill="#ffb300" />
+      <path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M6.7 17.3l-1.77 1.77M19.07 4.93L17.3 6.7" stroke="#ff8f00" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconGalaxy({ size = 16 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-30 12 12)" fill="url(#galaxyGrad)" opacity="0.85" />
+      <circle cx="12" cy="12" r="3.2" fill="#fff" />
+      <circle cx="5" cy="8" r="1.2" fill="#38bdf8" />
+      <circle cx="19" cy="16" r="1.3" fill="#c084fc" />
+      <defs>
+        <linearGradient id="galaxyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#38bdf8" />
+          <stop offset="50%" stopColor="#c084fc" />
+          <stop offset="100%" stopColor="#f472b6" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+function IconRotateOn({ size = 15 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+      <path d="M3 21v-5h5" />
+    </svg>
+  );
+}
+
+function IconRotateOff({ size = 15 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="6" y="4" width="4" height="16" rx="1.2" fill="currentColor" />
+      <rect x="14" y="4" width="4" height="16" rx="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+function IconTrash({ size = 16 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+    </svg>
+  );
+}
+
+function IconReset({ size = 16 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </svg>
+  );
+}
+
+function IconWarning({ size = 16 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
+function IconChevronUp({ size = 14 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 15l-6-6-6 6" />
+    </svg>
+  );
+}
+
 // ============ INVENTORY ITEM DEFINITIONS ============
 const ITEM_DEFS = {
-  flower: { label: 'Bunga', emoji: '🌸', color: '#ff6b9d' },
-  tree: { label: 'Pohon', emoji: '🌳', color: '#4caf50' },
-  rock: { label: 'Batu', emoji: '🪨', color: '#888' },
-  lamp: { label: 'Lampu', emoji: '💡', color: '#ffd54f' },
+  flower: { label: 'Bunga', icon: <IconFlower size={26} />, dragSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="#ffd700"/><circle cx="12" cy="5" r="3.2" fill="#ff6b9d"/><circle cx="12" cy="19" r="3.2" fill="#ff6b9d"/><circle cx="5" cy="12" r="3.2" fill="#ff6b9d"/><circle cx="19" cy="12" r="3.2" fill="#ff6b9d"/><circle cx="7" cy="7" r="3.2" fill="#ff6b9d"/><circle cx="17" cy="7" r="3.2" fill="#ff6b9d"/><circle cx="7" cy="17" r="3.2" fill="#ff6b9d"/><circle cx="17" cy="17" r="3.2" fill="#ff6b9d"/></svg>', color: '#ff6b9d' },
+  tree: { label: 'Pohon', icon: <IconTree size={26} />, dragSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><path d="M12 2L3 12h3.5l-3 7h13l-3-7H17L12 2z" fill="#4caf50"/><path d="M10 19h4v3h-4z" fill="#8B5E3C"/></svg>', color: '#4caf50' },
+  rock: { label: 'Batu', icon: <IconRock size={26} />, dragSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><path d="M4 16l3.5-9 5.5-3 6.5 5 1.5 7-6.5 5-7-1.5z" fill="#78909c"/><path d="M7.5 7l5.5-3 6.5 5-3 7-5.5 2z" fill="#b0bec5" opacity="0.4"/></svg>', color: '#888' },
+  lamp: { label: 'Lampu', icon: <IconLamp size={26} />, dragSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><path d="M11 14h2v8h-2z" fill="#555"/><path d="M8.5 10l3.5-7 3.5 7z" fill="#374151"/><circle cx="12" cy="11" r="3.5" fill="#ffd54f"/><path d="M12 3v-1M6.5 6l-1-1M17.5 6l1-1" stroke="#ffd54f" stroke-width="2" stroke-linecap="round"/></svg>', color: '#ffd54f' },
 };
 
 // ============ 3D OBJECTS ============
@@ -228,39 +357,79 @@ function SceneAccess({ sceneRef }) {
 
 // ============ OUTDOOR & GALAXY SCENE DATA CREATION (Outside Render) ============
 
+// ============ HELPER: Generate Soft Round Star Canvas Texture ============
+function createStarTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.88)');
+  gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.28)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(canvas);
+}
+
+const GALAXY_TEXTURE = createStarTexture();
+
 function createGalaxyData() {
-  const count = 4500;
+  const count = 35000;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const arms = 3;
-  const radius = 22;
+  const arms = 2; // Andromeda has 2 prominent swirling spiral branches
+  const radius = 34;
 
-  const colorCore = new THREE.Color('#fff9c4');
-  const colorArm1 = new THREE.Color('#ff007f'); // Magenta
-  const colorArm2 = new THREE.Color('#00ffff'); // Cyan
-  const colorArm3 = new THREE.Color('#8a2be2'); // Violet / Purple
+  const colorCore = new THREE.Color('#ffffff'); // Brilliant white core
+  const colorInner = new THREE.Color('#ffe0b2'); // Warm golden/peach inner bulge
+  const colorArm1 = new THREE.Color('#38bdf8'); // Sapphire cyan blue arms
+  const colorArm2 = new THREE.Color('#c084fc'); // Electric lavender / purple arms
+  const colorDust = new THREE.Color('#1e3a8a'); // Deep cosmic blue dust lane edge
 
   for (let i = 0; i < count; i++) {
-    const r = Math.pow(Math.random(), 1.5) * radius;
-    const spinAngle = r * 0.45;
-    const armIndex = i % arms;
-    const armAngle = ((Math.PI * 2) / arms) * armIndex;
-    const randomOffset = (Math.random() - 0.5) * (r * 0.35 + 0.3);
+    const isCore = i < 9000;
+    let r, angle, y, mixedColor;
 
-    const angle = armAngle + spinAngle + randomOffset;
+    if (isCore) {
+      r = Math.pow(Math.random(), 2.2) * 6.5;
+      angle = Math.random() * Math.PI * 2;
+      const coreThickness = (1.0 - r / 6.5) * 2.8;
+      y = (Math.random() - 0.5) * coreThickness;
+      const coreRatio = r / 6.5;
+      mixedColor = colorCore.clone().lerp(colorInner, coreRatio * 0.8);
+    } else {
+      r = 3.5 + Math.pow(Math.random(), 1.4) * (radius - 3.5);
+      const spinAngle = r * 0.42;
+      const armIndex = i % arms;
+      const armAngle = ((Math.PI * 2) / arms) * armIndex;
+      
+      const dustLaneFactor = Math.sin(r * 0.8 - armAngle) * 0.45;
+      const randomOffset = (Math.random() - 0.5) * (r * 0.18 + 0.3) + dustLaneFactor;
+
+      angle = armAngle + spinAngle + randomOffset;
+      const discThickness = Math.max(0.2, (1.0 - r / radius) * 1.6);
+      y = (Math.random() - 0.5) * discThickness;
+
+      const distRatio = Math.min(1, (r - 3.5) / (radius - 3.5));
+      mixedColor = colorInner.clone();
+      if (armIndex === 0) {
+        mixedColor.lerp(colorArm1, Math.min(1, distRatio * 1.3));
+      } else {
+        mixedColor.lerp(colorArm2, Math.min(1, distRatio * 1.3));
+      }
+      if (distRatio > 0.65 && Math.random() < 0.4) {
+        mixedColor.lerp(colorDust, (distRatio - 0.65) * 2.5);
+      }
+    }
+
     const x = Math.cos(angle) * r;
-    const y = (Math.random() - 0.5) * (3 - r * 0.1);
-    const z = Math.sin(angle) * r;
+    const z = Math.sin(angle) * r * 0.75;
 
     positions[i * 3] = x;
     positions[i * 3 + 1] = y;
     positions[i * 3 + 2] = z;
-
-    let mixedColor = colorCore.clone();
-    const distRatio = Math.min(1, r / radius);
-    if (armIndex === 0) mixedColor.lerp(colorArm1, distRatio);
-    else if (armIndex === 1) mixedColor.lerp(colorArm2, distRatio);
-    else mixedColor.lerp(colorArm3, distRatio);
 
     colors[i * 3] = mixedColor.r;
     colors[i * 3 + 1] = mixedColor.g;
@@ -270,7 +439,7 @@ function createGalaxyData() {
 }
 
 function createStarsData() {
-  const count = 3000;
+  const count = 3500;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const palette = ['#ffffff', '#aee2ff', '#ffd2a1', '#e8b5ff', '#9beaff'];
@@ -280,10 +449,10 @@ function createStarsData() {
     const v = Math.random();
     const theta = u * 2.0 * Math.PI;
     const phi = Math.acos(2.0 * v - 1.0);
-    const r = Math.cbrt(Math.random()) * 40 + 25;
+    const r = Math.cbrt(Math.random()) * 45 + 28;
     
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    positions[i * 3 + 1] = Math.abs(r * Math.cos(phi)) + 2;
+    positions[i * 3 + 1] = r * Math.cos(phi);
     positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
 
     const c = new THREE.Color(palette[Math.floor(Math.random() * palette.length)]);
@@ -305,17 +474,15 @@ function GalaxySky() {
   const starFieldRef = useRef();
   const [shootingStar, setShootingStar] = useState({ active: false, pos: [0,0,0], speed: [0,0,0] });
 
-  // Animate galaxy rotation and shooting stars
   useFrame((state, delta) => {
     if (galaxyGroupRef.current) {
-      galaxyGroupRef.current.rotation.y += delta * 0.04;
-      galaxyGroupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * 0.05;
+      galaxyGroupRef.current.rotation.y += delta * 0.035;
+      galaxyGroupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.15) * 0.03;
     }
     if (starFieldRef.current) {
-      starFieldRef.current.rotation.y += delta * 0.005;
+      starFieldRef.current.rotation.y += delta * 0.004;
     }
 
-    // Random shooting star
     if (!shootingStar.active && Math.random() < 0.006) {
       const startX = (Math.random() - 0.5) * 30;
       const startY = 18 + Math.random() * 8;
@@ -341,23 +508,23 @@ function GalaxySky() {
 
   return (
     <group>
-      {/* Background stars dome */}
+      {/* Background stars dome extending across sky and abyss below */}
       <points ref={starFieldRef}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" count={STARS_DATA.positions.length / 3} array={STARS_DATA.positions} itemSize={3} />
           <bufferAttribute attach="attributes-color" count={STARS_DATA.colors.length / 3} array={STARS_DATA.colors} itemSize={3} />
         </bufferGeometry>
-        <pointsMaterial size={0.16} vertexColors transparent opacity={0.9} sizeAttenuation />
+        <pointsMaterial size={0.38} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.9} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
       </points>
 
-      {/* Swirling Galaxy Spiral tilted across the sky */}
-      <group position={[0, 16, -15]} rotation={[0.45, 0, 0.3]}>
+      {/* Swirling Andromeda Galaxy Spiral positioned underneath the floating island */}
+      <group position={[1, -25, -6]} rotation={[1.15, 0.18, 0.4]}>
         <points ref={galaxyGroupRef}>
           <bufferGeometry>
             <bufferAttribute attach="attributes-position" count={GALAXY_DATA.positions.length / 3} array={GALAXY_DATA.positions} itemSize={3} />
             <bufferAttribute attach="attributes-color" count={GALAXY_DATA.colors.length / 3} array={GALAXY_DATA.colors} itemSize={3} />
           </bufferGeometry>
-          <pointsMaterial size={0.22} vertexColors transparent opacity={0.85} sizeAttenuation blending={THREE.AdditiveBlending} />
+          <pointsMaterial size={0.62} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.92} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
         </points>
       </group>
 
@@ -687,7 +854,7 @@ export default function App() {
             transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
-          <span style={{ fontSize: 15 }}>{autoRotate ? '🔄' : '⏸️'}</span>
+          {autoRotate ? <IconRotateOn size={16} /> : <IconRotateOff size={16} />}
           <span>{autoRotate ? 'Putar: ON' : 'Putar: OFF'}</span>
         </button>
 
@@ -720,7 +887,8 @@ export default function App() {
             boxShadow: !isNight ? '0 4px 14px rgba(255, 153, 0, 0.4)' : 'none',
           }}
         >
-          <span>☀️</span> Siang
+          <IconSun size={16} />
+          <span>Siang</span>
         </button>
         <button
           onClick={() => setTimeMode('night')}
@@ -740,7 +908,8 @@ export default function App() {
             boxShadow: isNight ? '0 4px 14px rgba(139, 92, 246, 0.45)' : 'none',
           }}
         >
-          <span>🌌</span> Galaxy Malam
+          <IconGalaxy size={16} />
+          <span>Galaxy Malam</span>
         </button>
         </div>
       </div>
@@ -771,8 +940,10 @@ export default function App() {
               color: isNight ? '#fff' : '#1e293b', fontSize: 15, fontWeight: 600, letterSpacing: 0.5,
               backdropFilter: 'blur(8px)',
               boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+              display: 'flex', alignItems: 'center', gap: 8,
             }}>
-              Drop {ITEM_DEFS[draggingItem]?.emoji} {ITEM_DEFS[draggingItem]?.label} ke tanah
+              {ITEM_DEFS[draggingItem]?.icon}
+              <span>Drop <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ke tanah</span>
             </div>
           </div>
         )}
@@ -892,11 +1063,12 @@ export default function App() {
         }}
       >
         <span style={{
-          display: 'inline-block',
+          display: 'inline-flex',
           transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
           transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          fontSize: 14,
-        }}>▲</span>
+        }}>
+          <IconChevronUp size={14} />
+        </span>
         <span style={{ fontSize: 13, fontWeight: 600 }}>Inventory</span>
       </button>
 
@@ -970,7 +1142,9 @@ export default function App() {
                 >
                   {def && (
                     <>
-                      <span style={{ fontSize: 26, lineHeight: 1 }}>{def.emoji}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {def.icon}
+                      </div>
                       <span style={{ fontSize: 9, color: isNight ? '#a1a8b8' : '#888', fontWeight: 600, letterSpacing: 0.3 }}>
                         {def.label}
                       </span>
@@ -999,13 +1173,13 @@ export default function App() {
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 5,
+                  display: 'flex', alignItems: 'center', gap: 6,
                   transition: 'all 0.2s',
                   whiteSpace: 'nowrap',
                 }}
               >
-                <span>🗑️</span>
-                {deleteMode ? 'Mode Hapus: ON' : 'Mode Hapus'}
+                <IconTrash size={15} />
+                <span>{deleteMode ? 'Mode Hapus: ON' : 'Mode Hapus'}</span>
               </button>
 
               {selectedId && !deleteMode && (
@@ -1021,11 +1195,12 @@ export default function App() {
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 5,
+                    display: 'flex', alignItems: 'center', gap: 6,
                     transition: 'all 0.2s',
                   }}
                 >
-                  ✕ Hapus Dipilih
+                  <IconTrash size={14} />
+                  <span>Hapus Dipilih</span>
                 </button>
               )}
 
@@ -1055,8 +1230,8 @@ export default function App() {
                   transition: 'all 0.3s',
                 }}
               >
-                <span>{autoRotate ? '🔄' : '⏸️'}</span>
-                {autoRotate ? 'Putar Kamera: ON' : 'Putar Kamera: OFF'}
+                {autoRotate ? <IconRotateOn size={14} /> : <IconRotateOff size={14} />}
+                <span>{autoRotate ? 'Putar Kamera: ON' : 'Putar Kamera: OFF'}</span>
               </button>
 
               {autoRotate && (
@@ -1091,13 +1266,14 @@ export default function App() {
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 5,
+                display: 'flex', alignItems: 'center', gap: 6,
                 transition: 'all 0.2s',
                 whiteSpace: 'nowrap',
                 animation: resetConfirm ? 'pulse 0.6s infinite alternate' : 'none',
               }}
             >
-              {resetConfirm ? '⚠️ Konfirmasi Reset?' : '↺ Reset Semua'}
+              {resetConfirm ? <IconWarning size={15} /> : <IconReset size={15} />}
+              <span>{resetConfirm ? 'Konfirmasi Reset?' : 'Reset Semua'}</span>
             </button>
           </div>
 
