@@ -366,27 +366,50 @@ function Rock3D({ position = [0, 0, 0] }) {
 
 function Lamp3D({ position = [0, 0, 0], timeMode = 'night' }) {
   const isNight = timeMode === 'night';
+  const pole1Ref = useRef();
+  const pole2Ref = useRef();
+  const bulbRef = useRef();
+  const lightRef = useRef();
+  const haloRef = useRef();
+
+  useFrame((state, delta) => {
+    const isNightNow = timeMode === 'night';
+    const lerpSpeed = delta * 3.5;
+    if (pole1Ref.current) pole1Ref.current.color.lerp(isNightNow ? new THREE.Color('#2d3342') : new THREE.Color('#555555'), lerpSpeed);
+    if (pole2Ref.current) pole2Ref.current.color.lerp(isNightNow ? new THREE.Color('#1e222d') : new THREE.Color('#444444'), lerpSpeed);
+    if (bulbRef.current) {
+      bulbRef.current.emissive.lerp(isNightNow ? new THREE.Color('#ffbe3b') : new THREE.Color('#ffd54f'), lerpSpeed);
+      bulbRef.current.emissiveIntensity = THREE.MathUtils.lerp(bulbRef.current.emissiveIntensity, isNightNow ? 3.5 : 1.2, lerpSpeed);
+    }
+    if (lightRef.current) {
+      lightRef.current.intensity = THREE.MathUtils.lerp(lightRef.current.intensity, isNightNow ? 2.8 : 0.6, lerpSpeed);
+      lightRef.current.distance = THREE.MathUtils.lerp(lightRef.current.distance, isNightNow ? 10 : 4, lerpSpeed);
+    }
+    if (haloRef.current) {
+      haloRef.current.opacity = THREE.MathUtils.lerp(haloRef.current.opacity, isNightNow ? 0.18 : 0.0, lerpSpeed);
+      haloRef.current.visible = haloRef.current.opacity > 0.01;
+    }
+  });
+
   return (
     <group position={position}>
       <mesh position={[0, 1, 0]} castShadow>
         <cylinderGeometry args={[0.04, 0.06, 2, 8]} />
-        <meshStandardMaterial color={isNight ? '#2d3342' : '#555'} metalness={0.6} roughness={0.4} />
+        <meshStandardMaterial ref={pole1Ref} color={isNight ? '#2d3342' : '#555555'} metalness={0.6} roughness={0.4} />
       </mesh>
       <mesh position={[0, 2.1, 0]} castShadow>
         <cylinderGeometry args={[0.2, 0.08, 0.25, 8]} />
-        <meshStandardMaterial color={isNight ? '#1e222d' : '#444'} metalness={0.6} roughness={0.3} />
+        <meshStandardMaterial ref={pole2Ref} color={isNight ? '#1e222d' : '#444444'} metalness={0.6} roughness={0.3} />
       </mesh>
       <mesh position={[0, 1.95, 0]}>
         <sphereGeometry args={[0.08, 12, 12]} />
-        <meshStandardMaterial color="#fff8e1" emissive={isNight ? '#ffbe3b' : '#ffd54f'} emissiveIntensity={isNight ? 3.5 : 1.2} />
+        <meshStandardMaterial ref={bulbRef} color="#fff8e1" emissive={isNight ? '#ffbe3b' : '#ffd54f'} emissiveIntensity={isNight ? 3.5 : 1.2} />
       </mesh>
-      <pointLight position={[0, 1.9, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={isNight ? 10 : 4} decay={2} />
-      {isNight && (
-        <mesh position={[0, 1.95, 0]}>
-          <sphereGeometry args={[0.3, 16, 16]} />
-          <meshBasicMaterial color="#ffcf48" transparent opacity={0.15} />
-        </mesh>
-      )}
+      <pointLight ref={lightRef} position={[0, 1.9, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={isNight ? 10 : 4} decay={2} />
+      <mesh position={[0, 1.95, 0]}>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshBasicMaterial ref={haloRef} color="#ffcf48" transparent opacity={isNight ? 0.18 : 0.0} />
+      </mesh>
     </group>
   );
 }
@@ -663,11 +686,48 @@ function DaySky({ isLowEnd }) {
 }
 
 function OutdoorGround({ timeMode, onGroundTap }) {
-  const isNight = timeMode === 'night';
+  const topMatRef = useRef();
+  const sideMat1Ref = useRef();
+  const sideMat2Ref = useRef();
+  const ringMatsRef = useRef([]);
+  const coneMatsRef = useRef([]);
+
+  useFrame((state, delta) => {
+    const isNight = timeMode === 'night';
+    const lerpSpeed = delta * 3.5;
+
+    const targetTop = isNight ? new THREE.Color('#131826') : new THREE.Color('#49a85c');
+    const targetSide1 = isNight ? new THREE.Color('#0c0f18') : new THREE.Color('#6b5344');
+    const targetSide2 = isNight ? new THREE.Color('#06070b') : new THREE.Color('#4a382e');
+
+    if (topMatRef.current) {
+      topMatRef.current.color.lerp(targetTop, lerpSpeed);
+      topMatRef.current.roughness = THREE.MathUtils.lerp(topMatRef.current.roughness, isNight ? 0.9 : 0.8, lerpSpeed);
+      topMatRef.current.metalness = THREE.MathUtils.lerp(topMatRef.current.metalness, isNight ? 0.15 : 0.05, lerpSpeed);
+    }
+    if (sideMat1Ref.current) sideMat1Ref.current.color.lerp(targetSide1, lerpSpeed);
+    if (sideMat2Ref.current) sideMat2Ref.current.color.lerp(targetSide2, lerpSpeed);
+
+    ringMatsRef.current.forEach(mat => {
+      if (mat) {
+        mat.color.lerp(isNight ? new THREE.Color('#38bdf8') : new THREE.Color('#72d686'), lerpSpeed);
+        mat.opacity = THREE.MathUtils.lerp(mat.opacity, isNight ? 0.15 : 0.22, lerpSpeed);
+      }
+    });
+
+    coneMatsRef.current.forEach((mat, i) => {
+      if (mat) {
+        const targetColor = isNight ? (i % 2 === 0 ? new THREE.Color('#38bdf8') : new THREE.Color('#e879f9')) : new THREE.Color('#358a47');
+        const targetEmissive = isNight ? (i % 2 === 0 ? new THREE.Color('#0284c7') : new THREE.Color('#c026d3')) : new THREE.Color('#000000');
+        mat.color.lerp(targetColor, lerpSpeed);
+        mat.emissive.lerp(targetEmissive, lerpSpeed);
+        mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, isNight ? 1.5 : 0, lerpSpeed);
+      }
+    });
+  });
+
+  const isNightInit = timeMode === 'night';
   const radius = 11;
-  const topColor = isNight ? '#131826' : '#49a85c';
-  const sideColor1 = isNight ? '#0c0f18' : '#6b5344';
-  const sideColor2 = isNight ? '#06070b' : '#4a382e';
 
   return (
     <group>
@@ -682,13 +742,13 @@ function OutdoorGround({ timeMode, onGroundTap }) {
         }}
       >
         <cylinderGeometry args={[radius, radius, 0.4, 64]} />
-        <meshStandardMaterial color={topColor} roughness={isNight ? 0.9 : 0.8} metalness={isNight ? 0.15 : 0.05} />
+        <meshStandardMaterial ref={topMatRef} color={isNightInit ? '#131826' : '#49a85c'} roughness={isNightInit ? 0.9 : 0.8} metalness={isNightInit ? 0.15 : 0.05} />
       </mesh>
 
       {[3, 6, 9].map((r, idx) => (
         <mesh key={idx} position={[0, 0.01 + idx * 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[r - 0.04, r + 0.04, 64]} />
-          <meshBasicMaterial color={isNight ? '#38bdf8' : '#72d686'} transparent opacity={isNight ? 0.15 : 0.22} />
+          <meshBasicMaterial ref={el => ringMatsRef.current[idx] = el} color={isNightInit ? '#38bdf8' : '#72d686'} transparent opacity={isNightInit ? 0.15 : 0.22} />
         </mesh>
       ))}
 
@@ -697,13 +757,13 @@ function OutdoorGround({ timeMode, onGroundTap }) {
         return (
           <mesh key={i} position={[Math.cos(angle) * (radius - 0.4), 0.18, Math.sin(angle) * (radius - 0.4)]} rotation={[0, -angle, 0]} castShadow>
             <coneGeometry args={[0.15, 0.36, 6]} />
-            <meshStandardMaterial color={isNight ? (i % 2 === 0 ? '#38bdf8' : '#e879f9') : '#358a47'} emissive={isNight ? (i % 2 === 0 ? '#0284c7' : '#c026d3') : '#000000'} emissiveIntensity={isNight ? 1.5 : 0} roughness={0.6} />
+            <meshStandardMaterial ref={el => coneMatsRef.current[i] = el} color={isNightInit ? (i % 2 === 0 ? '#38bdf8' : '#e879f9') : '#358a47'} emissive={isNightInit ? (i % 2 === 0 ? '#0284c7' : '#c026d3') : '#000000'} emissiveIntensity={isNightInit ? 1.5 : 0} roughness={0.6} />
           </mesh>
         );
       })}
 
-      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 64]} /><meshStandardMaterial color={sideColor1} roughness={0.95} /></mesh>
-      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 64]} /><meshStandardMaterial color={sideColor2} roughness={0.95} /></mesh>
+      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 64]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.95} /></mesh>
+      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 64]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.95} /></mesh>
     </group>
   );
 }
@@ -761,6 +821,97 @@ function RealTimeAnalytics({ onFpsUpdate }) {
     }
   });
   return null;
+}
+
+// ============ SMOOTH 3D ATMOSPHERIC TRANSITION CONTROLLER ============
+function AtmosphericEnvironment({ timeMode, isLowEnd }) {
+  const ambientRef = useRef();
+  const dirLightRef = useRef();
+  const galaxyGroupRef = useRef();
+  const dayGroupRef = useRef();
+  const progressRef = useRef(timeMode === 'night' ? 0 : 1);
+
+  useFrame((state, delta) => {
+    const { scene } = state;
+    const isNight = timeMode === 'night';
+    const target = isNight ? 0 : 1;
+    const lerpSpeed = delta * 3.5;
+    progressRef.current = THREE.MathUtils.lerp(progressRef.current, target, lerpSpeed);
+    const p = progressRef.current; // 0 (night) to 1 (day)
+
+    // 1. Scene Background & Fog
+    const nightBg = new THREE.Color('#050712');
+    const dayBg = new THREE.Color('#85cbee');
+    const nightFog = new THREE.Color('#060814');
+    const dayFog = new THREE.Color('#a2d6f2');
+
+    if (!scene.background || !(scene.background instanceof THREE.Color)) {
+      scene.background = nightBg.clone().lerp(dayBg, p);
+    } else {
+      scene.background.copy(nightBg).lerp(dayBg, p);
+    }
+
+    if (!scene.fog) {
+      scene.fog = new THREE.Fog(nightFog.clone().lerp(dayFog, p), 18, 48);
+    } else {
+      scene.fog.color.copy(nightFog).lerp(dayFog, p);
+    }
+
+    // 2. Lights
+    if (ambientRef.current) {
+      const nightAmb = new THREE.Color('#464c80');
+      const dayAmb = new THREE.Color('#fff8e7');
+      ambientRef.current.color.copy(nightAmb).lerp(dayAmb, p);
+      ambientRef.current.intensity = THREE.MathUtils.lerp(0.45, 0.65, p);
+    }
+    if (dirLightRef.current) {
+      const nightSun = new THREE.Color('#b3d4ff');
+      const daySun = new THREE.Color('#fff6dd');
+      dirLightRef.current.color.copy(nightSun).lerp(daySun, p);
+      dirLightRef.current.intensity = THREE.MathUtils.lerp(0.9, 1.9, p);
+      dirLightRef.current.position.set(
+        THREE.MathUtils.lerp(10, 12, p),
+        THREE.MathUtils.lerp(15, 20, p),
+        THREE.MathUtils.lerp(10, 8, p)
+      );
+    }
+
+    // 3. Smooth transition of Galaxy and Day sky groups
+    if (galaxyGroupRef.current) {
+      galaxyGroupRef.current.visible = p < 0.98;
+      galaxyGroupRef.current.position.y = THREE.MathUtils.lerp(0, -35, p);
+      const scale = THREE.MathUtils.lerp(1, 0.6, p);
+      galaxyGroupRef.current.scale.set(scale, scale, scale);
+    }
+    if (dayGroupRef.current) {
+      dayGroupRef.current.visible = p > 0.02;
+      dayGroupRef.current.position.y = THREE.MathUtils.lerp(35, 0, p);
+      const scale = THREE.MathUtils.lerp(0.6, 1, p);
+      dayGroupRef.current.scale.set(scale, scale, scale);
+    }
+  });
+
+  return (
+    <group>
+      <ambientLight ref={ambientRef} intensity={0.45} color="#464c80" />
+      <directionalLight
+        ref={dirLightRef}
+        position={[10, 15, 10]}
+        intensity={0.9}
+        color="#b3d4ff"
+        castShadow={!isLowEnd}
+        shadow-mapSize={[1024, 1024]}
+      />
+
+      <group ref={galaxyGroupRef}>
+        <GalaxySky isLowEnd={isLowEnd} />
+      </group>
+
+      <group ref={dayGroupRef}>
+        <DaySky isLowEnd={isLowEnd} />
+      </group>
+    </group>
+  );
 }
 
 // ============ MAIN APP COMPONENT ============
@@ -997,61 +1148,82 @@ export default function App() {
       background: isNight ? '#050712' : '#85cbee', color: isNight ? '#f1f5f9' : '#1e293b',
       overflow: 'hidden', userSelect: 'none',
     }}>
-      {/* 1. Header Toolbar */}
-      <div style={{
+      {/* 1. Modern Minimalist Solid Header Toolbar */}
+      <header style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '12px 24px', background: isNight ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.88)',
-        borderBottom: isNight ? '1px solid rgba(56, 189, 248, 0.25)' : '1px solid rgba(0, 0, 0, 0.08)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.15)', backdropFilter: 'blur(16px)', zIndex: 20,
+        padding: '10px 28px',
+        background: isNight ? '#0f172a' : '#ffffff',
+        borderBottom: isNight ? '1px solid #1e293b' : '1px solid #f1f5f9',
+        boxShadow: isNight ? '0 4px 20px rgba(0,0,0,0.35)' : '0 2px 12px rgba(0,0,0,0.04)',
+        transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 20,
       }}>
-        {/* Title & Analytics Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        {/* Left: Brand + FPS Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <IconGalaxy size={22} />
-            <h1 style={{ fontSize: 18, fontWeight: 800, margin: 0, letterSpacing: 0.5, color: isNight ? '#38bdf8' : '#0284c7' }}>GIVER <span style={{ color: isNight ? '#c084fc' : '#9333ea' }}>SANDBOX</span></h1>
+            <h1 style={{
+              fontSize: 17, fontWeight: 800, margin: 0, letterSpacing: '-0.3px',
+              color: isNight ? '#f8fafc' : '#0f172a',
+              transition: 'color 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}>
+              GIVER <span style={{ color: isNight ? '#a855f7' : '#0284c7', transition: 'color 0.6s' }}>SANDBOX</span>
+            </h1>
           </div>
           <div style={{
-            fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20,
-            background: fps >= 50 ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
-            color: fps >= 50 ? '#10b981' : '#f59e0b', border: fps >= 50 ? '1px solid #10b981' : '1px solid #f59e0b',
-            display: 'flex', alignItems: 'center', gap: 6
+            fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20,
+            background: isNight ? '#1e293b' : '#f1f5f9',
+            color: isNight ? '#94a3b8' : '#64748b',
+            display: 'flex', alignItems: 'center', gap: 8,
+            border: isNight ? '1px solid #334155' : '1px solid #e2e8f0',
+            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>
-            <span>⚡ FPS: {fps}</span>
-            <span>| Mode: {performanceTier === 'high' ? 'High Tier' : 'Low Tier'}</span>
-            <span>| Objek: {placedObjects.length}</span>
+            <span style={{ color: fps >= 50 ? '#10b981' : '#f59e0b', fontWeight: 700 }}>● FPS: {fps}</span>
+            <span>|</span>
+            <span>Mode: {performanceTier === 'high' ? 'High Tier' : 'Low Tier'}</span>
+            <span>|</span>
+            <span>Objek: {placedObjects.length}</span>
           </div>
         </div>
 
-        {/* Undo / Redo & File Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Center: Action & File Tools (Undo, Redo, Ekspor, Impor) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button onClick={handleUndo} disabled={historyPast.length === 0} title="Undo (Ctrl+Z)" style={{
-            padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.3)',
-            background: historyPast.length ? (isNight ? 'rgba(30,41,59,0.8)' : '#fff') : 'rgba(100,100,100,0.2)',
-            color: historyPast.length ? (isNight ? '#fff' : '#1e293b') : '#888', cursor: historyPast.length ? 'pointer' : 'not-allowed',
-            display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600
+            padding: '6px 14px', borderRadius: 8, border: 'none',
+            background: historyPast.length ? (isNight ? '#1e293b' : '#f1f5f9') : 'transparent',
+            color: historyPast.length ? (isNight ? '#e2e8f0' : '#1e293b') : (isNight ? '#334155' : '#cbd5e1'),
+            cursor: historyPast.length ? 'pointer' : 'not-allowed',
+            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
           }}><IconUndo size={14} /> Undo</button>
 
           <button onClick={handleRedo} disabled={historyFuture.length === 0} title="Redo (Ctrl+Y)" style={{
-            padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.3)',
-            background: historyFuture.length ? (isNight ? 'rgba(30,41,59,0.8)' : '#fff') : 'rgba(100,100,100,0.2)',
-            color: historyFuture.length ? (isNight ? '#fff' : '#1e293b') : '#888', cursor: historyFuture.length ? 'pointer' : 'not-allowed',
-            display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600
+            padding: '6px 14px', borderRadius: 8, border: 'none',
+            background: historyFuture.length ? (isNight ? '#1e293b' : '#f1f5f9') : 'transparent',
+            color: historyFuture.length ? (isNight ? '#e2e8f0' : '#1e293b') : (isNight ? '#334155' : '#cbd5e1'),
+            cursor: historyFuture.length ? 'pointer' : 'not-allowed',
+            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
           }}><IconRedo size={14} /> Redo</button>
 
+          <div style={{ width: 1, height: 18, background: isNight ? '#334155' : '#e2e8f0', margin: '0 4px', transition: 'background 0.6s' }} />
+
           <button onClick={handleExportJson} title="Ekspor scene ke JSON" style={{
-            padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(56,189,248,0.4)',
-            background: isNight ? 'rgba(30,41,59,0.8)' : '#fff', color: isNight ? '#38bdf8' : '#0284c7',
-            cursor: 'pointer', fontSize: 12, fontWeight: 600
+            padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
+            background: isNight ? '#1e293b' : '#f8fafc', color: isNight ? '#38bdf8' : '#0284c7',
+            cursor: 'pointer', fontSize: 13, fontWeight: 600,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>💾 Ekspor</button>
 
           <button onClick={handleImportJson} title="Impor scene dari JSON" style={{
-            padding: '6px 12px', borderRadius: 20, border: '1px solid rgba(192,132,252,0.4)',
-            background: isNight ? 'rgba(30,41,59,0.8)' : '#fff', color: isNight ? '#c084fc' : '#9333ea',
-            cursor: 'pointer', fontSize: 12, fontWeight: 600
+            padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
+            background: isNight ? '#1e293b' : '#f8fafc', color: isNight ? '#c084fc' : '#9333ea',
+            cursor: 'pointer', fontSize: 13, fontWeight: 600,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>📂 Impor</button>
         </div>
 
-        {/* Top Right Controls (Sound, Camera, Mode) */}
+        {/* Right: Controls & Time Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={() => {
@@ -1062,13 +1234,14 @@ export default function App() {
             }}
             title={audioActive ? 'Mute Ambient Audio' : 'Aktifkan Ambient Audio'}
             style={{
-              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 50,
-              background: audioActive ? 'linear-gradient(135deg, #10b981, #059669)' : (isNight ? 'rgba(30,41,59,0.8)' : '#fff'),
-              border: audioActive ? '1.5px solid #34d399' : '1px solid rgba(138,180,248,0.3)',
-              color: audioActive ? '#fff' : (isNight ? '#cbd5e1' : '#334155'), fontSize: 13, fontWeight: 700, cursor: 'pointer'
+              display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
+              background: audioActive ? '#10b981' : (isNight ? '#1e293b' : '#f1f5f9'),
+              border: audioActive ? '1px solid #10b981' : '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
+              color: audioActive ? '#ffffff' : (isNight ? '#cbd5e1' : '#475569'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
           >
-            {audioActive ? <IconAudioOn size={16} /> : <IconAudioOff size={16} />}
+            {audioActive ? <IconAudioOn size={15} /> : <IconAudioOff size={15} />}
             <span>{audioActive ? 'Audio: ON' : 'Audio: OFF'}</span>
           </button>
 
@@ -1076,39 +1249,47 @@ export default function App() {
             onClick={() => { setAutoRotate(!autoRotate); SoundEngine.playClick(); }}
             title="Aktifkan atau nonaktifkan putaran otomatis kamera"
             style={{
-              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 50,
-              background: autoRotate ? 'linear-gradient(135deg, #3b82f6, #8b5cf6)' : (isNight ? 'rgba(30,41,59,0.8)' : '#fff'),
-              border: autoRotate ? '1.5px solid #60a5fa' : '1px solid rgba(138,180,248,0.3)',
-              color: autoRotate ? '#fff' : (isNight ? '#cbd5e1' : '#334155'), fontSize: 13, fontWeight: 700, cursor: 'pointer'
+              display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
+              background: autoRotate ? '#3b82f6' : (isNight ? '#1e293b' : '#f1f5f9'),
+              border: autoRotate ? '1px solid #3b82f6' : '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
+              color: autoRotate ? '#ffffff' : (isNight ? '#cbd5e1' : '#475569'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
           >
-            {autoRotate ? <IconRotateOn size={16} /> : <IconRotateOff size={16} />}
+            {autoRotate ? <IconRotateOn size={15} /> : <IconRotateOff size={15} />}
             <span>{autoRotate ? 'Putar: ON' : 'Putar: OFF'}</span>
           </button>
 
+          {/* Time Switcher Toggle with Smooth Solid Transition */}
           <div style={{
-            display: 'flex', alignItems: 'center', background: isNight ? 'rgba(30,41,59,0.8)' : '#fff',
-            border: '1px solid rgba(138,180,248,0.3)', borderRadius: 50, padding: 3
+            display: 'flex', alignItems: 'center', background: isNight ? '#1e293b' : '#f1f5f9',
+            border: isNight ? '1px solid #334155' : '1px solid #e2e8f0', borderRadius: 30, padding: 3,
+            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>
             <button onClick={() => { setTimeMode('day'); SoundEngine.setAmbient(audioActive, false); SoundEngine.playClick(); }} style={{
-              padding: '6px 14px', borderRadius: 40, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700,
-              background: !isNight ? 'linear-gradient(135deg, #38bdf8, #0284c7)' : 'transparent',
-              color: !isNight ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', gap: 5
+              padding: '6px 16px', borderRadius: 26, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+              background: !isNight ? '#0ea5e9' : 'transparent',
+              color: !isNight ? '#ffffff' : (isNight ? '#94a3b8' : '#64748b'), display: 'flex', alignItems: 'center', gap: 6,
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: !isNight ? '0 2px 8px rgba(14,165,233,0.3)' : 'none'
             }}><IconSun size={15} /> Siang</button>
             <button onClick={() => { setTimeMode('night'); SoundEngine.setAmbient(audioActive, true); SoundEngine.playClick(); }} style={{
-              padding: '6px 14px', borderRadius: 40, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700,
-              background: isNight ? 'linear-gradient(135deg, #8b5cf6, #c084fc)' : 'transparent',
-              color: isNight ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', gap: 5
+              padding: '6px 16px', borderRadius: 26, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+              background: isNight ? '#8b5cf6' : 'transparent',
+              color: isNight ? '#ffffff' : (isNight ? '#94a3b8' : '#64748b'), display: 'flex', alignItems: 'center', gap: 6,
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: isNight ? '0 2px 8px rgba(139,92,246,0.3)' : 'none'
             }}><IconGalaxy size={15} /> Galaxy Malam</button>
           </div>
 
           <button onClick={() => setShowTutorial(true)} title="Bantuan Tutorial" style={{
-            width: 32, height: 32, borderRadius: '50%', border: '1px solid rgba(138,180,248,0.4)',
-            background: isNight ? 'rgba(30,41,59,0.8)' : '#fff', color: isNight ? '#38bdf8' : '#0284c7',
-            fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+            width: 32, height: 32, borderRadius: '50%', border: isNight ? '1px solid #334155' : '1px solid #e2e8f0',
+            background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#38bdf8' : '#0284c7',
+            fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
           }}>❓</button>
         </div>
-      </div>
+      </header>
 
       {/* 2. Floating Transform Toolbar when an object is selected */}
       {selectedId && (
@@ -1116,7 +1297,8 @@ export default function App() {
           position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
           display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 40,
           background: isNight ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.95)',
-          border: '1.5px solid #38bdf8', boxShadow: '0 8px 30px rgba(0,0,0,0.3)', backdropFilter: 'blur(12px)'
+          border: '1.5px solid #38bdf8', boxShadow: '0 8px 30px rgba(0,0,0,0.3)', backdropFilter: 'blur(12px)',
+          transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           <span style={{ fontSize: 13, fontWeight: 700, color: isNight ? '#38bdf8' : '#0284c7' }}>Objek Terpilih:</span>
           <button onClick={() => handleRotateSelected(-Math.PI / 4)} title="Putar -45°" style={{
@@ -1142,8 +1324,9 @@ export default function App() {
         <div style={{
           position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
           display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
-          background: 'linear-gradient(135deg, #38bdf8, #0284c7)', color: '#fff', fontWeight: 700, fontSize: 14,
-          boxShadow: '0 8px 30px rgba(56,189,248,0.4)', pointerEvents: 'none'
+          background: '#0ea5e9', color: '#fff', fontWeight: 700, fontSize: 14,
+          boxShadow: '0 8px 30px rgba(14,165,233,0.4)', pointerEvents: 'none',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           <span>📦 Lepaskan <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ke atas daratan untuk menaruh</span>
         </div>
@@ -1153,8 +1336,9 @@ export default function App() {
         <div style={{
           position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
           display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
-          background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontWeight: 700, fontSize: 14,
-          boxShadow: '0 8px 30px rgba(16,185,129,0.4)'
+          background: '#10b981', color: '#fff', fontWeight: 700, fontSize: 14,
+          boxShadow: '0 8px 30px rgba(16,185,129,0.4)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
         }}>
           <span>💡 Mode Taruh Aktif: Ketuk area daratan untuk meletakkan <strong>{ITEM_DEFS[activePlacementType].label}</strong></span>
           <button onClick={() => setActivePlacementType(null)} style={{
@@ -1186,26 +1370,11 @@ export default function App() {
         <Canvas
           shadows={performanceTier === 'high'}
           camera={{ position: [6, 4, 6], fov: 60 }}
-          style={{ background: isNight ? '#050712' : '#85cbee', width: '100%', height: '100%', display: 'block' }}
+          style={{ background: isNight ? '#050712' : '#85cbee', width: '100%', height: '100%', display: 'block', transition: 'background 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
         >
           <RealTimeAnalytics onFpsUpdate={handleFpsUpdate} />
           <SceneAccess sceneRef={sceneRef} />
-          <fog attach="fog" args={[isNight ? '#060814' : '#a2d6f2', 18, 48]} />
-
-          {isNight ? (
-            <>
-              <ambientLight intensity={0.45} color="#464c80" />
-              <directionalLight position={[10, 15, 10]} intensity={0.9} color="#b3d4ff" castShadow={performanceTier === 'high'} shadow-mapSize={[1024, 1024]} />
-              <GalaxySky isLowEnd={performanceTier === 'low'} />
-            </>
-          ) : (
-            <>
-              <ambientLight intensity={0.65} color="#fff8e7" />
-              <directionalLight position={[12, 20, 8]} intensity={1.9} color="#fff6dd" castShadow={performanceTier === 'high'} shadow-mapSize={[1024, 1024]} />
-              <DaySky isLowEnd={performanceTier === 'low'} />
-            </>
-          )}
-
+          <AtmosphericEnvironment timeMode={timeMode} isLowEnd={performanceTier === 'low'} />
           <OutdoorGround timeMode={timeMode} onGroundTap={handleGroundTap} />
           <Box />
 
@@ -1305,25 +1474,31 @@ export default function App() {
                   padding: '10px 18px', borderRadius: 30, display: 'flex', alignItems: 'center', gap: 6,
                   background: deleteMode ? '#ef4444' : (isNight ? 'rgba(30,41,59,0.8)' : '#f1f5f9'),
                   color: deleteMode ? '#fff' : (isNight ? '#cbd5e1' : '#334155'), border: deleteMode ? '1.5px solid #b91c1c' : '1px solid rgba(138,180,248,0.3)',
-                  fontWeight: 700, fontSize: 13, cursor: 'pointer'
+                  fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
                 <IconTrash size={16} />
                 <span>{deleteMode ? 'Mode Hapus: AKTIF' : 'Mode Hapus: OFF'}</span>
               </button>
 
-              <button
-                onClick={handleResetAll}
-                style={{
-                  padding: '10px 18px', borderRadius: 30, display: 'flex', alignItems: 'center', gap: 6,
-                  background: resetConfirm ? 'linear-gradient(135deg, #dc2626, #b91c1c)' : (isNight ? 'rgba(30,41,59,0.8)' : '#f1f5f9'),
-                  color: resetConfirm ? '#fff' : (isNight ? '#f87171' : '#dc2626'), border: resetConfirm ? '1.5px solid #991b1b' : '1px solid rgba(248,113,113,0.4)',
-                  fontWeight: 700, fontSize: 13, cursor: 'pointer'
-                }}
-              >
-                <IconReset size={16} />
-                <span>{resetConfirm ? '⚠️ Konfirmasi Reset?' : 'Reset Semua'}</span>
-              </button>
+              {!resetConfirm ? (
+                <button onClick={() => setResetConfirm(true)} title="Reset semua objek di atas pulau" style={{
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 30, border: '1px solid #ef4444',
+                  background: 'transparent', color: '#ef4444', fontWeight: 700, cursor: 'pointer', fontSize: 13,
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}>
+                  <IconReset size={16} /> Reset Semua
+                </button>
+              ) : (
+                <button onClick={handleResetAll} style={{
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 30, border: 'none',
+                  background: '#dc2626', color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13,
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}>
+                  <IconWarning size={16} /> Yakin? (3s)
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -1371,8 +1546,9 @@ export default function App() {
               try { localStorage.setItem('giver_sandbox_onboarded_v3', 'true'); } catch (err) { void err; }
               SoundEngine.playPop();
             }} style={{
-              width: '100%', padding: '12px', borderRadius: 30, background: 'linear-gradient(135deg, #38bdf8, #0284c7)',
-              border: 'none', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: '0 6px 20px rgba(56,189,248,0.4)'
+              width: '100%', padding: '12px', borderRadius: 30, background: '#0ea5e9',
+              border: 'none', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: '0 6px 20px rgba(14,165,233,0.3)',
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
             }}>
               🚀 Mulai Membangun Dunia!
             </button>
