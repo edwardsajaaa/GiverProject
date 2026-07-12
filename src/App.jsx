@@ -132,24 +132,6 @@ function IconChevronUp({ size = 14 }) {
   );
 }
 
-function IconUndo({ size = 15 }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 14L4 9l5-5" />
-      <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
-    </svg>
-  );
-}
-
-function IconRedo({ size = 15 }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 14l5-5-5-5" />
-      <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
-    </svg>
-  );
-}
-
 function IconAudioOn({ size = 16 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -968,15 +950,6 @@ export default function App() {
     SoundEngine.playClick();
   }, [historyFuture, placedObjects]);
 
-  // Keyboard Shortcuts Ctrl+Z / Ctrl+Y
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); handleUndo(); }
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); handleRedo(); }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo]);
 
   const [draggingItem, setDraggingItem] = useState(null);
   const [activePlacementType, setActivePlacementType] = useState(null); // Touch Tap-to-Place
@@ -1095,6 +1068,18 @@ export default function App() {
     input.click();
   }, [setPlacedObjects]);
 
+  // Comprehensive Keyboard Shortcuts: Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+S (Export), Ctrl+O (Import)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
+      if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); handleRedo(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); handleExportJson(); }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') { e.preventDefault(); handleImportJson(); }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo, handleExportJson, handleImportJson]);
+
   const handleDragOver = useCallback((e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }, []);
 
   const handleDrop = useCallback((e) => {
@@ -1146,63 +1131,17 @@ export default function App() {
       background: isNight ? '#050712' : '#85cbee', color: isNight ? '#F5F5F7' : '#1D1D1F',
       overflow: 'hidden', userSelect: 'none', position: 'relative'
     }}>
-      {/* 1. Apple Glassmorphism Top Toolbar (Floating Status & Actions Bar) */}
+      {/* 1. Transparent Header Toolbar with Floating Apple Pill Controls on Top Right */}
       <header style={{
-        position: 'absolute', top: 14, left: 20, right: 20, boxSizing: 'border-box',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 22px',
-        background: isNight ? 'rgba(28, 28, 32, 0.72)' : 'rgba(255, 255, 255, 0.75)',
-        backdropFilter: 'blur(28px) saturate(190%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(190%)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(255, 255, 255, 0.8)',
-        borderRadius: 28,
-        boxShadow: isNight ? '0 12px 36px rgba(0, 0, 0, 0.5)' : '0 10px 32px rgba(0, 0, 0, 0.08)',
+        position: 'absolute', top: 16, left: 24, right: 24, boxSizing: 'border-box',
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+        padding: 0,
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
         transition: 'all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)',
         zIndex: 25,
       }}>
-        {/* Left: Action & File Tools (Undo, Redo, Ekspor, Impor) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button onClick={handleUndo} disabled={historyPast.length === 0} title="Undo (Ctrl+Z)" style={{
-            padding: '7px 15px', borderRadius: 20, border: 'none',
-            background: historyPast.length ? (isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)') : 'transparent',
-            color: historyPast.length ? (isNight ? '#F5F5F7' : '#1D1D1F') : (isNight ? '#48484A' : '#C7C7CC'),
-            cursor: historyPast.length ? 'pointer' : 'not-allowed',
-            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
-          }}><IconUndo size={14} /> Undo</button>
-
-          <button onClick={handleRedo} disabled={historyFuture.length === 0} title="Redo (Ctrl+Y)" style={{
-            padding: '7px 15px', borderRadius: 20, border: 'none',
-            background: historyFuture.length ? (isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)') : 'transparent',
-            color: historyFuture.length ? (isNight ? '#F5F5F7' : '#1D1D1F') : (isNight ? '#48484A' : '#C7C7CC'),
-            cursor: historyFuture.length ? 'pointer' : 'not-allowed',
-            display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
-          }}><IconRedo size={14} /> Redo</button>
-
-          <div style={{ width: 1, height: 18, background: isNight ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)', margin: '0 4px', transition: 'background 0.6s' }} />
-
-          <button onClick={handleExportJson} title="Ekspor scene ke JSON" style={{
-            padding: '7px 15px', borderRadius: 20,
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
-            background: isNight ? 'rgba(44, 44, 46, 0.75)' : 'rgba(255, 255, 255, 0.9)',
-            color: isNight ? '#0A84FF' : '#007AFF',
-            cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-          }}>💾 Ekspor</button>
-
-          <button onClick={handleImportJson} title="Impor scene dari JSON" style={{
-            padding: '7px 15px', borderRadius: 20,
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
-            background: isNight ? 'rgba(44, 44, 46, 0.75)' : 'rgba(255, 255, 255, 0.9)',
-            color: isNight ? '#BF5AF2' : '#AF52DE',
-            cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-          }}>📂 Impor</button>
-        </div>
-
         {/* Right: Controls & Time Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
