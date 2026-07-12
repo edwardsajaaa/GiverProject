@@ -1142,55 +1142,64 @@ export default function App() {
   return (
     <div style={{
       width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column',
-      fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
-      background: isNight ? '#050712' : '#85cbee', color: isNight ? '#f1f5f9' : '#1e293b',
-      overflow: 'hidden', userSelect: 'none',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Outfit", system-ui, sans-serif',
+      background: isNight ? '#050712' : '#85cbee', color: isNight ? '#F5F5F7' : '#1D1D1F',
+      overflow: 'hidden', userSelect: 'none', position: 'relative'
     }}>
-      {/* 1. Modern Minimalist Transparent Overlay Header Toolbar */}
+      {/* 1. Apple Glassmorphism Top Toolbar (Floating Status & Actions Bar) */}
       <header style={{
-        position: 'absolute', top: 0, left: 0, right: 0, width: '100%', boxSizing: 'border-box',
+        position: 'absolute', top: 14, left: 20, right: 20, boxSizing: 'border-box',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 28px',
-        background: 'transparent',
-        borderBottom: 'none',
-        boxShadow: 'none',
-        transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+        padding: '10px 22px',
+        background: isNight ? 'rgba(28, 28, 32, 0.72)' : 'rgba(255, 255, 255, 0.75)',
+        backdropFilter: 'blur(28px) saturate(190%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(190%)',
+        border: isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(255, 255, 255, 0.8)',
+        borderRadius: 28,
+        boxShadow: isNight ? '0 12px 36px rgba(0, 0, 0, 0.5)' : '0 10px 32px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)',
         zIndex: 25,
       }}>
         {/* Left: Action & File Tools (Undo, Redo, Ekspor, Impor) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button onClick={handleUndo} disabled={historyPast.length === 0} title="Undo (Ctrl+Z)" style={{
-            padding: '6px 14px', borderRadius: 8, border: 'none',
-            background: historyPast.length ? (isNight ? '#1e293b' : '#f1f5f9') : 'transparent',
-            color: historyPast.length ? (isNight ? '#e2e8f0' : '#1e293b') : (isNight ? '#334155' : '#cbd5e1'),
+            padding: '7px 15px', borderRadius: 20, border: 'none',
+            background: historyPast.length ? (isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)') : 'transparent',
+            color: historyPast.length ? (isNight ? '#F5F5F7' : '#1D1D1F') : (isNight ? '#48484A' : '#C7C7CC'),
             cursor: historyPast.length ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
           }}><IconUndo size={14} /> Undo</button>
 
           <button onClick={handleRedo} disabled={historyFuture.length === 0} title="Redo (Ctrl+Y)" style={{
-            padding: '6px 14px', borderRadius: 8, border: 'none',
-            background: historyFuture.length ? (isNight ? '#1e293b' : '#f1f5f9') : 'transparent',
-            color: historyFuture.length ? (isNight ? '#e2e8f0' : '#1e293b') : (isNight ? '#334155' : '#cbd5e1'),
+            padding: '7px 15px', borderRadius: 20, border: 'none',
+            background: historyFuture.length ? (isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)') : 'transparent',
+            color: historyFuture.length ? (isNight ? '#F5F5F7' : '#1D1D1F') : (isNight ? '#48484A' : '#C7C7CC'),
             cursor: historyFuture.length ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600,
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
           }}><IconRedo size={14} /> Redo</button>
 
-          <div style={{ width: 1, height: 18, background: isNight ? '#334155' : '#e2e8f0', margin: '0 4px', transition: 'background 0.6s' }} />
+          <div style={{ width: 1, height: 18, background: isNight ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)', margin: '0 4px', transition: 'background 0.6s' }} />
 
           <button onClick={handleExportJson} title="Ekspor scene ke JSON" style={{
-            padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
-            background: isNight ? '#1e293b' : '#f8fafc', color: isNight ? '#38bdf8' : '#0284c7',
+            padding: '7px 15px', borderRadius: 20,
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
+            background: isNight ? 'rgba(44, 44, 46, 0.75)' : 'rgba(255, 255, 255, 0.9)',
+            color: isNight ? '#0A84FF' : '#007AFF',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
           }}>💾 Ekspor</button>
 
           <button onClick={handleImportJson} title="Impor scene dari JSON" style={{
-            padding: '6px 14px', borderRadius: 8, border: '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
-            background: isNight ? '#1e293b' : '#f8fafc', color: isNight ? '#c084fc' : '#9333ea',
+            padding: '7px 15px', borderRadius: 20,
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
+            background: isNight ? 'rgba(44, 44, 46, 0.75)' : 'rgba(255, 255, 255, 0.9)',
+            color: isNight ? '#BF5AF2' : '#AF52DE',
             cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
           }}>📂 Impor</button>
         </div>
 
@@ -1205,11 +1214,12 @@ export default function App() {
             }}
             title={audioActive ? 'Mute Ambient Audio' : 'Aktifkan Ambient Audio'}
             style={{
-              display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
-              background: audioActive ? '#10b981' : (isNight ? '#1e293b' : '#f1f5f9'),
-              border: audioActive ? '1px solid #10b981' : '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
-              color: audioActive ? '#ffffff' : (isNight ? '#cbd5e1' : '#475569'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 15px', borderRadius: 20,
+              background: audioActive ? '#30D158' : (isNight ? 'rgba(58, 58, 60, 0.75)' : 'rgba(240, 240, 245, 0.9)'),
+              border: audioActive ? '1px solid #30D158' : (isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(0, 0, 0, 0.08)'),
+              color: audioActive ? '#ffffff' : (isNight ? '#E5E5EA' : '#3A3A3C'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+              boxShadow: audioActive ? '0 4px 14px rgba(48, 209, 88, 0.35)' : 'none'
             }}
           >
             {audioActive ? <IconAudioOn size={15} /> : <IconAudioOff size={15} />}
@@ -1220,72 +1230,79 @@ export default function App() {
             onClick={() => { setAutoRotate(!autoRotate); SoundEngine.playClick(); }}
             title="Aktifkan atau nonaktifkan putaran otomatis kamera"
             style={{
-              display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
-              background: autoRotate ? '#3b82f6' : (isNight ? '#1e293b' : '#f1f5f9'),
-              border: autoRotate ? '1px solid #3b82f6' : '1px solid ' + (isNight ? '#334155' : '#e2e8f0'),
-              color: autoRotate ? '#ffffff' : (isNight ? '#cbd5e1' : '#475569'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+              display: 'flex', alignItems: 'center', gap: 6, padding: '7px 15px', borderRadius: 20,
+              background: autoRotate ? '#0A84FF' : (isNight ? 'rgba(58, 58, 60, 0.75)' : 'rgba(240, 240, 245, 0.9)'),
+              border: autoRotate ? '1px solid #0A84FF' : (isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(0, 0, 0, 0.08)'),
+              color: autoRotate ? '#ffffff' : (isNight ? '#E5E5EA' : '#3A3A3C'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+              boxShadow: autoRotate ? '0 4px 14px rgba(10, 132, 255, 0.35)' : 'none'
             }}
           >
             {autoRotate ? <IconRotateOn size={15} /> : <IconRotateOff size={15} />}
             <span>{autoRotate ? 'Putar: ON' : 'Putar: OFF'}</span>
           </button>
 
-          {/* Time Switcher Toggle with Smooth Solid Transition */}
+          {/* Time Switcher Toggle with Smooth Apple Pill Transition */}
           <div style={{
-            display: 'flex', alignItems: 'center', background: isNight ? '#1e293b' : '#f1f5f9',
-            border: isNight ? '1px solid #334155' : '1px solid #e2e8f0', borderRadius: 30, padding: 3,
-            transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+            display: 'flex', alignItems: 'center', background: isNight ? 'rgba(44, 44, 46, 0.8)' : 'rgba(229, 229, 234, 0.8)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)', borderRadius: 24, padding: 3,
+            transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)'
           }}>
             <button onClick={() => { setTimeMode('day'); SoundEngine.setAmbient(audioActive, false); SoundEngine.playClick(); }} style={{
-              padding: '6px 16px', borderRadius: 26, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
-              background: !isNight ? '#0ea5e9' : 'transparent',
-              color: !isNight ? '#ffffff' : (isNight ? '#94a3b8' : '#64748b'), display: 'flex', alignItems: 'center', gap: 6,
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: !isNight ? '0 2px 8px rgba(14,165,233,0.3)' : 'none'
+              padding: '6px 16px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+              background: !isNight ? '#ffffff' : 'transparent',
+              color: !isNight ? '#007AFF' : (isNight ? '#98989D' : '#636366'), display: 'flex', alignItems: 'center', gap: 6,
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+              boxShadow: !isNight ? '0 2px 10px rgba(0, 0, 0, 0.12)' : 'none'
             }}><IconSun size={15} /> Siang</button>
             <button onClick={() => { setTimeMode('night'); SoundEngine.setAmbient(audioActive, true); SoundEngine.playClick(); }} style={{
-              padding: '6px 16px', borderRadius: 26, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
-              background: isNight ? '#8b5cf6' : 'transparent',
-              color: isNight ? '#ffffff' : (isNight ? '#94a3b8' : '#64748b'), display: 'flex', alignItems: 'center', gap: 6,
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: isNight ? '0 2px 8px rgba(139,92,246,0.3)' : 'none'
+              padding: '6px 16px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+              background: isNight ? '#BF5AF2' : 'transparent',
+              color: isNight ? '#ffffff' : (isNight ? '#98989D' : '#636366'), display: 'flex', alignItems: 'center', gap: 6,
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+              boxShadow: isNight ? '0 2px 12px rgba(191, 90, 242, 0.4)' : 'none'
             }}><IconGalaxy size={15} /> Galaxy Malam</button>
           </div>
 
           <button onClick={() => setShowTutorial(true)} title="Bantuan Tutorial" style={{
-            width: 32, height: 32, borderRadius: '50%', border: isNight ? '1px solid #334155' : '1px solid #e2e8f0',
-            background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#38bdf8' : '#0284c7',
+            width: 34, height: 34, borderRadius: '50%',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
+            background: isNight ? 'rgba(58, 58, 60, 0.75)' : 'rgba(240, 240, 245, 0.9)',
+            color: isNight ? '#0A84FF' : '#007AFF',
             fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
           }}>❓</button>
         </div>
       </header>
 
-      {/* 2. Floating Transform Toolbar when an object is selected */}
+      {/* 2. Apple Dynamic Island Transform Toolbar when an object is selected */}
       {selectedId && (
         <div style={{
-          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 40,
-          background: isNight ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.95)',
-          border: '1.5px solid #38bdf8', boxShadow: '0 8px 30px rgba(0,0,0,0.3)', backdropFilter: 'blur(12px)',
-          transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 32,
+          background: isNight ? 'rgba(28, 28, 32, 0.82)' : 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(28px) saturate(190%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(190%)',
+          border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.8)',
+          boxShadow: isNight ? '0 16px 40px rgba(0, 0, 0, 0.5)' : '0 12px 36px rgba(0, 0, 0, 0.12)',
+          transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)'
         }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: isNight ? '#38bdf8' : '#0284c7' }}>Objek Terpilih:</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: isNight ? '#0A84FF' : '#007AFF' }}>Objek Terpilih:</span>
           <button onClick={() => handleRotateSelected(-Math.PI / 4)} title="Putar -45°" style={{
-            padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.4)', background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#fff' : '#1e293b', cursor: 'pointer', fontWeight: 600, fontSize: 12
+            padding: '6px 14px', borderRadius: 18, border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)', background: isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)', color: isNight ? '#F5F5F7' : '#1D1D1F', cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s'
           }}>🔄 -45°</button>
           <button onClick={() => handleRotateSelected(Math.PI / 4)} title="Putar +45°" style={{
-            padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.4)', background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#fff' : '#1e293b', cursor: 'pointer', fontWeight: 600, fontSize: 12
+            padding: '6px 14px', borderRadius: 18, border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)', background: isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)', color: isNight ? '#F5F5F7' : '#1D1D1F', cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s'
           }}>🔄 +45°</button>
           <button onClick={() => handleScaleSelected(-0.2)} title="Perkecil (-20%)" style={{
-            padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.4)', background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#fff' : '#1e293b', cursor: 'pointer', fontWeight: 600, fontSize: 12
+            padding: '6px 14px', borderRadius: 18, border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)', background: isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)', color: isNight ? '#F5F5F7' : '#1D1D1F', cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s'
           }}>🔍 - Skala</button>
           <button onClick={() => handleScaleSelected(0.2)} title="Perbesar (+20%)" style={{
-            padding: '5px 12px', borderRadius: 20, border: '1px solid rgba(138,180,248,0.4)', background: isNight ? '#1e293b' : '#f1f5f9', color: isNight ? '#fff' : '#1e293b', cursor: 'pointer', fontWeight: 600, fontSize: 12
+            padding: '6px 14px', borderRadius: 18, border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)', background: isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)', color: isNight ? '#F5F5F7' : '#1D1D1F', cursor: 'pointer', fontWeight: 600, fontSize: 12, transition: 'all 0.2s'
           }}>🔍 + Skala</button>
           <button onClick={handleDeleteSelected} style={{
-            padding: '5px 12px', borderRadius: 20, border: '1px solid #ef4444', background: 'rgba(239,68,68,0.15)', color: '#ef4444', cursor: 'pointer', fontWeight: 700, fontSize: 12
+            padding: '6px 14px', borderRadius: 18, border: '1px solid #FF3B30', background: 'rgba(255, 59, 48, 0.15)', color: '#FF3B30', cursor: 'pointer', fontWeight: 700, fontSize: 12, transition: 'all 0.2s'
           }}>🗑️ Hapus</button>
         </div>
       )}
@@ -1293,11 +1310,11 @@ export default function App() {
       {/* 3. Tap-to-Place or Dragging Drop Hint Banner */}
       {draggingItem && (
         <div style={{
-          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
-          background: '#0ea5e9', color: '#fff', fontWeight: 700, fontSize: 14,
-          boxShadow: '0 8px 30px rgba(14,165,233,0.4)', pointerEvents: 'none',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 24px', borderRadius: 32,
+          background: '#007AFF', color: '#fff', fontWeight: 700, fontSize: 14,
+          boxShadow: '0 12px 36px rgba(0, 122, 255, 0.45)', pointerEvents: 'none',
+          transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)'
         }}>
           <span>📦 Lepaskan <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ke atas daratan untuk menaruh</span>
         </div>
@@ -1305,15 +1322,16 @@ export default function App() {
 
       {activePlacementType && !draggingItem && (
         <div style={{
-          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
-          background: '#10b981', color: '#fff', fontWeight: 700, fontSize: 14,
-          boxShadow: '0 8px 30px rgba(16,185,129,0.4)',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 12, padding: '10px 24px', borderRadius: 32,
+          background: '#34C759', color: '#fff', fontWeight: 700, fontSize: 14,
+          boxShadow: '0 12px 36px rgba(52, 199, 89, 0.45)',
+          transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)'
         }}>
           <span>💡 Mode Taruh Aktif: Ketuk area daratan untuk meletakkan <strong>{ITEM_DEFS[activePlacementType].label}</strong></span>
           <button onClick={() => setActivePlacementType(null)} style={{
-            background: 'rgba(0,0,0,0.25)', border: 'none', color: '#fff', padding: '4px 10px', borderRadius: 20, cursor: 'pointer', fontWeight: 800
+            background: 'rgba(255, 255, 255, 0.25)', border: 'none', borderRadius: 14,
+            color: '#fff', cursor: 'pointer', padding: '3px 10px', fontSize: 12, fontWeight: 800
           }}>✕ Batal</button>
         </div>
       )}
@@ -1378,31 +1396,45 @@ export default function App() {
         </Canvas>
       </div>
 
-      {/* 5. Bottom Toolbar & Inventory Drawer */}
+      {/* 5. Apple macOS / visionOS Floating Dock (Inventory & Bottom Actions) */}
       <div style={{
-        position: 'relative', zIndex: 20, background: isNight ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.92)',
-        borderTop: isNight ? '1px solid rgba(56,189,248,0.25)' : '1px solid rgba(0,0,0,0.08)',
-        boxShadow: '0 -4px 24px rgba(0,0,0,0.18)', backdropFilter: 'blur(16px)',
-        transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+        position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        width: 'auto', maxWidth: '94%',
+        transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)',
       }}>
-        {/* Toggle Drawer Button */}
+        {/* Toggle Dock Button */}
         <button onClick={() => { setInventoryOpen(!inventoryOpen); SoundEngine.playClick(); }} style={{
-          position: 'absolute', top: -32, left: '50%', transform: 'translateX(-50%)',
-          background: isNight ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.95)',
-          border: isNight ? '1px solid #38bdf8' : '1px solid #0284c7', borderBottom: 'none',
-          borderRadius: '16px 16px 0 0', padding: '5px 24px', color: isNight ? '#38bdf8' : '#0284c7',
-          fontWeight: 700, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6
+          background: isNight ? 'rgba(28, 28, 32, 0.78)' : 'rgba(255, 255, 255, 0.82)',
+          backdropFilter: 'blur(20px) saturate(190%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(190%)',
+          border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.8)',
+          borderRadius: 20, padding: '5px 18px', margin: '0 0 10px 0',
+          color: isNight ? '#0A84FF' : '#007AFF',
+          fontWeight: 700, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+          boxShadow: isNight ? '0 6px 20px rgba(0, 0, 0, 0.4)' : '0 6px 20px rgba(0, 0, 0, 0.08)',
+          transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
         }}>
-          <span>{inventoryOpen ? 'Tutup Panel Item' : 'Buka Panel Item'}</span>
-          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}><IconChevronUp /></span>
+          <span>{inventoryOpen ? 'Tutup Dock Item' : 'Buka Dock Item'}</span>
+          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}><IconChevronUp /></span>
         </button>
 
         {inventoryOpen && (
-          <div style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
-            {/* Inventory Slots */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+          <div style={{
+            padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+            background: isNight ? 'rgba(28, 28, 32, 0.75)' : 'rgba(255, 255, 255, 0.78)',
+            backdropFilter: 'blur(32px) saturate(190%)',
+            WebkitBackdropFilter: 'blur(32px) saturate(190%)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.85)',
+            borderRadius: 36,
+            boxShadow: isNight ? '0 24px 60px rgba(0, 0, 0, 0.65)' : '0 20px 50px rgba(0, 0, 0, 0.14)',
+            transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)'
+          }}>
+            {/* macOS Dock App Icon Slots */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, overflowX: 'auto', padding: '4px 2px' }}>
               {inventory.slice(0, 8).map((itemType, idx) => {
                 const item = ITEM_DEFS[itemType];
+                const isActive = activePlacementType === itemType;
                 return (
                   <div
                     key={idx}
@@ -1416,37 +1448,41 @@ export default function App() {
                       }
                     }}
                     style={{
-                      width: 68, height: 68, borderRadius: 16, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center', gap: 6, cursor: item ? 'pointer' : 'default',
-                      background: item ? (isNight ? 'rgba(30,41,59,0.8)' : '#f8fafc') : (isNight ? 'rgba(20,28,44,0.4)' : '#f1f5f9'),
-                      border: activePlacementType === itemType ? '2px solid #10b981' : (item ? (isNight ? '1px solid rgba(56,189,248,0.3)' : '1px solid #cbd5e1') : '1px dashed rgba(150,150,150,0.2)'),
-                      transition: 'all 0.2s',
+                      width: 66, height: 66, borderRadius: 18, display: 'flex', flexDirection: 'column',
+                      alignItems: 'center', justifyContent: 'center', gap: 5, cursor: item ? 'pointer' : 'default',
+                      background: item ? (isNight ? 'rgba(58, 58, 60, 0.85)' : 'rgba(245, 245, 247, 0.92)') : (isNight ? 'rgba(30, 30, 35, 0.3)' : 'rgba(230, 230, 235, 0.4)'),
+                      border: isActive ? (isNight ? '2px solid #0A84FF' : '2px solid #007AFF') : (item ? (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)') : '1px dashed rgba(150,150,150,0.2)'),
+                      boxShadow: isActive ? (isNight ? '0 8px 24px rgba(10, 132, 255, 0.5)' : '0 8px 24px rgba(0, 122, 255, 0.3)') : (item ? '0 4px 12px rgba(0,0,0,0.06)' : 'none'),
+                      transform: isActive ? 'translateY(-6px) scale(1.05)' : 'translateY(0) scale(1)',
+                      transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
                     }}
                     title={item ? `${item.label} (Drag atau Tap untuk menaruh)` : 'Slot Kosong'}
                   >
                     {item ? (
                       <>
-                        <div>{item.icon}</div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: isNight ? '#cbd5e1' : '#334155' }}>{item.label}</span>
+                        <div style={{ transition: 'transform 0.2s' }}>{item.icon}</div>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: isNight ? '#F5F5F7' : '#1D1D1F', letterSpacing: '-0.2px' }}>{item.label}</span>
                       </>
                     ) : (
-                      <span style={{ fontSize: 10, color: '#64748b' }}>Kosong</span>
+                      <span style={{ fontSize: 10, color: '#8E8E93' }}>Kosong</span>
                     )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Bottom Actions (Delete Mode & Reset) */}
+            {/* Dock Actions (Delete Mode & Reset) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <button
                 onClick={() => { setDeleteMode(!deleteMode); setSelectedId(null); SoundEngine.playClick(); }}
                 style={{
-                  padding: '10px 18px', borderRadius: 30, display: 'flex', alignItems: 'center', gap: 6,
-                  background: deleteMode ? '#ef4444' : (isNight ? 'rgba(30,41,59,0.8)' : '#f1f5f9'),
-                  color: deleteMode ? '#fff' : (isNight ? '#cbd5e1' : '#334155'), border: deleteMode ? '1.5px solid #b91c1c' : '1px solid rgba(138,180,248,0.3)',
-                  fontWeight: 700, fontSize: 13, cursor: 'pointer',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                  padding: '10px 18px', borderRadius: 24, display: 'flex', alignItems: 'center', gap: 6,
+                  background: deleteMode ? '#FF3B30' : (isNight ? 'rgba(58, 58, 60, 0.8)' : 'rgba(240, 240, 245, 0.9)'),
+                  color: deleteMode ? '#fff' : (isNight ? '#F5F5F7' : '#1D1D1F'),
+                  border: deleteMode ? '1px solid #FF3B30' : (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)'),
+                  fontWeight: 600, fontSize: 13, cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+                  boxShadow: deleteMode ? '0 6px 20px rgba(255, 59, 48, 0.4)' : 'none'
                 }}
               >
                 <IconTrash size={16} />
@@ -1455,9 +1491,9 @@ export default function App() {
 
               {!resetConfirm ? (
                 <button onClick={() => setResetConfirm(true)} title="Reset semua objek di atas pulau" style={{
-                  display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 30, border: '1px solid #ef4444',
-                  background: 'transparent', color: '#ef4444', fontWeight: 700, cursor: 'pointer', fontSize: 13,
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 24, border: '1px solid #FF3B30',
+                  background: 'transparent', color: '#FF3B30', fontWeight: 600, cursor: 'pointer', fontSize: 13,
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
                 }}>
                   <IconReset size={16} /> Reset Semua
                 </button>
@@ -1475,40 +1511,45 @@ export default function App() {
         )}
       </div>
 
-      {/* 6. Onboarding / Tutorial Overlay Modal */}
+      {/* 6. Onboarding / Tutorial Overlay Apple Glass Dialog */}
       {showTutorial && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(5, 7, 18, 0.85)', backdropFilter: 'blur(14px)'
+          background: isNight ? 'rgba(5, 7, 18, 0.65)' : 'rgba(0, 0, 0, 0.45)',
+          backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)'
         }}>
           <div style={{
-            maxWidth: 540, width: '90%', background: isNight ? '#0f172a' : '#ffffff',
-            border: '2px solid #38bdf8', borderRadius: 24, padding: 28, boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-            color: isNight ? '#f1f5f9' : '#1e293b'
+            maxWidth: 540, width: '90%',
+            background: isNight ? 'rgba(28, 28, 32, 0.85)' : 'rgba(255, 255, 255, 0.88)',
+            backdropFilter: 'blur(36px) saturate(190%)', WebkitBackdropFilter: 'blur(36px) saturate(190%)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.85)',
+            borderRadius: 36, padding: '32px 36px',
+            boxShadow: isNight ? '0 24px 60px rgba(0,0,0,0.65)' : '0 20px 50px rgba(0,0,0,0.18)',
+            color: isNight ? '#F5F5F7' : '#1D1D1F'
           }}>
-            <h2 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 16px 0', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: 10 }}>
-              👋 Selamat Datang di GiverSource Sandbox!
+            <h2 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.4px', margin: '0 0 14px 0', color: isNight ? '#0A84FF' : '#007AFF', display: 'flex', alignItems: 'center', gap: 10 }}>
+              👋 Selamat Datang di GiverSource Sandbox
             </h2>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: isNight ? '#cbd5e1' : '#475569', margin: '0 0 20px 0' }}>
-              Dunia kreatif interaktif dengan fisika 3D, mode atmosfer siang/malam, dan efek suara real-time tanpa batas!
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: isNight ? '#98989D' : '#636366', margin: '0 0 24px 0' }}>
+              Dunia kreatif interaktif bergaya Apple UI/UX dengan fisika 3D, mode atmosfer siang/malam, dan sintesis suara real-time tanpa batas.
             </p>
 
-            <div style={{ display: 'grid', gap: 14, margin: '0 0 24px 0', fontSize: 13, lineHeight: 1.5 }}>
-              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <div style={{ display: 'grid', gap: 16, margin: '0 0 28px 0', fontSize: 13, lineHeight: 1.5 }}>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 18 }}>🖥️</span>
-                <div><strong>Drag atau Tap (Mobile/HP):</strong> Tarik item dari panel bawah, atau tap item lalu ketuk area daratan untuk menaruh objek.</div>
+                <div><strong style={{ fontWeight: 600 }}>Drag atau Tap (Mobile/Touch):</strong> Tarik item dari Apple Dock bawah, atau tap item lalu ketuk area daratan untuk menaruh objek dengan mulus.</div>
               </div>
-              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 18 }}>🔄</span>
-                <div><strong>Transformasi Objek:</strong> Klik objek yang ditaruh untuk memutar (-/+ 45°) atau mengatur skala (0.8x / 1.2x).</div>
+                <div><strong style={{ fontWeight: 600 }}>Dynamic Transform Island:</strong> Klik objek yang ditaruh untuk memutar (-/+ 45°) atau mengatur skala dari kapsul atas.</div>
               </div>
-              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 18 }}>💾</span>
-                <div><strong>Autosave & Undo:</strong> Tiap perubahan otomatis tersimpan di browser Anda! Gunakan tombol Undo/Redo (Ctrl+Z) atau Ekspor JSON.</div>
+                <div><strong style={{ fontWeight: 600 }}>Autosave & Apple History:</strong> Tiap perubahan otomatis tersimpan di browser Anda! Gunakan tombol Undo/Redo (Ctrl+Z) atau Ekspor JSON.</div>
               </div>
-              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 18 }}>⚡</span>
-                <div><strong>Adaptive FPS & Audio:</strong> Sistem memantau FPS secara real-time dan menyediakan sintesis Web Audio saat mode Audio dinyalakan.</div>
+                <div><strong style={{ fontWeight: 600 }}>Adaptive FPS & Spatial Audio:</strong> Sistem memantau FPS secara real-time dan menyediakan audio atmosferik natural.</div>
               </div>
             </div>
 
@@ -1517,11 +1558,13 @@ export default function App() {
               try { localStorage.setItem('giver_sandbox_onboarded_v3', 'true'); } catch (err) { void err; }
               SoundEngine.playPop();
             }} style={{
-              width: '100%', padding: '12px', borderRadius: 30, background: '#0ea5e9',
-              border: 'none', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', boxShadow: '0 6px 20px rgba(14,165,233,0.3)',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+              width: '100%', padding: '14px', borderRadius: 24,
+              background: isNight ? '#0A84FF' : '#007AFF',
+              border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+              boxShadow: isNight ? '0 8px 24px rgba(10, 132, 255, 0.45)' : '0 8px 24px rgba(0, 122, 255, 0.3)',
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
             }}>
-              🚀 Mulai Membangun Dunia!
+              Mulai Membangun Dunia 🚀
             </button>
           </div>
         </div>
