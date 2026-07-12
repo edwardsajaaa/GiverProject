@@ -1148,15 +1148,16 @@ export default function App() {
       background: isNight ? '#050712' : '#85cbee', color: isNight ? '#f1f5f9' : '#1e293b',
       overflow: 'hidden', userSelect: 'none',
     }}>
-      {/* 1. Modern Minimalist Solid Header Toolbar */}
+      {/* 1. Modern Minimalist Transparent Overlay Header Toolbar */}
       <header style={{
+        position: 'absolute', top: 0, left: 0, right: 0, width: '100%', boxSizing: 'border-box',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 28px',
-        background: isNight ? '#0f172a' : '#ffffff',
-        borderBottom: isNight ? '1px solid #1e293b' : '1px solid #f1f5f9',
-        boxShadow: isNight ? '0 4px 20px rgba(0,0,0,0.35)' : '0 2px 12px rgba(0,0,0,0.04)',
+        padding: '14px 28px',
+        background: 'transparent',
+        borderBottom: 'none',
+        boxShadow: 'none',
         transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: 20,
+        zIndex: 25,
       }}>
         {/* Left: Brand + FPS Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -1294,7 +1295,7 @@ export default function App() {
       {/* 2. Floating Transform Toolbar when an object is selected */}
       {selectedId && (
         <div style={{
-          position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
+          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
           display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 40,
           background: isNight ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.95)',
           border: '1.5px solid #38bdf8', boxShadow: '0 8px 30px rgba(0,0,0,0.3)', backdropFilter: 'blur(12px)',
@@ -1322,7 +1323,7 @@ export default function App() {
       {/* 3. Tap-to-Place or Dragging Drop Hint Banner */}
       {draggingItem && (
         <div style={{
-          position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
+          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
           display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
           background: '#0ea5e9', color: '#fff', fontWeight: 700, fontSize: 14,
           boxShadow: '0 8px 30px rgba(14,165,233,0.4)', pointerEvents: 'none',
@@ -1334,7 +1335,7 @@ export default function App() {
 
       {activePlacementType && !draggingItem && (
         <div style={{
-          position: 'absolute', top: 76, left: '50%', transform: 'translateX(-50%)', zIndex: 15,
+          position: 'absolute', top: 68, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
           display: 'flex', alignItems: 'center', gap: 12, padding: '10px 22px', borderRadius: 40,
           background: '#10b981', color: '#fff', fontWeight: 700, fontSize: 14,
           boxShadow: '0 8px 30px rgba(16,185,129,0.4)',
