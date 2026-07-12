@@ -347,42 +347,37 @@ function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDelete, ti
 }
 
 // ============ HELPER: Smoothly Reset Camera Target and Position when Auto-Rotate turns ON ============
-function CameraResetter({ autoRotate }) {
+function CameraResetter({ autoRotate, onResetActive }) {
   const { controls } = useThree();
   const resetProgress = useRef(0);
   const wasAutoRotate = useRef(autoRotate);
 
   useEffect(() => {
     if (autoRotate && !wasAutoRotate.current) {
-      resetProgress.current = 1.0; // Start smooth transition back to center & default height/distance
+      resetProgress.current = 1.0; // Start smooth transition back to exact center & default [6, 4, 6]
+      if (onResetActive) onResetActive(true);
     }
     wasAutoRotate.current = autoRotate;
-  }, [autoRotate]);
+  }, [autoRotate, onResetActive]);
 
   useFrame((state, delta) => {
     if (!controls || !controls.object) return;
     const cam = controls.object;
     if (autoRotate && resetProgress.current > 0) {
-      resetProgress.current = Math.max(0, resetProgress.current - delta * 0.65);
+      resetProgress.current = Math.max(0, resetProgress.current - delta * 0.75);
       
-      // 1. Smoothly lerp target back to exact center (0, 0, 0)
-      controls.target.lerp(new THREE.Vector3(0, 0, 0), delta * 6.5);
+      // 1. Smoothly lerp target back to exact center (0, 0, 0) where the cube/island is located
+      controls.target.lerp(new THREE.Vector3(0, 0, 0), delta * 7);
       
-      // 2. Smoothly lerp camera height toward default y = 4 if it drifted far up/down
-      const newY = THREE.MathUtils.lerp(cam.position.y, 4, delta * 5);
-      
-      // 3. Smoothly normalize camera distance toward ~8.5 if panned away or zoomed way out/in
-      const center = new THREE.Vector3(0, 0, 0);
-      const currentDist = cam.position.distanceTo(center);
-      if (Math.abs(currentDist - 8.5) > 0.25) {
-        const targetDist = THREE.MathUtils.lerp(currentDist, 8.5, delta * 4.5);
-        const dir = cam.position.clone().sub(center).normalize();
-        const nextPos = center.clone().add(dir.multiplyScalar(targetDist));
-        cam.position.set(nextPos.x, newY, nextPos.z);
-      } else {
-        cam.position.set(cam.position.x, newY, cam.position.z);
-      }
+      // 2. Smoothly lerp camera position to exact default position [6, 4, 6] right in front of the center object
+      const defaultPos = new THREE.Vector3(6, 4, 6);
+      cam.position.lerp(defaultPos, delta * 6.5);
       controls.update();
+
+      if (resetProgress.current === 0 || (cam.position.distanceTo(defaultPos) < 0.05 && controls.target.lengthSq() < 0.005)) {
+        resetProgress.current = 0;
+        if (onResetActive) onResetActive(false);
+      }
     } else if (autoRotate) {
       // While autoRotate is ON, keep target firmly locked at center (0,0,0)
       if (controls.target.lengthSq() > 0.0001) {
@@ -870,6 +865,7 @@ function OutdoorGround({ timeMode }) {
 export default function App() {
   const [timeMode, setTimeMode] = useState('night'); // 'night' (galaxy) or 'day' (siang)
   const [autoRotate, setAutoRotate] = useState(false); // Player controls whether camera auto-rotates or is 100% free
+  const [isCameraResetting, setIsCameraResetting] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [paused, setPaused] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(true);
@@ -1181,13 +1177,13 @@ export default function App() {
           ))}
 
           {/* Smooth Camera Resetter when Auto-Rotate turns ON */}
-          <CameraResetter autoRotate={autoRotate && !paused} />
+          <CameraResetter autoRotate={autoRotate && !paused} onResetActive={setIsCameraResetting} />
 
           <OrbitControls
             enablePan={true}
             enableZoom={true}
             enableRotate={true}
-            autoRotate={autoRotate && !paused}
+            autoRotate={autoRotate && !paused && !isCameraResetting}
             autoRotateSpeed={speed * 1.5}
             maxPolarAngle={Math.PI / 2 + 0.15}
             minDistance={1.5}
