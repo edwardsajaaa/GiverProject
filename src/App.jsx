@@ -59,24 +59,6 @@ function IconSun({ size = 16 }) {
   );
 }
 
-function IconGalaxy({ size = 16 }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
-      <ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(-30 12 12)" fill="url(#galaxyGrad)" opacity="0.85" />
-      <circle cx="12" cy="12" r="3.2" fill="#fff" />
-      <circle cx="5" cy="8" r="1.2" fill="#38bdf8" />
-      <circle cx="19" cy="16" r="1.3" fill="#c084fc" />
-      <defs>
-        <linearGradient id="galaxyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="50%" stopColor="#c084fc" />
-          <stop offset="100%" stopColor="#f472b6" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
 function IconRotateOn({ size = 15 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1157,21 +1139,7 @@ export default function App() {
         transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
         zIndex: 25,
       }}>
-        {/* Left: Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <IconGalaxy size={22} />
-            <h1 style={{
-              fontSize: 17, fontWeight: 800, margin: 0, letterSpacing: '-0.3px',
-              color: isNight ? '#f8fafc' : '#0f172a',
-              transition: 'color 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}>
-              GIVER <span style={{ color: isNight ? '#a855f7' : '#0284c7', transition: 'color 0.6s' }}>SANDBOX</span>
-            </h1>
-          </div>
-        </div>
-
-        {/* Center: Action & File Tools (Undo, Redo, Ekspor, Impor) */}
+        {/* Left: Action & File Tools (Undo, Redo, Ekspor, Impor) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button onClick={handleUndo} disabled={historyPast.length === 0} title="Undo (Ctrl+Z)" style={{
             padding: '6px 14px', borderRadius: 8, border: 'none',
