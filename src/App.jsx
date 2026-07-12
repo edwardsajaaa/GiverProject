@@ -376,11 +376,11 @@ function createStarTexture() {
 const GALAXY_TEXTURE = createStarTexture();
 
 function createGalaxyData() {
-  const count = 35000;
+  const count = 42000;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const arms = 2; // Andromeda has 2 prominent swirling spiral branches
-  const radius = 34;
+  const radius = 48; // Large horizontal span stretching far across cosmic floor
 
   const colorCore = new THREE.Color('#ffffff'); // Brilliant white core
   const colorInner = new THREE.Color('#ffe0b2'); // Warm golden/peach inner bulge
@@ -389,30 +389,30 @@ function createGalaxyData() {
   const colorDust = new THREE.Color('#1e3a8a'); // Deep cosmic blue dust lane edge
 
   for (let i = 0; i < count; i++) {
-    const isCore = i < 9000;
+    const isCore = i < 10000;
     let r, angle, y, mixedColor;
 
     if (isCore) {
-      r = Math.pow(Math.random(), 2.2) * 6.5;
+      r = Math.pow(Math.random(), 2.2) * 7.5;
       angle = Math.random() * Math.PI * 2;
-      const coreThickness = (1.0 - r / 6.5) * 2.8;
+      const coreThickness = (1.0 - r / 7.5) * 2.8;
       y = (Math.random() - 0.5) * coreThickness;
-      const coreRatio = r / 6.5;
+      const coreRatio = r / 7.5;
       mixedColor = colorCore.clone().lerp(colorInner, coreRatio * 0.8);
     } else {
-      r = 3.5 + Math.pow(Math.random(), 1.4) * (radius - 3.5);
-      const spinAngle = r * 0.42;
+      r = 4.0 + Math.pow(Math.random(), 1.4) * (radius - 4.0);
+      const spinAngle = r * 0.38;
       const armIndex = i % arms;
       const armAngle = ((Math.PI * 2) / arms) * armIndex;
       
-      const dustLaneFactor = Math.sin(r * 0.8 - armAngle) * 0.45;
-      const randomOffset = (Math.random() - 0.5) * (r * 0.18 + 0.3) + dustLaneFactor;
+      const dustLaneFactor = Math.sin(r * 0.7 - armAngle) * 0.45;
+      const randomOffset = (Math.random() - 0.5) * (r * 0.16 + 0.3) + dustLaneFactor;
 
       angle = armAngle + spinAngle + randomOffset;
-      const discThickness = Math.max(0.2, (1.0 - r / radius) * 1.6);
-      y = (Math.random() - 0.5) * discThickness;
+      const discThickness = Math.max(0.2, (1.0 - r / radius) * 1.5);
+      y = (Math.random() - 0.5) * discThickness; // Flat horizontal profile in XZ plane
 
-      const distRatio = Math.min(1, (r - 3.5) / (radius - 3.5));
+      const distRatio = Math.min(1, (r - 4.0) / (radius - 4.0));
       mixedColor = colorInner.clone();
       if (armIndex === 0) {
         mixedColor.lerp(colorArm1, Math.min(1, distRatio * 1.3));
@@ -425,7 +425,7 @@ function createGalaxyData() {
     }
 
     const x = Math.cos(angle) * r;
-    const z = Math.sin(angle) * r * 0.75;
+    const z = Math.sin(angle) * r * 0.82; // Elliptical horizontal projection
 
     positions[i * 3] = x;
     positions[i * 3 + 1] = y;
@@ -476,8 +476,7 @@ function GalaxySky() {
 
   useFrame((state, delta) => {
     if (galaxyGroupRef.current) {
-      galaxyGroupRef.current.rotation.y += delta * 0.035;
-      galaxyGroupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.15) * 0.03;
+      galaxyGroupRef.current.rotation.y += delta * 0.035; // Smooth horizontal rotation
     }
     if (starFieldRef.current) {
       starFieldRef.current.rotation.y += delta * 0.004;
@@ -517,8 +516,8 @@ function GalaxySky() {
         <pointsMaterial size={0.38} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.9} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
       </points>
 
-      {/* Swirling Andromeda Galaxy Spiral positioned underneath the floating island */}
-      <group position={[1, -25, -6]} rotation={[1.15, 0.18, 0.4]}>
+      {/* Swirling Andromeda Galaxy Spiral positioned HORIZONTALLY right underneath the floating island */}
+      <group position={[0, -20, 0]} rotation={[-0.15, 0, 0.05]}>
         <points ref={galaxyGroupRef}>
           <bufferGeometry>
             <bufferAttribute attach="attributes-position" count={GALAXY_DATA.positions.length / 3} array={GALAXY_DATA.positions} itemSize={3} />
