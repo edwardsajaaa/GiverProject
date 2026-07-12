@@ -346,6 +346,54 @@ function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDelete, ti
   );
 }
 
+// ============ HELPER: Smoothly Reset Camera Target and Position when Auto-Rotate turns ON ============
+function CameraResetter({ autoRotate }) {
+  const { controls } = useThree();
+  const resetProgress = useRef(0);
+  const wasAutoRotate = useRef(autoRotate);
+
+  useEffect(() => {
+    if (autoRotate && !wasAutoRotate.current) {
+      resetProgress.current = 1.0; // Start smooth transition back to center & default height/distance
+    }
+    wasAutoRotate.current = autoRotate;
+  }, [autoRotate]);
+
+  useFrame((state, delta) => {
+    if (!controls || !controls.object) return;
+    const cam = controls.object;
+    if (autoRotate && resetProgress.current > 0) {
+      resetProgress.current = Math.max(0, resetProgress.current - delta * 0.65);
+      
+      // 1. Smoothly lerp target back to exact center (0, 0, 0)
+      controls.target.lerp(new THREE.Vector3(0, 0, 0), delta * 6.5);
+      
+      // 2. Smoothly lerp camera height toward default y = 4 if it drifted far up/down
+      const newY = THREE.MathUtils.lerp(cam.position.y, 4, delta * 5);
+      
+      // 3. Smoothly normalize camera distance toward ~8.5 if panned away or zoomed way out/in
+      const center = new THREE.Vector3(0, 0, 0);
+      const currentDist = cam.position.distanceTo(center);
+      if (Math.abs(currentDist - 8.5) > 0.25) {
+        const targetDist = THREE.MathUtils.lerp(currentDist, 8.5, delta * 4.5);
+        const dir = cam.position.clone().sub(center).normalize();
+        const nextPos = center.clone().add(dir.multiplyScalar(targetDist));
+        cam.position.set(nextPos.x, newY, nextPos.z);
+      } else {
+        cam.position.set(cam.position.x, newY, cam.position.z);
+      }
+      controls.update();
+    } else if (autoRotate) {
+      // While autoRotate is ON, keep target firmly locked at center (0,0,0)
+      if (controls.target.lengthSq() > 0.0001) {
+        controls.target.set(0, 0, 0);
+        controls.update();
+      }
+    }
+  });
+  return null;
+}
+
 // ============ HELPER: Expose Three.js state ============
 function SceneAccess({ sceneRef }) {
   const state = useThree();
@@ -468,11 +516,103 @@ const STARS_DATA = createStarsData();
 
 // ============ OUTDOOR & GALAXY SCENE COMPONENTS ============
 
+// ============ CELESTIAL HELPER COMPONENTS FOR NIGHT SKY ============
+
+// Fast streaking meteor with realistic backward tail aligned to velocity vector
+function MeteorItem({ pos, speed, length = 4.2 }) {
+  const meshRef = useRef();
+  useEffect(() => {
+    if (meshRef.current && speed) {
+      const dir = new THREE.Vector3(...speed).normalize();
+      const tailDir = dir.clone().negate(); // Tail streams backward
+      const up = new THREE.Vector3(0, 1, 0);
+      meshRef.current.quaternion.setFromUnitVectors(up, tailDir);
+    }
+  }, [speed]);
+
+  return (
+    <group position={pos}>
+      {/* Meteor Head Core */}
+      <mesh>
+        <sphereGeometry args={[0.18, 16, 16]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      {/* Glowing Aura around Head */}
+      <mesh>
+        <sphereGeometry args={[0.42, 16, 16]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.65} blending={THREE.AdditiveBlending} />
+      </mesh>
+      {/* Streaking Tail aligned precisely backward along trajectory */}
+      <group ref={meshRef}>
+        <mesh position={[0, length / 2, 0]}>
+          <coneGeometry args={[0.16, length, 16]} />
+          <meshBasicMaterial color="#7dd3fc" transparent opacity={0.75} blending={THREE.AdditiveBlending} />
+        </mesh>
+        {/* Outer diffuse tail */}
+        <mesh position={[0, (length * 1.2) / 2, 0]}>
+          <coneGeometry args={[0.32, length * 1.2, 16]} />
+          <meshBasicMaterial color="#3b82f6" transparent opacity={0.3} blending={THREE.AdditiveBlending} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+// Majestic slow-moving comet with icy nucleus and double tail (Gas + Dust)
+function CosmicCometItem({ pos, dir, scale = 1.1 }) {
+  const groupRef = useRef();
+  useEffect(() => {
+    if (groupRef.current && dir) {
+      const tailDir = new THREE.Vector3(...dir).negate().normalize();
+      const up = new THREE.Vector3(0, 1, 0);
+      groupRef.current.quaternion.setFromUnitVectors(up, tailDir);
+    }
+  }, [dir]);
+
+  return (
+    <group position={pos} scale={scale}>
+      {/* Comet Nucleus */}
+      <mesh>
+        <sphereGeometry args={[0.38, 32, 32]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      {/* Coma (Inner & Outer Halo) */}
+      <mesh>
+        <sphereGeometry args={[1.05, 32, 32]} />
+        <meshBasicMaterial color="#a855f7" transparent opacity={0.5} blending={THREE.AdditiveBlending} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[1.9, 32, 32]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.22} blending={THREE.AdditiveBlending} />
+      </mesh>
+      
+      {/* Double Tail System aligned backward */}
+      <group ref={groupRef}>
+        {/* Ion/Gas Tail: straight, sharp, bright violet-blue */}
+        <mesh position={[0, 4.8, 0]}>
+          <coneGeometry args={[0.36, 9.6, 32]} />
+          <meshBasicMaterial color="#c084fc" transparent opacity={0.8} blending={THREE.AdditiveBlending} />
+        </mesh>
+        <mesh position={[0, 6.2, 0]}>
+          <coneGeometry args={[0.65, 12.4, 32]} />
+          <meshBasicMaterial color="#38bdf8" transparent opacity={0.38} blending={THREE.AdditiveBlending} />
+        </mesh>
+        {/* Dust Tail: wider, golden-white, angled slightly */}
+        <mesh position={[0.45, 4.2, 0]} rotation={[0, 0, -0.14]}>
+          <coneGeometry args={[0.58, 8.4, 32]} />
+          <meshBasicMaterial color="#fef08a" transparent opacity={0.45} blending={THREE.AdditiveBlending} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
 // 1. Galaxy Starfield & Swirling Spiral for Night Mode
 function GalaxySky() {
   const galaxyGroupRef = useRef();
   const starFieldRef = useRef();
   const [shootingStar, setShootingStar] = useState({ active: false, pos: [0,0,0], speed: [0,0,0] });
+  const [comet, setComet] = useState({ active: false, pos: [0,0,0], speed: [0,0,0] });
 
   useFrame((state, delta) => {
     if (galaxyGroupRef.current) {
@@ -482,14 +622,15 @@ function GalaxySky() {
       starFieldRef.current.rotation.y += delta * 0.004;
     }
 
-    if (!shootingStar.active && Math.random() < 0.006) {
-      const startX = (Math.random() - 0.5) * 30;
+    // 1. Fast Shooting Star / Meteor animation
+    if (!shootingStar.active && Math.random() < 0.008) {
+      const startX = (Math.random() - 0.5) * 32 + 18;
       const startY = 18 + Math.random() * 8;
-      const startZ = -15 + (Math.random() - 0.5) * 20;
+      const startZ = -12 + (Math.random() - 0.5) * 18;
       setShootingStar({
         active: true,
         pos: [startX, startY, startZ],
-        speed: [-(Math.random() * 25 + 15), -(Math.random() * 15 + 8), (Math.random() - 0.5) * 10]
+        speed: [-(Math.random() * 26 + 18), -(Math.random() * 14 + 8), (Math.random() - 0.5) * 8]
       });
     } else if (shootingStar.active) {
       const [x, y, z] = shootingStar.pos;
@@ -497,10 +638,33 @@ function GalaxySky() {
       const nx = x + vx * delta;
       const ny = y + vy * delta;
       const nz = z + vz * delta;
-      if (ny < 0 || nx < -35) {
+      if (ny < -5 || nx < -38) {
         setShootingStar(s => ({ ...s, active: false }));
       } else {
         setShootingStar(s => ({ ...s, pos: [nx, ny, nz] }));
+      }
+    }
+
+    // 2. Majestic Slow-Moving Comet animation
+    if (!comet.active && Math.random() < 0.0035) {
+      const startX = 35 + Math.random() * 10;
+      const startY = 22 + Math.random() * 6;
+      const startZ = -22 + (Math.random() - 0.5) * 15;
+      setComet({
+        active: true,
+        pos: [startX, startY, startZ],
+        speed: [-(Math.random() * 5 + 3.5), -(Math.random() * 2 + 1.2), -(Math.random() * 1.5 + 0.5)]
+      });
+    } else if (comet.active) {
+      const [x, y, z] = comet.pos;
+      const [vx, vy, vz] = comet.speed;
+      const nx = x + vx * delta;
+      const ny = y + vy * delta;
+      const nz = z + vz * delta;
+      if (ny < -10 || nx < -45) {
+        setComet(s => ({ ...s, active: false }));
+      } else {
+        setComet(s => ({ ...s, pos: [nx, ny, nz] }));
       }
     }
   });
@@ -544,18 +708,14 @@ function GalaxySky() {
         </mesh>
       </group>
 
-      {/* Shooting Star */}
+      {/* Fast Shooting Meteor with aligned tail */}
       {shootingStar.active && (
-        <group position={shootingStar.pos}>
-          <mesh>
-            <sphereGeometry args={[0.15, 8, 8]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-          <mesh rotation={[0, 0, -0.4]} position={[0.6, 0.3, 0]}>
-            <coneGeometry args={[0.1, 2.5, 8]} />
-            <meshBasicMaterial color="#80d8ff" transparent opacity={0.6} />
-          </mesh>
-        </group>
+        <MeteorItem pos={shootingStar.pos} speed={shootingStar.speed} length={4.5} />
+      )}
+
+      {/* Majestic Slow-Moving Comet with double tail */}
+      {comet.active && (
+        <CosmicCometItem pos={comet.pos} dir={comet.speed} scale={1.15} />
       )}
     </group>
   );
@@ -1019,6 +1179,9 @@ export default function App() {
               timeMode={timeMode}
             />
           ))}
+
+          {/* Smooth Camera Resetter when Auto-Rotate turns ON */}
+          <CameraResetter autoRotate={autoRotate && !paused} />
 
           <OrbitControls
             enablePan={true}
