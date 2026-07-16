@@ -50,6 +50,96 @@ function IconLamp({ size = 22 }) {
   );
 }
 
+function IconCrystal({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <polygon points="12,2 19,10 12,22 5,10" fill="#c084fc" />
+      <polygon points="12,2 15,10 12,22 9,10" fill="#e879f9" opacity="0.6" />
+      <polygon points="12,2 19,10 5,10" fill="#f0abfc" opacity="0.4" />
+    </svg>
+  );
+}
+
+function IconMushroom({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M10 14h4v8h-4z" fill="#f8fafc" />
+      <path d="M4 14c0-5.5 3.5-10 8-10s8 4.5 8 10H4z" fill="#f472b6" />
+      <circle cx="9" cy="8" r="1.5" fill="#ffffff" />
+      <circle cx="15" cy="9" r="1.8" fill="#ffffff" />
+      <circle cx="12" cy="11" r="1.2" fill="#ffffff" />
+    </svg>
+  );
+}
+
+function IconPyramid({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <polygon points="12,3 21,20 3,20" fill="#fbbf24" />
+      <polygon points="12,3 21,20 12,20" fill="#d97706" />
+      <polygon points="12,3 15,10 9,10" fill="#fef08a" />
+    </svg>
+  );
+}
+
+function IconFountain({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M4 18h16v4H4z" fill="#94a3b8" />
+      <path d="M11 12h2v6h-2z" fill="#cbd5e1" />
+      <path d="M12 4c-3 4-5 6-5 8a5 5 0 0 0 10 0c0-2-2-4-5-8z" fill="#38bdf8" />
+      <circle cx="7" cy="11" r="1.5" fill="#7dd3fc" />
+      <circle cx="17" cy="11" r="1.5" fill="#7dd3fc" />
+    </svg>
+  );
+}
+
+function IconTower({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <rect x="7" y="10" width="10" height="12" fill="#94a3b8" />
+      <polygon points="12,2 19,10 5,10" fill="#ef4444" />
+      <rect x="10" y="15" width="4" height="7" fill="#475569" />
+      <rect x="6" y="8" width="2" height="2" fill="#cbd5e1" />
+      <rect x="10" y="8" width="2" height="2" fill="#cbd5e1" />
+      <rect x="14" y="8" width="2" height="2" fill="#cbd5e1" />
+    </svg>
+  );
+}
+
+function IconCactus({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <rect x="10" y="4" width="4" height="18" rx="2" fill="#22c55e" />
+      <path d="M6 10v4a2 2 0 0 0 2 2h2v-2H8v-4H6z" fill="#16a34a" />
+      <path d="M18 8v4a2 2 0 0 1-2 2h-2v-2h2V8h2z" fill="#16a34a" />
+      <circle cx="12" cy="3" r="1.8" fill="#facc15" />
+    </svg>
+  );
+}
+
+function IconCampfire({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <path d="M5 19l14-5M5 14l14 5" stroke="#78350f" strokeWidth="3" strokeLinecap="round" />
+      <path d="M12 4c-3.5 4.5-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1.5-5.5-5-10z" fill="#f97316" />
+      <path d="M12 8c-2 2.5-3 4-3 6a3 3 0 0 0 6 0c0-2-1-3.5-3-6z" fill="#facc15" />
+    </svg>
+  );
+}
+
+function IconMonument({ size = 22 }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
+      <polygon points="12,3 15,18 9,18" fill="#e2e8f0" />
+      <polygon points="12,3 15,18 12,18" fill="#cbd5e1" />
+      <rect x="7" y="18" width="10" height="2" fill="#94a3b8" />
+      <rect x="5" y="20" width="14" height="2" fill="#64748b" />
+      <circle cx="12" cy="2.5" r="1.5" fill="#fbbf24" />
+    </svg>
+  );
+}
+
 function IconSun({ size = 16 }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
@@ -242,6 +332,14 @@ const ITEM_DEFS = {
   tree: { label: 'Pohon', icon: <IconTree size={26} />, color: '#4caf50' },
   rock: { label: 'Batu', icon: <IconRock size={26} />, color: '#888' },
   lamp: { label: 'Lampu', icon: <IconLamp size={26} />, color: '#ffd54f' },
+  crystal: { label: 'Kristal', icon: <IconCrystal size={26} />, color: '#c084fc' },
+  mushroom: { label: 'Jamur', icon: <IconMushroom size={26} />, color: '#f472b6' },
+  pyramid: { label: 'Piramida', icon: <IconPyramid size={26} />, color: '#fbbf24' },
+  fountain: { label: 'Air Mancur', icon: <IconFountain size={26} />, color: '#38bdf8' },
+  tower: { label: 'Menara', icon: <IconTower size={26} />, color: '#94a3b8' },
+  cactus: { label: 'Kaktus', icon: <IconCactus size={26} />, color: '#22c55e' },
+  campfire: { label: 'Api Unggun', icon: <IconCampfire size={26} />, color: '#f97316' },
+  monument: { label: 'Monumen', icon: <IconMonument size={26} />, color: '#e2e8f0' },
 };
 
 // ============ 3D OBJECTS ============
@@ -396,11 +494,242 @@ function Lamp3D({ position = [0, 0, 0], timeMode = 'night' }) {
   );
 }
 
+function Crystal3D({ position = [0, 0, 0] }) {
+  const groupRef = useRef();
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + position[0]) * 0.12;
+      groupRef.current.rotation.y += 0.015;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position}>
+      <mesh position={[0, 0.9, 0]} castShadow>
+        <octahedronGeometry args={[0.5, 0]} />
+        <meshStandardMaterial color="#c084fc" roughness={0.2} metalness={0.8} emissive="#6b21a8" emissiveIntensity={0.6} />
+      </mesh>
+      <mesh position={[0.35, 0.6, 0.2]} rotation={[0.4, 0.2, -0.3]} castShadow>
+        <octahedronGeometry args={[0.32, 0]} />
+        <meshStandardMaterial color="#e879f9" roughness={0.2} metalness={0.8} emissive="#86198f" emissiveIntensity={0.5} />
+      </mesh>
+      <mesh position={[-0.32, 0.5, -0.15]} rotation={[-0.3, 0.5, 0.4]} castShadow>
+        <octahedronGeometry args={[0.28, 0]} />
+        <meshStandardMaterial color="#38bdf8" roughness={0.2} metalness={0.8} emissive="#0369a1" emissiveIntensity={0.5} />
+      </mesh>
+    </group>
+  );
+}
+
+function Mushroom3D({ position = [0, 0, 0] }) {
+  const capRef = useRef();
+  useFrame((state) => {
+    if (capRef.current) {
+      capRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.5 + position[2]) * 0.04;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.45, 0]} castShadow>
+        <cylinderGeometry args={[0.08, 0.14, 0.9, 12]} />
+        <meshStandardMaterial color="#f8fafc" roughness={0.7} />
+      </mesh>
+      <group ref={capRef} position={[0, 0.9, 0]}>
+        <mesh position={[0, 0.2, 0]} castShadow>
+          <sphereGeometry args={[0.55, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
+          <meshStandardMaterial color="#f472b6" roughness={0.4} emissive="#be185d" emissiveIntensity={0.35} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh position={[0.2, 0.38, 0.15]}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        <mesh position={[-0.22, 0.32, -0.1]}>
+          <sphereGeometry args={[0.07, 8, 8]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        <mesh position={[0.05, 0.45, -0.2]}>
+          <sphereGeometry args={[0.06, 8, 8]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+function Pyramid3D({ position = [0, 0, 0] }) {
+  const topRef = useRef();
+  useFrame((state) => {
+    if (topRef.current) {
+      topRef.current.rotation.y += 0.02;
+      topRef.current.position.y = 1.35 + Math.sin(state.clock.elapsedTime * 2.5) * 0.06;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.55, 0]} rotation={[0, Math.PI / 4, 0]} castShadow receiveShadow>
+        <coneGeometry args={[0.85, 1.1, 4]} />
+        <meshStandardMaterial color="#fbbf24" roughness={0.6} metalness={0.3} />
+      </mesh>
+      <mesh ref={topRef} position={[0, 1.35, 0]} rotation={[0, Math.PI / 4, 0]} castShadow>
+        <octahedronGeometry args={[0.25, 0]} />
+        <meshStandardMaterial color="#fef08a" roughness={0.1} metalness={0.9} emissive="#d97706" emissiveIntensity={0.8} />
+      </mesh>
+    </group>
+  );
+}
+
+function Fountain3D({ position = [0, 0, 0] }) {
+  const waterRef = useRef();
+  useFrame((state) => {
+    if (waterRef.current) {
+      waterRef.current.position.y = 0.85 + Math.sin(state.clock.elapsedTime * 4) * 0.08;
+      waterRef.current.scale.x = 1 + Math.cos(state.clock.elapsedTime * 4) * 0.1;
+      waterRef.current.scale.z = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.1;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.8, 0.9, 0.4, 16]} />
+        <meshStandardMaterial color="#94a3b8" roughness={0.8} />
+      </mesh>
+      <mesh position={[0, 0.39, 0]}>
+        <cylinderGeometry args={[0.68, 0.68, 0.04, 16]} />
+        <meshStandardMaterial color="#38bdf8" roughness={0.1} metalness={0.2} transparent opacity={0.8} />
+      </mesh>
+      <mesh position={[0, 0.6, 0]} castShadow>
+        <cylinderGeometry args={[0.15, 0.2, 0.8, 12]} />
+        <meshStandardMaterial color="#cbd5e1" roughness={0.7} />
+      </mesh>
+      <mesh ref={waterRef} position={[0, 0.85, 0]}>
+        <sphereGeometry args={[0.22, 12, 12]} />
+        <meshStandardMaterial color="#7dd3fc" roughness={0.1} transparent opacity={0.85} emissive="#0284c7" emissiveIntensity={0.4} />
+      </mesh>
+    </group>
+  );
+}
+
+function Tower3D({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.9, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.45, 0.55, 1.8, 12]} />
+        <meshStandardMaterial color="#94a3b8" roughness={0.85} />
+      </mesh>
+      <mesh position={[0, 2.1, 0]} castShadow>
+        <coneGeometry args={[0.55, 0.7, 12]} />
+        <meshStandardMaterial color="#ef4444" roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 1.82, 0]} castShadow>
+        <cylinderGeometry args={[0.5, 0.5, 0.15, 12]} />
+        <meshStandardMaterial color="#64748b" roughness={0.8} />
+      </mesh>
+    </group>
+  );
+}
+
+function Cactus3D({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.7, 0]} castShadow>
+        <cylinderGeometry args={[0.16, 0.18, 1.4, 10]} />
+        <meshStandardMaterial color="#22c55e" roughness={0.8} />
+      </mesh>
+      <group position={[0.25, 0.65, 0]}>
+        <mesh position={[0, 0, 0]} rotation={[0, 0, -1.2]} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, 0.4, 8]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.8} />
+        </mesh>
+        <mesh position={[0.15, 0.2, 0]} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, 0.4, 8]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.8} />
+        </mesh>
+      </group>
+      <group position={[-0.25, 0.85, 0]}>
+        <mesh position={[0, 0, 0]} rotation={[0, 0, 1.2]} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, 0.35, 8]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.8} />
+        </mesh>
+        <mesh position={[-0.12, 0.18, 0]} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, 0.35, 8]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.8} />
+        </mesh>
+      </group>
+      <mesh position={[0, 1.45, 0]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshStandardMaterial color="#facc15" roughness={0.4} />
+      </mesh>
+    </group>
+  );
+}
+
+function Campfire3D({ position = [0, 0, 0] }) {
+  const flameRef = useRef();
+  useFrame((state) => {
+    if (flameRef.current) {
+      flameRef.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 8) * 0.25;
+      flameRef.current.scale.x = 1 + Math.cos(state.clock.elapsedTime * 6) * 0.15;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, 0.4, 0]} castShadow>
+        <cylinderGeometry args={[0.08, 0.08, 0.7, 8]} />
+        <meshStandardMaterial color="#78350f" roughness={0.9} />
+      </mesh>
+      <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, -0.4, 0]} castShadow>
+        <cylinderGeometry args={[0.08, 0.08, 0.7, 8]} />
+        <meshStandardMaterial color="#78350f" roughness={0.9} />
+      </mesh>
+      <mesh ref={flameRef} position={[0, 0.4, 0]}>
+        <coneGeometry args={[0.25, 0.6, 8]} />
+        <meshStandardMaterial color="#f97316" roughness={0.2} emissive="#ea580c" emissiveIntensity={1.2} transparent opacity={0.9} />
+      </mesh>
+      <pointLight position={[0, 0.5, 0]} color="#f97316" intensity={2.2} distance={6} decay={2} />
+    </group>
+  );
+}
+
+function Monument3D({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.15, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.8, 0.3, 0.8]} />
+        <meshStandardMaterial color="#64748b" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.6, 0.15, 0.6]} />
+        <meshStandardMaterial color="#94a3b8" roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 1.25, 0]} castShadow>
+        <cylinderGeometry args={[0.15, 0.24, 1.6, 4]} />
+        <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 2.15, 0]} castShadow>
+        <sphereGeometry args={[0.16, 12, 12]} />
+        <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={0.8} emissive="#d97706" emissiveIntensity={0.5} />
+      </mesh>
+    </group>
+  );
+}
+
 const OBJECT_COMPONENTS = {
   flower: Flower3D,
   tree: Tree3D,
   rock: Rock3D,
   lamp: Lamp3D,
+  crystal: Crystal3D,
+  mushroom: Mushroom3D,
+  pyramid: Pyramid3D,
+  fountain: Fountain3D,
+  tower: Tower3D,
+  cactus: Cactus3D,
+  campfire: Campfire3D,
+  monument: Monument3D,
 };
 
 function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDelete, timeMode }) {
@@ -904,6 +1233,7 @@ export default function App() {
   const [speed] = useState(1);
   const [paused, setPaused] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(true);
+  const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [audioActive, setAudioActive] = useState(false);
 
   // Undo/Redo & Persistence State
@@ -974,7 +1304,7 @@ export default function App() {
   const canvasContainerRef = useRef(null);
   const isNight = timeMode === 'night';
 
-  const [inventory] = useState(() => ['flower', 'tree', 'rock', 'lamp', ...Array(14).fill(null)]);
+  const [inventory] = useState(() => ['flower', 'tree', 'rock', 'lamp', 'crystal', 'mushroom', 'pyramid', 'fountain', 'tower', 'cactus', 'campfire', 'monument']);
 
   const handleStart = useCallback(() => setPaused(true), []);
   const handleEnd = useCallback(() => setPaused(false), []);
@@ -1342,36 +1672,70 @@ export default function App() {
         width: 'auto', maxWidth: '94%',
         transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)',
       }}>
-        {/* Toggle Dock Button */}
-        <button onClick={() => { setInventoryOpen(!inventoryOpen); SoundEngine.playClick(); }} style={{
-          background: isNight ? 'rgba(28, 28, 32, 0.78)' : 'rgba(255, 255, 255, 0.82)',
-          backdropFilter: 'blur(20px) saturate(190%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(190%)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.8)',
-          borderRadius: 20, padding: '5px 18px', margin: '0 0 10px 0',
-          color: isNight ? '#0A84FF' : '#007AFF',
-          fontWeight: 700, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-          boxShadow: isNight ? '0 6px 20px rgba(0, 0, 0, 0.4)' : '0 6px 20px rgba(0, 0, 0, 0.08)',
-          transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
-        }}>
-          <span>{inventoryOpen ? 'Tutup Dock Item' : 'Buka Dock Item'}</span>
-          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}><IconChevronUp /></span>
-        </button>
+        {/* Toggle Dock Button & Expand/Unexpand Button */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '0 0 10px 0', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button onClick={() => { setInventoryOpen(!inventoryOpen); SoundEngine.playClick(); }} style={{
+            background: isNight ? 'rgba(28, 28, 32, 0.85)' : 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(20px) saturate(190%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(190%)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.8)',
+            borderRadius: 20, padding: '6px 18px',
+            color: isNight ? '#0A84FF' : '#007AFF',
+            fontWeight: 700, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+            boxShadow: isNight ? '0 6px 20px rgba(0, 0, 0, 0.4)' : '0 6px 20px rgba(0, 0, 0, 0.08)',
+            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
+          }}>
+            <span>{inventoryOpen ? 'Tutup Dock Item' : 'Buka Dock Item'}</span>
+            <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}><IconChevronUp /></span>
+          </button>
+
+          {inventoryOpen && (
+            <button onClick={() => { setInventoryExpanded(!inventoryExpanded); SoundEngine.playClick(); }} style={{
+              background: inventoryExpanded ? (isNight ? '#0A84FF' : '#007AFF') : (isNight ? 'rgba(44, 44, 50, 0.85)' : 'rgba(240, 240, 245, 0.9)'),
+              backdropFilter: 'blur(20px) saturate(190%)',
+              border: inventoryExpanded ? 'none' : (isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(0, 0, 0, 0.08)'),
+              borderRadius: 20, padding: '6px 18px',
+              color: inventoryExpanded ? '#ffffff' : (isNight ? '#F5F5F7' : '#1D1D1F'),
+              fontWeight: 700, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+              boxShadow: inventoryExpanded ? '0 6px 20px rgba(10, 132, 255, 0.4)' : '0 4px 12px rgba(0,0,0,0.06)',
+              transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
+            }} title={inventoryExpanded ? "Kecilkan dock ke mode ringkas" : "Perbesar dock untuk melihat semua 12 bentuk objek 3D"}>
+              <span>{inventoryExpanded ? '⬇ Ringkas (Unexpand)' : '⛶ Expand Semua Objek (12)'}</span>
+            </button>
+          )}
+        </div>
 
         {inventoryOpen && (
           <div style={{
-            padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
-            background: isNight ? 'rgba(28, 28, 32, 0.75)' : 'rgba(255, 255, 255, 0.78)',
-            backdropFilter: 'blur(32px) saturate(190%)',
-            WebkitBackdropFilter: 'blur(32px) saturate(190%)',
+            padding: inventoryExpanded ? '20px 24px' : '14px 24px',
+            display: 'flex',
+            flexDirection: inventoryExpanded ? 'column' : 'row',
+            alignItems: inventoryExpanded ? 'stretch' : 'center',
+            justifyContent: 'space-between',
+            gap: inventoryExpanded ? 18 : 24,
+            width: inventoryExpanded ? 'min(760px, 92vw)' : 'auto',
+            maxHeight: inventoryExpanded ? '62vh' : 'none',
+            overflowY: inventoryExpanded ? 'auto' : 'visible',
+            background: isNight ? 'rgba(28, 28, 32, 0.8)' : 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(36px) saturate(190%)',
+            WebkitBackdropFilter: 'blur(36px) saturate(190%)',
             border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.85)',
             borderRadius: 36,
             boxShadow: isNight ? '0 24px 60px rgba(0, 0, 0, 0.65)' : '0 20px 50px rgba(0, 0, 0, 0.14)',
-            transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)'
+            transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)'
           }}>
-            {/* macOS Dock App Icon Slots */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, overflowX: 'auto', padding: '4px 2px' }}>
-              {inventory.slice(0, 8).map((itemType, idx) => {
+            {/* macOS Dock App Icon Slots / visionOS Grid */}
+            <div style={{
+              display: inventoryExpanded ? 'grid' : 'flex',
+              gridTemplateColumns: inventoryExpanded ? 'repeat(auto-fill, minmax(76px, 1fr))' : 'none',
+              alignItems: 'center',
+              gap: 14,
+              overflowX: inventoryExpanded ? 'visible' : 'auto',
+              padding: '4px 2px',
+              width: '100%',
+              maxWidth: inventoryExpanded ? '100%' : '65vw'
+            }}>
+              {inventory.map((itemType, idx) => {
                 const item = ITEM_DEFS[itemType];
                 const isActive = activePlacementType === itemType;
                 return (
@@ -1387,20 +1751,28 @@ export default function App() {
                       }
                     }}
                     style={{
-                      width: 66, height: 66, borderRadius: 18, display: 'flex', flexDirection: 'column',
-                      alignItems: 'center', justifyContent: 'center', gap: 5, cursor: item ? 'pointer' : 'default',
+                      width: inventoryExpanded ? '100%' : 66,
+                      height: 66,
+                      borderRadius: 18,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 5,
+                      cursor: item ? 'pointer' : 'default',
                       background: item ? (isNight ? 'rgba(58, 58, 60, 0.85)' : 'rgba(245, 245, 247, 0.92)') : (isNight ? 'rgba(30, 30, 35, 0.3)' : 'rgba(230, 230, 235, 0.4)'),
                       border: isActive ? (isNight ? '2px solid #0A84FF' : '2px solid #007AFF') : (item ? (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)') : '1px dashed rgba(150,150,150,0.2)'),
                       boxShadow: isActive ? (isNight ? '0 8px 24px rgba(10, 132, 255, 0.5)' : '0 8px 24px rgba(0, 122, 255, 0.3)') : (item ? '0 4px 12px rgba(0,0,0,0.06)' : 'none'),
                       transform: isActive ? 'translateY(-6px) scale(1.05)' : 'translateY(0) scale(1)',
                       transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
+                      flexShrink: 0
                     }}
                     title={item ? `${item.label} (Drag atau Tap untuk menaruh)` : 'Slot Kosong'}
                   >
                     {item ? (
                       <>
                         <div style={{ transition: 'transform 0.2s' }}>{item.icon}</div>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: isNight ? '#F5F5F7' : '#1D1D1F', letterSpacing: '-0.2px' }}>{item.label}</span>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: isNight ? '#F5F5F7' : '#1D1D1F', letterSpacing: '-0.2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '92%' }}>{item.label}</span>
                       </>
                     ) : (
                       <span style={{ fontSize: 10, color: '#8E8E93' }}>Kosong</span>
@@ -1411,7 +1783,15 @@ export default function App() {
             </div>
 
             {/* Dock Actions (Delete Mode & Reset) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: inventoryExpanded ? 'flex-end' : 'flex-start',
+              gap: 10,
+              borderTop: inventoryExpanded ? (isNight ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.08)') : 'none',
+              paddingTop: inventoryExpanded ? 14 : 0,
+              flexShrink: 0
+            }}>
               <button
                 onClick={() => { setDeleteMode(!deleteMode); setSelectedId(null); SoundEngine.playClick(); }}
                 style={{
@@ -1421,7 +1801,8 @@ export default function App() {
                   border: deleteMode ? '1px solid #FF3B30' : (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)'),
                   fontWeight: 600, fontSize: 13, cursor: 'pointer',
                   transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-                  boxShadow: deleteMode ? '0 6px 20px rgba(255, 59, 48, 0.4)' : 'none'
+                  boxShadow: deleteMode ? '0 6px 20px rgba(255, 59, 48, 0.4)' : 'none',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 <IconTrash size={16} />
@@ -1432,7 +1813,7 @@ export default function App() {
                 <button onClick={() => setResetConfirm(true)} title="Reset semua objek di atas pulau" style={{
                   display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 24, border: '1px solid #FF3B30',
                   background: 'transparent', color: '#FF3B30', fontWeight: 600, cursor: 'pointer', fontSize: 13,
-                  transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)', whiteSpace: 'nowrap'
                 }}>
                   <IconReset size={16} /> Reset Semua
                 </button>
@@ -1440,7 +1821,7 @@ export default function App() {
                 <button onClick={handleResetAll} style={{
                   display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 30, border: 'none',
                   background: '#dc2626', color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13,
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', whiteSpace: 'nowrap'
                 }}>
                   <IconWarning size={16} /> Yakin? (3s)
                 </button>
