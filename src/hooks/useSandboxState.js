@@ -12,6 +12,27 @@ export function useSandboxState() {
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [audioActive, setAudioActive] = useState(false);
 
+  // Central Altar Hero Object State (Bukan objek hiasan dock, tapi Hero centerpiece utama)
+  const [initialCentral] = useState(() => StorageEngine.loadCentralObject());
+  const [centralObjectType, setCentralObjectType] = useState(initialCentral.type || 'cube');
+  const [centralObjectColor, setCentralObjectColor] = useState(initialCentral.color || '#4f8cff');
+  const [centralObjectMaterial, setCentralObjectMaterial] = useState(initialCentral.material || 'holographic');
+  const [centralObjectScale, setCentralObjectScale] = useState(initialCentral.scale || 1.0);
+  const [centralObjectUrl, setCentralObjectUrl] = useState(initialCentral.customUrl || null);
+  const [centralObjectName, setCentralObjectName] = useState(initialCentral.customName || null);
+  const [centralModalOpen, setCentralModalOpen] = useState(false);
+
+  useEffect(() => {
+    StorageEngine.saveCentralObject({
+      type: centralObjectType,
+      color: centralObjectColor,
+      material: centralObjectMaterial,
+      scale: centralObjectScale,
+      customUrl: centralObjectUrl,
+      customName: centralObjectName
+    });
+  }, [centralObjectType, centralObjectColor, centralObjectMaterial, centralObjectScale, centralObjectUrl, centralObjectName]);
+
   // Snap to Grid (New Feature V3.1)
   const [snapGrid, setSnapGrid] = useState(false);
   const [snapSize, setSnapSize] = useState(0.5); // 0.5m or 1.0m snap
@@ -227,6 +248,13 @@ export function useSandboxState() {
     inventoryOpen, setInventoryOpen,
     inventoryExpanded, setInventoryExpanded,
     audioActive, setAudioActive,
+    centralObjectType, setCentralObjectType,
+    centralObjectColor, setCentralObjectColor,
+    centralObjectMaterial, setCentralObjectMaterial,
+    centralObjectScale, setCentralObjectScale,
+    centralObjectUrl, setCentralObjectUrl,
+    centralObjectName, setCentralObjectName,
+    centralModalOpen, setCentralModalOpen,
     snapGrid, setSnapGrid,
     snapSize, setSnapSize,
     historyPast, historyFuture,

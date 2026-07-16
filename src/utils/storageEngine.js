@@ -1,8 +1,43 @@
 // ============ STORAGE ENGINE ============
 const STORAGE_KEY = 'giver_sandbox_save_v3';
 const ONBOARDED_KEY = 'giver_sandbox_onboarded_v3';
+const CENTRAL_OBJECT_KEY = 'giver_central_object_v1';
 
 export const StorageEngine = {
+  loadCentralObject() {
+    try {
+      const saved = localStorage.getItem(CENTRAL_OBJECT_KEY);
+      return saved ? JSON.parse(saved) : {
+        type: 'cube',
+        color: '#4f8cff',
+        material: 'holographic',
+        scale: 1.0,
+        customUrl: null,
+        customName: null
+      };
+    } catch {
+      return { type: 'cube', color: '#4f8cff', material: 'holographic', scale: 1.0, customUrl: null, customName: null };
+    }
+  },
+
+  saveCentralObject(config) {
+    try {
+      // Don't save large blob URLs directly to localStorage if they exceed quota, or only save lightweight base64/config
+      const toSave = {
+        type: config.type,
+        color: config.color,
+        material: config.material,
+        scale: config.scale,
+        customName: config.customName || null,
+        // Only save customDataUrl if small (< 2MB)
+        customUrl: (config.customUrl && config.customUrl.length < 2000000 && config.customUrl.startsWith('data:')) ? config.customUrl : null
+      };
+      localStorage.setItem(CENTRAL_OBJECT_KEY, JSON.stringify(toSave));
+    } catch {
+      /* ignore storage quota exceeded */
+    }
+  },
+
   loadScene() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);

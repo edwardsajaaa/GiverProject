@@ -5,6 +5,7 @@ import { InventoryBar } from './components/ui/InventoryBar';
 import { TransformToolbar } from './components/ui/TransformToolbar';
 import { TelemetryBadge } from './components/ui/TelemetryBadge';
 import { OnboardingModal } from './components/ui/OnboardingModal';
+import { CentralObjectModal } from './components/ui/CentralObjectModal';
 import { MainCanvas } from './components/3d/MainCanvas';
 
 export default function App() {
@@ -16,6 +17,13 @@ export default function App() {
     inventoryOpen, setInventoryOpen,
     inventoryExpanded, setInventoryExpanded,
     audioActive, setAudioActive,
+    centralObjectType, setCentralObjectType,
+    centralObjectColor, setCentralObjectColor,
+    centralObjectMaterial, setCentralObjectMaterial,
+    centralObjectScale, setCentralObjectScale,
+    centralObjectUrl, setCentralObjectUrl,
+    centralObjectName, setCentralObjectName,
+    centralModalOpen, setCentralModalOpen,
     snapGrid, setSnapGrid,
     snapSize, setSnapSize,
     historyPast, historyFuture,
@@ -81,6 +89,9 @@ export default function App() {
         handleRedo={handleRedo}
         setShowTutorial={setShowTutorial}
         canvasContainerRef={canvasContainerRef}
+        centralObjectType={centralObjectType}
+        centralObjectName={centralObjectName}
+        setCentralModalOpen={setCentralModalOpen}
       />
 
       {/* 3. Transform Dynamic Island & Placement Hint Banners */}
@@ -134,6 +145,12 @@ export default function App() {
           handleStart={handleStart}
           handleEnd={handleEnd}
           isCameraResetting={isCameraResetting}
+          centralObjectType={centralObjectType}
+          centralObjectColor={centralObjectColor}
+          centralObjectMaterial={centralObjectMaterial}
+          centralObjectScale={centralObjectScale}
+          centralObjectUrl={centralObjectUrl}
+          setCentralModalOpen={setCentralModalOpen}
         />
       </div>
 
@@ -162,6 +179,25 @@ export default function App() {
         isNight={isNight}
         showTutorial={showTutorial}
         setShowTutorial={setShowTutorial}
+      />
+
+      {/* 7. Central Altar Centerpiece Studio Modal */}
+      <CentralObjectModal
+        isNight={isNight}
+        centralModalOpen={centralModalOpen}
+        setCentralModalOpen={setCentralModalOpen}
+        centralObjectType={centralObjectType}
+        setCentralObjectType={setCentralObjectType}
+        centralObjectColor={centralObjectColor}
+        setCentralObjectColor={setCentralObjectColor}
+        centralObjectMaterial={centralObjectMaterial}
+        setCentralObjectMaterial={setCentralObjectMaterial}
+        centralObjectScale={centralObjectScale}
+        setCentralObjectScale={setCentralObjectScale}
+        centralObjectUrl={centralObjectUrl}
+        setCentralObjectUrl={setCentralObjectUrl}
+        centralObjectName={centralObjectName}
+        setCentralObjectName={setCentralObjectName}
       />
     </div>
   );

@@ -15,9 +15,25 @@ export function HeaderToolbar({
   historyPast, historyFuture,
   handleUndo, handleRedo,
   setShowTutorial,
-  sceneRef
+  sceneRef,
+  centralObjectType,
+  centralObjectName,
+  setCentralModalOpen
 }) {
   const isNight = timeMode === 'night';
+
+  const getHeroLabel = () => {
+    if (centralObjectType === 'custom') return centralObjectName ? `Custom: ${centralObjectName.slice(0, 10)}...` : 'Model 3D Saya';
+    const labels = {
+      cube: 'Kubus Cyber',
+      sphere: 'Bola Plasma',
+      torus: 'Cincin Quantum',
+      pyramid: 'Piramida Kristal',
+      dodecahedron: 'Bintang Suci',
+      cylinder: 'Pilar Kapsul'
+    };
+    return labels[centralObjectType] || 'Altar Utama';
+  };
 
   const handleTakePhoto = () => {
     if (sceneRef && sceneRef.current) {
@@ -45,8 +61,8 @@ export function HeaderToolbar({
       zIndex: 25,
       pointerEvents: 'none'
     }}>
-      {/* Left: Undo / Redo & Snap Grid Pills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, pointerEvents: 'auto' }}>
+      {/* Left: Undo / Redo, Snap Grid & Central Hero Studio Pills */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, pointerEvents: 'auto', flexWrap: 'wrap' }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 4,
           background: isNight ? 'rgba(44, 44, 46, 0.8)' : 'rgba(240, 240, 245, 0.9)',
@@ -109,6 +125,23 @@ export function HeaderToolbar({
             >{snapSize}m</button>
           )}
         </div>
+
+        {/* Tombol Studio Altar Utama (Mengganti Objek / Upload Model 3D Sendiri) */}
+        <button
+          onClick={() => { if (setCentralModalOpen) { setCentralModalOpen(true); SoundEngine.playPop(); } }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, padding: '7px 16px', borderRadius: 20,
+            background: isNight ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(232, 121, 249, 0.22))' : 'linear-gradient(135deg, rgba(0, 122, 255, 0.15), rgba(192, 38, 211, 0.15))',
+            border: isNight ? '1.5px solid rgba(56, 189, 248, 0.6)' : '1.5px solid #007AFF',
+            color: isNight ? '#38bdf8' : '#007AFF', fontSize: 13, fontWeight: 800, cursor: 'pointer',
+            transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)', backdropFilter: 'blur(16px)',
+            boxShadow: isNight ? '0 6px 20px rgba(56, 189, 248, 0.28)' : '0 6px 18px rgba(0, 122, 255, 0.2)'
+          }}
+          title="Buka Studio Altar untuk mengganti bentuk objek tengah, warna, material, atau upload model 3D custom"
+        >
+          <span style={{ fontSize: 16 }}>💎</span>
+          <span>Altar: {getHeroLabel()} ▾</span>
+        </button>
       </div>
 
       {/* Right: Controls & Time Switcher */}

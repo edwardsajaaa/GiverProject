@@ -4,7 +4,8 @@ import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { RealTimeAnalytics } from '../ui/TelemetryBadge';
 import { AtmosphericEnvironment } from './AtmosphericEnvironment';
-import { FloatingIsland, Box } from './FloatingIsland';
+import { FloatingIsland } from './FloatingIsland';
+import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
 
@@ -71,7 +72,13 @@ export function MainCanvas({
   speed = 1,
   handleStart,
   handleEnd,
-  isCameraResetting = false
+  isCameraResetting = false,
+  centralObjectType = 'cube',
+  centralObjectColor = '#4f8cff',
+  centralObjectMaterial = 'holographic',
+  centralObjectScale = 1.0,
+  centralObjectUrl = null,
+  setCentralModalOpen
 }) {
   return (
     <Canvas
@@ -89,7 +96,15 @@ export function MainCanvas({
       <AtmosphericEnvironment timeMode={timeMode} isLowEnd={performanceTier === 'low'} />
       <DynamicLights timeMode={timeMode} placedObjects={placedObjects} isLowEnd={performanceTier === 'low'} />
       <FloatingIsland timeMode={timeMode} onGroundTap={handleGroundTap} />
-      <Box />
+      
+      <CentralHeroObject
+        centralObjectType={centralObjectType}
+        centralObjectColor={centralObjectColor}
+        centralObjectMaterial={centralObjectMaterial}
+        centralObjectScale={centralObjectScale}
+        centralObjectUrl={centralObjectUrl}
+        setCentralModalOpen={setCentralModalOpen}
+      />
 
       {placedObjects.map((obj) => (
         <PlacedObjectWrapper
