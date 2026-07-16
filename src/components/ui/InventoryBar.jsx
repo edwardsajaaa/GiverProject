@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   IconChevronUp, IconTrash, IconReset, IconWarning 
 } from '../icons/SvgIcons';
@@ -17,8 +17,6 @@ export function InventoryBar({
   resetConfirm, setResetConfirm,
   handleResetAll
 }) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   return (
     <div style={{
       position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 30,
@@ -30,11 +28,6 @@ export function InventoryBar({
       <style>{`
         .compact-dock-scroll::-webkit-scrollbar { display: none; }
         .compact-dock-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        @keyframes dropdownSpring {
-          0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.92); }
-          100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-        }
 
         .dock-item-card {
           transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, border-color 0.25s ease !important;
@@ -47,96 +40,31 @@ export function InventoryBar({
         }
       `}</style>
 
-      {/* Tombol Utama Dropdown Toggle & Status */}
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: inventoryOpen ? '0 0 8px 0' : '0' }}>
+      {/* Tombol Toggle Buka/Tutup Dock (Bersih, Rapi, Langsung 1-Klik tanpa dropdown karena kontrol expand grid sudah ada di dalam dock) */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: inventoryOpen ? '0 0 8px 0' : '0', transition: 'margin 0.35s' }}>
         <button 
           onClick={() => { 
-            if (!inventoryOpen) {
-              setInventoryOpen(true);
-            } else {
-              setDropdownOpen(!dropdownOpen);
-            }
+            setInventoryOpen(!inventoryOpen);
             SoundEngine.playClick(); 
           }} 
           style={{
             background: isNight ? 'rgba(24, 24, 28, 0.88)' : 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(24px) saturate(200%)',
             WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-            border: dropdownOpen ? (isNight ? '1px solid #38bdf8' : '1px solid #007AFF') : (isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(0, 0, 0, 0.08)'),
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(0, 0, 0, 0.08)',
             borderRadius: 20, padding: '6px 18px',
             color: isNight ? '#38bdf8' : '#007AFF',
             fontWeight: 700, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-            boxShadow: dropdownOpen ? '0 6px 22px rgba(56, 189, 248, 0.35)' : (isNight ? '0 6px 18px rgba(0, 0, 0, 0.55)' : '0 6px 18px rgba(0, 0, 0, 0.1)'),
+            boxShadow: isNight ? '0 6px 18px rgba(0, 0, 0, 0.55)' : '0 6px 18px rgba(0, 0, 0, 0.1)',
             transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
+          title={inventoryOpen ? "Sembunyikan Dock Objek" : "Buka Dock Objek 3D"}
         >
-          <span>📦 {inventoryOpen ? (inventoryExpanded ? 'Dock: Grid Semua (12)' : 'Dock: Baris Ringkas') : 'Buka Dock Objek (12)'}</span>
-          <span style={{ transform: (inventoryOpen && dropdownOpen) ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', display: 'flex' }}>
+          <span>📦 {inventoryOpen ? 'Tutup Dock Objek' : 'Buka Dock Objek (12)'}</span>
+          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', display: 'flex' }}>
             <IconChevronUp size={12} />
           </span>
         </button>
-
-        {/* Popup Dropdown Menu Glassmorphism (Beranimasi Spring) */}
-        {inventoryOpen && dropdownOpen && (
-          <div style={{
-            position: 'absolute', bottom: '100%', marginBottom: 10, left: '50%', transform: 'translateX(-50%)',
-            background: isNight ? 'rgba(20, 20, 26, 0.96)' : 'rgba(255, 255, 255, 0.97)',
-            backdropFilter: 'blur(36px) saturate(220%)',
-            WebkitBackdropFilter: 'blur(36px) saturate(220%)',
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(0, 0, 0, 0.12)',
-            borderRadius: 20, padding: 6,
-            display: 'flex', flexDirection: 'column', gap: 4,
-            boxShadow: isNight ? '0 20px 50px rgba(0, 0, 0, 0.8)' : '0 16px 44px rgba(0, 0, 0, 0.18)',
-            zIndex: 50, minWidth: 230,
-            animation: 'dropdownSpring 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-          }}>
-            <button
-              onClick={() => { setInventoryExpanded(false); setDropdownOpen(false); SoundEngine.playClick(); }}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '9px 14px', borderRadius: 14, border: 'none',
-                background: !inventoryExpanded ? (isNight ? 'rgba(56, 189, 248, 0.22)' : 'rgba(0, 122, 255, 0.14)') : 'transparent',
-                color: !inventoryExpanded ? (isNight ? '#38bdf8' : '#007AFF') : (isNight ? '#e2e8f0' : '#1e293b'),
-                fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'left',
-                transition: 'background 0.2s'
-              }}
-            >
-              <span>➖ Mode Baris Ringkas</span>
-              {!inventoryExpanded && <span>✓</span>}
-            </button>
-
-            <button
-              onClick={() => { setInventoryExpanded(true); setDropdownOpen(false); SoundEngine.playClick(); }}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '9px 14px', borderRadius: 14, border: 'none',
-                background: inventoryExpanded ? (isNight ? 'rgba(56, 189, 248, 0.22)' : 'rgba(0, 122, 255, 0.14)') : 'transparent',
-                color: inventoryExpanded ? (isNight ? '#38bdf8' : '#007AFF') : (isNight ? '#e2e8f0' : '#1e293b'),
-                fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'left',
-                transition: 'background 0.2s'
-              }}
-            >
-              <span>⛶ Mode Grid Expand (12)</span>
-              {inventoryExpanded && <span>✓</span>}
-            </button>
-
-            <div style={{ height: 1, background: isNight ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)', margin: '2px 0' }} />
-
-            <button
-              onClick={() => { setInventoryOpen(false); setDropdownOpen(false); SoundEngine.playClick(); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '9px 14px', borderRadius: 14, border: 'none',
-                background: 'transparent',
-                color: '#FF3B30',
-                fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'left',
-                transition: 'background 0.2s'
-              }}
-            >
-              <span>✕ Sembunyikan Dock</span>
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Kontainer Dock Utama (Animasi Spring Mulus saat Buka/Tutup & Expand/Collapse) */}
