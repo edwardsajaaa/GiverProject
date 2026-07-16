@@ -86,7 +86,7 @@ export function CentralObjectModal({
               <span>💎 Studio Objek Utama Altar</span>
             </h2>
             <p style={{ margin: '4px 0 0 0', fontSize: 12, color: isNight ? '#94a3b8' : '#64748b' }}>
-              Pilih bentuk centerpiece tengah pulau atau upload file 3D milik Anda (.glb / .gltf / .obj).
+              Pilih bentuk centerpiece tengah pulau atau upload file 3D milik Anda (.glb / .gltf / .obj / .fbx).
             </p>
           </div>
           <button
@@ -154,7 +154,7 @@ export function CentralObjectModal({
               <span style={{ fontSize: 26 }}>📤</span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: centralObjectType === 'custom' ? (isNight ? '#e879f9' : '#c026d3') : (isNight ? '#F5F5F7' : '#1D1D1F') }}>
-                  {centralObjectType === 'custom' && centralObjectName ? `File Terpilih: ${centralObjectName}` : 'Klik untuk Pilih File Model 3D (.glb / .gltf / .obj)'}
+                  {centralObjectType === 'custom' && centralObjectName ? `File Terpilih: ${centralObjectName}` : 'Klik untuk Pilih File Model 3D (.glb / .gltf / .obj / .fbx)'}
                 </div>
                 <div style={{ fontSize: 11, color: isNight ? '#94a3b8' : '#64748b' }}>
                   Model akan otomatis disesuaikan ukurannya agar pas mengapung di atas Altar utama.
@@ -167,7 +167,7 @@ export function CentralObjectModal({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".glb,.gltf,.obj"
+              accept=".glb,.gltf,.obj,.fbx"
               onChange={handleFileUpload}
               style={{ display: 'none' }}
             />

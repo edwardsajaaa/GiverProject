@@ -2,19 +2,24 @@ import React, { useRef, Suspense, useMemo, useState, useEffect } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import { SoundEngine } from '../../utils/SoundEngine';
 
-// Komponen pemuat Model 3D Custom (GLTF/GLB/OBJ) yang diupload User
-function CustomUploadedModel({ url, color, materialType, scaleVal }) {
+// Komponen pemuat Model 3D Custom (GLTF/GLB/OBJ/FBX) yang diupload User
+function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
   const groupRef = useRef();
-  const isObj = url && (url.endsWith('.obj') || url.includes('obj'));
-  const loaderClass = isObj ? OBJLoader : GLTFLoader;
+  const nameLower = fileName ? fileName.toLowerCase() : '';
+  const urlLower = url ? url.toLowerCase() : '';
+
+  const isObj = nameLower.endsWith('.obj') || urlLower.endsWith('.obj') || urlLower.includes('obj');
+  const isFbx = nameLower.endsWith('.fbx') || urlLower.endsWith('.fbx') || urlLower.includes('fbx');
+  const loaderClass = isFbx ? FBXLoader : (isObj ? OBJLoader : GLTFLoader);
 
   const loadedData = useLoader(loaderClass, url);
   const modelScene = useMemo(() => {
     if (!loadedData) return null;
-    const raw = isObj ? loadedData : loadedData.scene;
+    const raw = (isObj || isFbx) ? loadedData : (loadedData.scene || loadedData);
     if (!raw) return null;
 
     const cloned = raw.clone(true);
@@ -56,7 +61,7 @@ function CustomUploadedModel({ url, color, materialType, scaleVal }) {
     });
 
     return cloned;
-  }, [loadedData, isObj, color, materialType]);
+  }, [loadedData, isObj, isFbx, color, materialType]);
 
   return modelScene ? <primitive object={modelScene} scale={[scaleVal, scaleVal, scaleVal]} /> : null;
 }
@@ -82,6 +87,7 @@ export function CentralHeroObject({
   centralObjectMaterial = 'holographic',
   centralObjectScale = 1.0,
   centralObjectUrl = null,
+  centralObjectName = null,
   setCentralModalOpen
 }) {
   const heroRef = useRef();
@@ -196,6 +202,7 @@ export function CentralHeroObject({
           <Suspense fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
             <CustomUploadedModel
               url={centralObjectUrl}
+              fileName={centralObjectName}
               color={centralObjectColor}
               materialType={centralObjectMaterial}
               scaleVal={1.0}

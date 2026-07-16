@@ -78,6 +78,7 @@ export function MainCanvas({
   centralObjectMaterial = 'holographic',
   centralObjectScale = 1.0,
   centralObjectUrl = null,
+  centralObjectName = null,
   setCentralModalOpen
 }) {
   return (
@@ -103,6 +104,7 @@ export function MainCanvas({
         centralObjectMaterial={centralObjectMaterial}
         centralObjectScale={centralObjectScale}
         centralObjectUrl={centralObjectUrl}
+        centralObjectName={centralObjectName}
         setCentralModalOpen={setCentralModalOpen}
       />
 
