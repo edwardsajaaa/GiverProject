@@ -26,8 +26,20 @@ export function InventoryBar({
     }}>
       {/* Keyframes Animasi Spring & Scrollbar Tersembunyi */}
       <style>{`
-        .compact-dock-scroll::-webkit-scrollbar { display: none; }
-        .compact-dock-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .compact-dock-scroll::-webkit-scrollbar,
+        .dock-outer-scroll::-webkit-scrollbar,
+        *::-webkit-scrollbar { 
+          display: none !important; 
+          width: 0 !important; 
+          height: 0 !important; 
+          background: transparent !important;
+        }
+        .compact-dock-scroll,
+        .dock-outer-scroll,
+        * { 
+          -ms-overflow-style: none !important; 
+          scrollbar-width: none !important; 
+        }
 
         .dock-item-card {
           transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, border-color 0.25s ease !important;
@@ -68,7 +80,7 @@ export function InventoryBar({
       </div>
 
       {/* Kontainer Dock Utama (Animasi Spring Mulus saat Buka/Tutup & Expand/Collapse) */}
-      <div style={{
+      <div className="dock-outer-scroll" style={{
         padding: inventoryOpen ? (inventoryExpanded ? '18px 22px' : '8px 16px') : '0px',
         display: 'flex',
         flexDirection: inventoryExpanded ? 'column' : 'row',

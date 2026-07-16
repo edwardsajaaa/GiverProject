@@ -49,7 +49,7 @@ export default function App() {
 
   return (
     <div style={{
-      width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column',
+      width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Outfit", system-ui, sans-serif',
       background: isNight ? '#050712' : '#85cbee', color: isNight ? '#F5F5F7' : '#1D1D1F',
       overflow: 'hidden', userSelect: 'none', position: 'relative'
