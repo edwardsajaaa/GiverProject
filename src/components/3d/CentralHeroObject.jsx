@@ -1,6 +1,7 @@
 import React, { useRef, Suspense, useMemo, useState, useEffect } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
@@ -45,7 +46,13 @@ function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
   const isFbx = nameLower.endsWith('.fbx') || urlLower.endsWith('.fbx') || urlLower.includes('fbx');
   const loaderClass = isFbx ? FBXLoader : (isObj ? OBJLoader : GLTFLoader);
 
-  const loadedData = useLoader(loaderClass, url);
+  const loadedData = useLoader(loaderClass, url, (loader) => {
+    if (loaderClass === GLTFLoader) {
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      loader.setDRACOLoader(dracoLoader);
+    }
+  });
   const modelScene = useMemo(() => {
     if (!loadedData) return null;
     const raw = (isObj || isFbx) ? loadedData : (loadedData.scene || loadedData);
