@@ -45,11 +45,10 @@ export function CentralObjectModal({
     const file = e.target.files[0];
     if (!file) return;
 
-    // Batas ukuran upload file: 15MB
+    // Peringatan jika ukuran file lebih dari 15MB (Non-blocking)
     const maxSize = 15 * 1024 * 1024; // 15MB
     if (file.size > maxSize) {
-      alert(`Peringatan: Ukuran file 3D terlalu besar! Maksimal ukuran file adalah 15 MB.\n\nFile Anda berukuran ${(file.size / 1024 / 1024).toFixed(2)} MB.\nHarap kompres file model Anda (misalnya menggunakan tools kompresi 3D online) sebelum meng-upload.`);
-      return;
+      alert(`⚠️ Peringatan Performa:\n\nFile 3D Anda berukuran ${(file.size / 1024 / 1024).toFixed(2)} MB (Cukup Besar).\nFile tetap akan dimuat, namun mungkin akan menyebabkan browser terasa lambat atau patah-patah saat dirender.\n\nDisarankan untuk menggunakan file di bawah 15 MB jika memungkinkan.`);
     }
 
     const url = URL.createObjectURL(file);
