@@ -17,43 +17,6 @@ function SceneAccess({ sceneRef }) {
   return null;
 }
 
-function CameraResetter({ autoRotate, onResetActive }) {
-  const { controls } = useThree();
-  const resetProgress = useRef(0);
-  const wasAutoRotate = useRef(autoRotate);
-
-  useEffect(() => {
-    if (autoRotate && !wasAutoRotate.current) {
-      resetProgress.current = 1.0;
-      if (onResetActive) onResetActive(true);
-    }
-    wasAutoRotate.current = autoRotate;
-  }, [autoRotate, onResetActive]);
-
-  useFrame((state, delta) => {
-    if (!controls || !controls.object) return;
-    const cam = controls.object;
-    if (autoRotate && resetProgress.current > 0) {
-      resetProgress.current = Math.max(0, resetProgress.current - delta * 0.75);
-      controls.target.lerp(new THREE.Vector3(0, 0, 0), delta * 7);
-      const defaultPos = new THREE.Vector3(6, 4, 6);
-      cam.position.lerp(defaultPos, delta * 6.5);
-      controls.update();
-
-      if (resetProgress.current === 0 || (cam.position.distanceTo(defaultPos) < 0.05 && controls.target.lengthSq() < 0.005)) {
-        resetProgress.current = 0;
-        if (onResetActive) onResetActive(false);
-      }
-    } else if (autoRotate) {
-      if (controls.target.lengthSq() > 0.0001) {
-        controls.target.set(0, 0, 0);
-        controls.update();
-      }
-    }
-  });
-  return null;
-}
-
 export function MainCanvas({
   performanceTier = 'high',
   isNight = true,
@@ -68,11 +31,9 @@ export function MainCanvas({
   handleDeleteObject,
   autoRotate = true,
   paused = false,
-  setIsCameraResetting,
   speed = 1,
   handleStart,
   handleEnd,
-  isCameraResetting = false,
   centralObjectType = 'cube',
   centralObjectColor = '#4f8cff',
   centralObjectMaterial = 'holographic',
@@ -120,13 +81,11 @@ export function MainCanvas({
         />
       ))}
 
-      <CameraResetter autoRotate={autoRotate && !paused} onResetActive={setIsCameraResetting} />
-
       <OrbitControls
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        autoRotate={autoRotate && !paused && !isCameraResetting}
+        autoRotate={autoRotate && !paused}
         autoRotateSpeed={speed * 1.5}
         maxPolarAngle={Math.PI / 2 + 0.15}
         minDistance={1.5}

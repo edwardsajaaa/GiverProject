@@ -6,7 +6,6 @@ import { StorageEngine } from '../utils/storageEngine';
 export function useSandboxState() {
   const [timeMode, setTimeMode] = useState('night');
   const [autoRotate, setAutoRotate] = useState(false);
-  const [isCameraResetting, setIsCameraResetting] = useState(false);
   const [paused, setPaused] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(true);
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
@@ -243,7 +242,6 @@ export function useSandboxState() {
   return {
     timeMode, setTimeMode, isNight,
     autoRotate, setAutoRotate,
-    isCameraResetting, setIsCameraResetting,
     paused, setPaused,
     inventoryOpen, setInventoryOpen,
     inventoryExpanded, setInventoryExpanded,

@@ -81,14 +81,14 @@ export function InventoryBar({
 
       {/* Kontainer Dock Utama (Animasi Spring Mulus ala iOS/macOS saat Buka/Tutup & Expand/Collapse) */}
       <div className="dock-outer-scroll" style={{
-        padding: inventoryExpanded ? '18px 22px' : '8px 16px',
+        padding: inventoryOpen ? (inventoryExpanded ? '18px 22px' : '8px 16px') : '0px 16px',
         display: 'flex',
         flexDirection: inventoryExpanded ? 'column' : 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: inventoryExpanded ? 16 : 12,
         width: inventoryExpanded ? 'min(700px, 92vw)' : 'min(580px, 68vw)',
-        maxHeight: inventoryExpanded ? '65vh' : '85px',
+        maxHeight: inventoryOpen ? (inventoryExpanded ? '65vh' : '85px') : '0px',
         opacity: inventoryOpen ? 1 : 0,
         transform: inventoryOpen ? 'translateY(0px) scale(1)' : 'translateY(48px) scale(0.82)',
         overflowY: inventoryExpanded ? 'auto' : 'visible',
@@ -96,10 +96,10 @@ export function InventoryBar({
         background: isNight ? 'rgba(20, 20, 26, 0.85)' : 'rgba(255, 255, 255, 0.88)',
         backdropFilter: 'blur(36px) saturate(210%)',
         WebkitBackdropFilter: 'blur(36px) saturate(210%)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(255, 255, 255, 0.9)',
+        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(255, 255, 255, 0.9)') : '0px solid transparent',
         borderRadius: inventoryExpanded ? 30 : 26,
         boxShadow: inventoryOpen ? (isNight ? '0 18px 54px rgba(0, 0, 0, 0.65)' : '0 16px 45px rgba(0, 0, 0, 0.14)') : 'none',
-        transition: 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), width 0.55s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.55s cubic-bezier(0.16, 1, 0.3, 1), padding 0.55s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease',
+        transition: 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), width 0.55s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), padding 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease',
         pointerEvents: inventoryOpen ? 'auto' : 'none'
       }}>
         {/* macOS Dock Items Container */}

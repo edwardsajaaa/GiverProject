@@ -12,7 +12,6 @@ export default function App() {
   const {
     timeMode, setTimeMode, isNight,
     autoRotate, setAutoRotate,
-    isCameraResetting, setIsCameraResetting,
     paused,
     inventoryOpen, setInventoryOpen,
     inventoryExpanded, setInventoryExpanded,
@@ -140,11 +139,9 @@ export default function App() {
           handleDeleteObject={handleDeleteObject}
           autoRotate={autoRotate}
           paused={paused}
-          setIsCameraResetting={setIsCameraResetting}
           speed={1}
           handleStart={handleStart}
           handleEnd={handleEnd}
-          isCameraResetting={isCameraResetting}
           centralObjectType={centralObjectType}
           centralObjectColor={centralObjectColor}
           centralObjectMaterial={centralObjectMaterial}
