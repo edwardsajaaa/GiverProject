@@ -17,10 +17,19 @@ class ModelErrorBoundary extends React.Component {
   }
   componentDidCatch(error, errorInfo) {
     console.error("Gagal memuat model 3D kustom:", error, errorInfo);
+    setTimeout(() => {
+      alert("⚠️ Gagal memuat file 3D.\n\nFile mungkin rusak (corrupt), bukan format 3D yang didukung, atau membutuhkan file tambahan (seperti tekstur eksternal/MTL yang tidak disertakan). Sistem telah memulihkan tampilan agar tidak crash.");
+    }, 500);
   }
   render() {
     if (this.state.hasError) {
-      return this.props.fallback;
+      // Tampilkan error fallback (berbeda dari sekadar loading) - Sphere Wireframe Merah
+      return (
+        <mesh scale={[1.2, 1.2, 1.2]}>
+          <icosahedronGeometry args={[1, 1]} />
+          <meshBasicMaterial color="#ef4444" wireframe opacity={0.8} transparent />
+        </mesh>
+      );
     }
     return this.props.children;
   }
@@ -219,7 +228,7 @@ export function CentralHeroObject({
         }}
       >
         {centralObjectType === 'custom' && centralObjectUrl ? (
-          <ModelErrorBoundary fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
+          <ModelErrorBoundary key={centralObjectUrl} fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
             <Suspense fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
               <CustomUploadedModel
                 url={centralObjectUrl}
