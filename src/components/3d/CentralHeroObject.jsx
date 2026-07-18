@@ -19,7 +19,7 @@ class ModelErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error("Gagal memuat model 3D kustom:", error, errorInfo);
     setTimeout(() => {
-      alert("⚠️ Gagal memuat file 3D.\n\nFile mungkin rusak (corrupt), bukan format 3D yang didukung, atau membutuhkan file tambahan (seperti tekstur eksternal/MTL yang tidak disertakan). Sistem telah memulihkan tampilan agar tidak crash.");
+      alert(`⚠️ Gagal memuat file 3D.\n\nDetail Error: ${error.message || error.toString()}\n\nCatatan untuk FBX/OBJ: Pastikan Anda MENGEMBED tekstur (Embed Media) saat ekspor, karena browser tidak dapat membaca file tekstur eksternal di komputer Anda secara otomatis.`);
     }, 500);
   }
   render() {
