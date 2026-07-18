@@ -6,6 +6,26 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import { SoundEngine } from '../../utils/SoundEngine';
 
+// Error Boundary khusus untuk menangkap error saat loading model 3D (agar web tidak blank)
+class ModelErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Gagal memuat model 3D kustom:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 // Komponen pemuat Model 3D Custom (GLTF/GLB/OBJ/FBX) yang diupload User
 function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
   const groupRef = useRef();
@@ -199,15 +219,17 @@ export function CentralHeroObject({
         }}
       >
         {centralObjectType === 'custom' && centralObjectUrl ? (
-          <Suspense fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
-            <CustomUploadedModel
-              url={centralObjectUrl}
-              fileName={centralObjectName}
-              color={centralObjectColor}
-              materialType={centralObjectMaterial}
-              scaleVal={1.0}
-            />
-          </Suspense>
+          <ModelErrorBoundary fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
+            <Suspense fallback={<FallbackHeroCube color={centralObjectColor} scaleVal={1.0} />}>
+              <CustomUploadedModel
+                url={centralObjectUrl}
+                fileName={centralObjectName}
+                color={centralObjectColor}
+                materialType={centralObjectMaterial}
+                scaleVal={1.0}
+              />
+            </Suspense>
+          </ModelErrorBoundary>
         ) : (
           <mesh castShadow receiveShadow scale={hovered ? [1.08, 1.08, 1.08] : [1, 1, 1]}>
             {renderPresetGeometry()}
