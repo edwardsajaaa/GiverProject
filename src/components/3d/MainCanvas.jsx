@@ -45,12 +45,13 @@ export function MainCanvas({
   return (
     <Canvas
       shadows={performanceTier === 'high'}
+      dpr={[1, 1.5]}
+      gl={{ powerPreference: "high-performance", antialias: false }}
       camera={{ position: [6, 4, 6], fov: 60 }}
       style={{
-        background: isNight ? '#050712' : '#85cbee',
+        background: 'transparent',
         width: '100%', height: '100%',
         display: 'block',
-        transition: 'background 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
       }}
     >
       <RealTimeAnalytics onFpsUpdate={handleFpsUpdate} />

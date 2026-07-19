@@ -60,14 +60,14 @@ export function InventoryBar({
             SoundEngine.playClick(); 
           }} 
           style={{
-            background: isNight ? 'rgba(24, 24, 28, 0.88)' : 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(24px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(24px) saturate(200%)',
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(0, 0, 0, 0.08)',
+            background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
+            backdropFilter: 'blur(30px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(30px) saturate(200%)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
             borderRadius: 20, padding: '6px 18px',
             color: isNight ? '#38bdf8' : '#007AFF',
             fontWeight: 700, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-            boxShadow: isNight ? '0 6px 18px rgba(0, 0, 0, 0.55)' : '0 6px 18px rgba(0, 0, 0, 0.1)',
+            boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)',
             transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
           }}
           title={inventoryOpen ? "Sembunyikan Dock Objek" : "Buka Dock Objek 3D"}
@@ -93,12 +93,12 @@ export function InventoryBar({
         transform: inventoryOpen ? 'translateY(0px) scale(1)' : 'translateY(48px) scale(0.82)',
         overflowY: inventoryExpanded ? 'auto' : 'visible',
         overflowX: 'visible',
-        background: isNight ? 'rgba(20, 20, 26, 0.85)' : 'rgba(255, 255, 255, 0.88)',
+        background: isNight ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.75)',
         backdropFilter: 'blur(36px) saturate(210%)',
         WebkitBackdropFilter: 'blur(36px) saturate(210%)',
-        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(255, 255, 255, 0.9)') : '0px solid transparent',
+        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)') : '0px solid transparent',
         borderRadius: inventoryExpanded ? 30 : 26,
-        boxShadow: inventoryOpen ? (isNight ? '0 18px 54px rgba(0, 0, 0, 0.65)' : '0 16px 45px rgba(0, 0, 0, 0.14)') : 'none',
+        boxShadow: inventoryOpen ? (isNight ? '0 12px 40px rgba(0, 0, 0, 0.25)' : '0 12px 40px rgba(31, 38, 135, 0.09)') : 'none',
         transition: 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), width 0.55s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), padding 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease',
         pointerEvents: inventoryOpen ? 'auto' : 'none'
       }}>
@@ -191,9 +191,9 @@ export function InventoryBar({
             title={inventoryExpanded ? "Kecilkan ke Baris Ringkas" : "Perbesar ke Mode Grid (12 Objek)"}
             style={{
               padding: '6px 10px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 4,
-              background: isNight ? 'rgba(48, 48, 56, 0.85)' : 'rgba(238, 238, 242, 0.95)',
+              background: isNight ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.7)',
               color: isNight ? '#38bdf8' : '#007AFF',
-              border: isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)',
+              border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
               fontWeight: 700, fontSize: 11, cursor: 'pointer',
               transition: 'all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)',
               whiteSpace: 'nowrap'
@@ -207,9 +207,9 @@ export function InventoryBar({
             title={deleteMode ? "Matikan Mode Hapus" : "Aktifkan Mode Hapus Objek"}
             style={{
               padding: '6px 12px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 5,
-              background: deleteMode ? '#FF3B30' : (isNight ? 'rgba(48, 48, 56, 0.85)' : 'rgba(238, 238, 242, 0.95)'),
+              background: deleteMode ? '#FF3B30' : (isNight ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.7)'),
               color: deleteMode ? '#fff' : (isNight ? '#f1f5f9' : '#1e293b'),
-              border: deleteMode ? '1px solid #FF3B30' : (isNight ? '1px solid rgba(255, 255, 255, 0.16)' : '1px solid rgba(0, 0, 0, 0.08)'),
+              border: deleteMode ? '1px solid #FF3B30' : (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)'),
               fontWeight: 600, fontSize: 11, cursor: 'pointer',
               transition: 'all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)',
               boxShadow: deleteMode ? '0 4px 14px rgba(255, 59, 48, 0.4)' : 'none',
