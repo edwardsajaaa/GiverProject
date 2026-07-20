@@ -28,6 +28,8 @@ export function MainCanvas({
   deleteMode = false,
   selectedId = null,
   setSelectedId,
+  transformMode = 'translate',
+  setPlacedObjects,
   handleDeleteObject,
   autoRotate = true,
   paused = false,
@@ -79,10 +81,13 @@ export function MainCanvas({
           onSelect={setSelectedId}
           onDelete={handleDeleteObject}
           timeMode={timeMode}
+          transformMode={transformMode}
+          setPlacedObjects={setPlacedObjects}
         />
       ))}
 
       <OrbitControls
+        makeDefault
         enablePan={true}
         enableZoom={true}
         enableRotate={true}

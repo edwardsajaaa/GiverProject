@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { TransformControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 export function Flower3D({ position = [0, 0, 0] }) {
@@ -382,8 +383,9 @@ const OBJECT_COMPONENTS = {
   monument: Monument3D,
 };
 
-export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDelete, timeMode }) {
+export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDelete, timeMode, transformMode, setPlacedObjects }) {
   const [hovered, setHovered] = useState(false);
+  const groupRef = useRef();
   const Comp = OBJECT_COMPONENTS[obj.type];
   if (!Comp) return null;
 
@@ -393,26 +395,55 @@ export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDel
   const ringColor = deleteMode ? '#ff4444' : selected ? '#4fc3f7' : timeMode === 'night' ? '#8ab4f8' : '#ffffff';
   const showRing = hovered || selected;
 
+  // Handle updates from TransformControls dragging
+  const handleTransformChange = () => {
+    if (groupRef.current && setPlacedObjects) {
+      const pos = groupRef.current.position;
+      const rot = groupRef.current.rotation;
+      const scl = groupRef.current.scale;
+      setPlacedObjects(prev => prev.map(o => o.id === obj.id ? {
+        ...o,
+        position: [pos.x, pos.y, pos.z],
+        rotationY: rot.y,
+        scale: Math.max(0.2, scl.x) // Prevent scaling to 0 or negative
+      } : o));
+    }
+  };
+
   return (
-    <group
-      position={[ox, 0, oz]}
-      rotation={[0, rotY, 0]}
-      scale={[scaleVal, scaleVal, scaleVal]}
-      onClick={(e) => { e.stopPropagation(); deleteMode ? onDelete(obj.id) : onSelect(obj.id); }}
-      onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
-      onPointerOut={() => setHovered(false)}
-    >
-      <Comp position={[0, 0, 0]} timeMode={timeMode} />
-      {showRing && (
-        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.65, 0.82, 40]} />
-          <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.65} />
-        </mesh>
+    <>
+      {selected && !deleteMode && (
+        <TransformControls
+          object={groupRef}
+          mode={transformMode}
+          onMouseUp={handleTransformChange}
+          showY={transformMode === 'translate' ? false : true}
+          showX={transformMode === 'rotate' ? false : true}
+          showZ={transformMode === 'rotate' ? false : true}
+          size={0.6}
+        />
       )}
-      <mesh position={[0, 0.6, 0]} visible={false}>
-        <cylinderGeometry args={[0.9, 0.9, 1.8, 12]} />
-        <meshBasicMaterial />
-      </mesh>
-    </group>
+      <group
+        ref={groupRef}
+        position={[ox, 0, oz]}
+        rotation={[0, rotY, 0]}
+        scale={[scaleVal, scaleVal, scaleVal]}
+        onClick={(e) => { e.stopPropagation(); deleteMode ? onDelete(obj.id) : onSelect(obj.id); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <Comp position={[0, 0, 0]} timeMode={timeMode} />
+        {showRing && (
+          <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.65, 0.82, 40]} />
+            <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.65} />
+          </mesh>
+        )}
+        <mesh position={[0, 0.6, 0]} visible={false}>
+          <cylinderGeometry args={[0.9, 0.9, 1.8, 12]} />
+          <meshBasicMaterial />
+        </mesh>
+      </group>
+    </>
   );
 }

@@ -29,6 +29,7 @@ export default function App() {
     placedObjects,
     handleUndo, handleRedo,
     draggingItem,
+    transformMode, setTransformMode,
     activePlacementType, setActivePlacementType,
     deleteMode, setDeleteMode,
     selectedId, setSelectedId,
@@ -99,6 +100,8 @@ export default function App() {
       <TransformToolbar
         isNight={isNight}
         selectedId={selectedId}
+        transformMode={transformMode}
+        setTransformMode={setTransformMode}
         handleRotateSelected={handleRotateSelected}
         handleScaleSelected={handleScaleSelected}
         handleDeleteSelected={handleDeleteSelected}
@@ -138,6 +141,8 @@ export default function App() {
           deleteMode={deleteMode}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
+          transformMode={transformMode}
+          setPlacedObjects={setPlacedObjects}
           handleDeleteObject={handleDeleteObject}
           autoRotate={autoRotate}
           paused={paused}

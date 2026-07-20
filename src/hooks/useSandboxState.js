@@ -81,6 +81,8 @@ export function useSandboxState() {
     SoundEngine.playClick();
   }, [historyFuture, placedObjects]);
 
+  const [transformMode, setTransformMode] = useState('translate'); // 'translate', 'rotate', 'scale'
+
   const [draggingItem, setDraggingItem] = useState(null);
   const [activePlacementType, setActivePlacementType] = useState(null); // Touch Tap-to-Place
   const [deleteMode, setDeleteMode] = useState(false);
@@ -190,16 +192,28 @@ export function useSandboxState() {
   }, [setPlacedObjects]);
 
   // Comprehensive Keyboard Shortcuts: Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+S (Export), Ctrl+O (Import)
+  // Tool Shortcuts: T (Translate), R (Rotate), S (Scale), Del (Delete)
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Input elements should not trigger hotkeys
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
       if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); handleRedo(); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); handleExportJson(); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') { e.preventDefault(); handleImportJson(); }
+      
+      // Transform Modes
+      if (!e.ctrlKey && !e.metaKey) {
+        if (e.key.toLowerCase() === 't') setTransformMode('translate');
+        if (e.key.toLowerCase() === 'r') setTransformMode('rotate');
+        if (e.key.toLowerCase() === 's') setTransformMode('scale');
+        if (e.key === 'Delete' || e.key === 'Backspace') handleDeleteSelected();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, handleExportJson, handleImportJson]);
+  }, [handleUndo, handleRedo, handleExportJson, handleImportJson, handleDeleteSelected]);
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
@@ -259,6 +273,7 @@ export function useSandboxState() {
     placedObjects, setPlacedObjects,
     handleUndo, handleRedo,
     draggingItem, setDraggingItem,
+    transformMode, setTransformMode,
     activePlacementType, setActivePlacementType,
     deleteMode, setDeleteMode,
     selectedId, setSelectedId,
