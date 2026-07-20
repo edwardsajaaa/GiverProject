@@ -58,10 +58,10 @@ export default function App() {
     <div style={{
       width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Outfit", system-ui, sans-serif',
-      background: isNight ? 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' : 'linear-gradient(135deg, #e0eafc, #cfdef3)',
-      color: isNight ? '#F5F5F7' : '#1D1D1F',
+      background: isNight ? '#0A0A0A' : '#FAFAFA',
+      color: isNight ? '#E5E5E5' : '#171717',
       overflow: 'hidden', userSelect: 'none', position: 'relative',
-      transition: 'background 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+      transition: 'background 0.4s ease, color 0.4s ease'
     }}>
       {/* 1. Telemetry Performance Glass Badge */}
       <TelemetryBadge

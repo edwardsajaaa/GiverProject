@@ -60,20 +60,20 @@ export function InventoryBar({
             SoundEngine.playClick(); 
           }} 
           style={{
-            background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-            backdropFilter: 'blur(30px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(30px) saturate(200%)',
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
-            borderRadius: 20, padding: '6px 18px',
-            color: isNight ? '#38bdf8' : '#007AFF',
-            fontWeight: 700, fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-            boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)',
-            transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
+            background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+            borderRadius: 8, padding: '4px 12px',
+            color: isNight ? '#E5E5E5' : '#171717',
+            fontWeight: 500, fontSize: 11, letterSpacing: '0.5px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+            boxShadow: 'none',
+            transition: 'all 0.3s ease'
           }}
-          title={inventoryOpen ? "Sembunyikan Dock Objek" : "Buka Dock Objek 3D"}
+          title={inventoryOpen ? "Sembunyikan Dock" : "Buka Dock"}
         >
-          <span>📦 {inventoryOpen ? 'Tutup Dock Objek' : 'Buka Dock Objek (12)'}</span>
-          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', display: 'flex' }}>
+          <span>{inventoryOpen ? 'CLOSE DOCK' : 'OPEN DOCK'}</span>
+          <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.4s ease', display: 'flex' }}>
             <IconChevronUp size={12} />
           </span>
         </button>
@@ -93,13 +93,13 @@ export function InventoryBar({
         transform: inventoryOpen ? 'translateY(0px) scale(1)' : 'translateY(48px) scale(0.82)',
         overflowY: inventoryExpanded ? 'auto' : 'visible',
         overflowX: 'visible',
-        background: isNight ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.75)',
-        backdropFilter: 'blur(36px) saturate(210%)',
-        WebkitBackdropFilter: 'blur(36px) saturate(210%)',
-        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)') : '0px solid transparent',
-        borderRadius: inventoryExpanded ? 30 : 26,
-        boxShadow: inventoryOpen ? (isNight ? '0 12px 40px rgba(0, 0, 0, 0.25)' : '0 12px 40px rgba(31, 38, 135, 0.09)') : 'none',
-        transition: 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), width 0.55s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), padding 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease',
+        background: isNight ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)') : '0px solid transparent',
+        borderRadius: 12,
+        boxShadow: inventoryOpen ? '0 4px 24px rgba(0, 0, 0, 0.1)' : 'none',
+        transition: 'all 0.4s ease',
         pointerEvents: inventoryOpen ? 'auto' : 'none'
       }}>
         {/* macOS Dock Items Container */}
@@ -132,30 +132,31 @@ export function InventoryBar({
                 }}
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                  padding: inventoryExpanded ? '8px 4px' : '4px 6px',
-                  borderRadius: 14,
-                  background: isActive ? (isNight ? 'rgba(56, 189, 248, 0.24)' : 'rgba(0, 122, 255, 0.16)') : 'transparent',
-                  border: isActive ? `1.5px solid ${isNight ? '#38bdf8' : '#007AFF'}` : '1.5px solid transparent',
+                  padding: inventoryExpanded ? '6px 4px' : '2px 4px',
+                  borderRadius: 8,
+                  background: isActive ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
+                  border: '1px solid transparent',
                   cursor: item ? 'grab' : 'default',
-                  transform: isActive ? 'scale(1.08) translateY(-4px)' : 'scale(1)',
+                  transform: isActive ? 'scale(1.05) translateY(-2px)' : 'scale(1)',
                   flexShrink: 0
                 }}
-                title={`Taruh ${item ? item.label : itemType}`}
+                title={`Place ${item ? item.label : itemType}`}
               >
                 <div style={{
-                  width: 36, height: 36, borderRadius: 12,
-                  background: isNight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+                  width: 32, height: 32, borderRadius: 6,
+                  background: isActive ? (isNight ? '#171717' : '#FAFAFA') : (isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'),
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: isActive ? `0 4px 12px ${item.color}66` : 'none',
-                  transition: 'box-shadow 0.3s'
+                  boxShadow: 'none',
+                  color: isActive ? (isNight ? '#FAFAFA' : '#171717') : (isNight ? '#A3A3A3' : '#525252'),
+                  transition: 'all 0.2s ease'
                 }}>
-                  {item ? React.cloneElement(item.icon, { size: 22 }) : null}
+                  {item ? React.cloneElement(item.icon, { size: 18 }) : null}
                 </div>
                 <span style={{
-                  fontSize: 10, fontWeight: 600,
-                  color: isActive ? (isNight ? '#38bdf8' : '#007AFF') : (isNight ? '#cbd5e1' : '#334155'),
+                  fontSize: 9, fontWeight: 500,
+                  color: isActive ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#737373' : '#A3A3A3'),
                   textAlign: 'center', whiteSpace: 'nowrap',
-                  letterSpacing: '-0.2px'
+                  letterSpacing: '0.5px'
                 }}>
                   {item ? item.label : itemType}
                 </span>
@@ -188,14 +189,14 @@ export function InventoryBar({
           {/* Tombol mini shortcut Expand / Ringkas langsung di dock */}
           <button
             onClick={() => { setInventoryExpanded(!inventoryExpanded); SoundEngine.playClick(); }}
-            title={inventoryExpanded ? "Kecilkan ke Baris Ringkas" : "Perbesar ke Mode Grid (12 Objek)"}
+            title={inventoryExpanded ? "Kecilkan" : "Perbesar"}
             style={{
-              padding: '6px 10px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 4,
-              background: isNight ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.7)',
-              color: isNight ? '#38bdf8' : '#007AFF',
-              border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
-              fontWeight: 700, fontSize: 11, cursor: 'pointer',
-              transition: 'all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)',
+              padding: '4px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4,
+              background: isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+              color: isNight ? '#E5E5E5' : '#171717',
+              border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+              fontWeight: 500, fontSize: 10, cursor: 'pointer',
+              transition: 'all 0.2s ease',
               whiteSpace: 'nowrap'
             }}
           >
@@ -204,38 +205,38 @@ export function InventoryBar({
 
           <button
             onClick={() => { setDeleteMode(!deleteMode); setSelectedId(null); SoundEngine.playClick(); }}
-            title={deleteMode ? "Matikan Mode Hapus" : "Aktifkan Mode Hapus Objek"}
+            title={deleteMode ? "Matikan Mode Hapus" : "Aktifkan Mode Hapus"}
             style={{
-              padding: '6px 12px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 5,
-              background: deleteMode ? '#FF3B30' : (isNight ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.7)'),
-              color: deleteMode ? '#fff' : (isNight ? '#f1f5f9' : '#1e293b'),
-              border: deleteMode ? '1px solid #FF3B30' : (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)'),
-              fontWeight: 600, fontSize: 11, cursor: 'pointer',
-              transition: 'all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)',
-              boxShadow: deleteMode ? '0 4px 14px rgba(255, 59, 48, 0.4)' : 'none',
+              padding: '4px 10px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4,
+              background: deleteMode ? '#ef4444' : (isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'),
+              color: deleteMode ? '#FAFAFA' : (isNight ? '#E5E5E5' : '#171717'),
+              border: deleteMode ? '1px solid #ef4444' : (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)'),
+              fontWeight: 500, fontSize: 10, cursor: 'pointer', letterSpacing: '0.5px',
+              transition: 'all 0.2s ease',
+              boxShadow: 'none',
               whiteSpace: 'nowrap'
             }}
           >
-            <IconTrash size={14} />
-            <span>{deleteMode ? 'Hapus: ON' : 'Hapus'}</span>
+            <IconTrash size={12} />
+            <span>{deleteMode ? 'DEL: ON' : 'DELETE'}</span>
           </button>
 
           {!resetConfirm ? (
             <button onClick={() => setResetConfirm(true)} title="Reset semua objek di atas pulau" style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 16, border: '1px solid #FF3B30',
-              background: 'transparent', color: '#FF3B30', fontWeight: 600, cursor: 'pointer', fontSize: 11,
-              transition: 'all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1)', whiteSpace: 'nowrap'
+              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, border: '1px solid #ef4444',
+              background: 'transparent', color: '#ef4444', fontWeight: 500, cursor: 'pointer', fontSize: 10, letterSpacing: '0.5px',
+              transition: 'all 0.2s ease', whiteSpace: 'nowrap'
             }}>
-              <IconReset size={14} /> Reset
+              <IconReset size={12} /> RESET
             </button>
           ) : (
             <button onClick={handleResetAll} style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 16, border: 'none',
-              background: '#dc2626', color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 11,
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', whiteSpace: 'nowrap',
-              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.45)'
+              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, border: 'none',
+              background: '#ef4444', color: '#FAFAFA', fontWeight: 600, cursor: 'pointer', fontSize: 10, letterSpacing: '0.5px',
+              transition: 'all 0.2s ease', whiteSpace: 'nowrap',
+              boxShadow: 'none'
             }}>
-              <IconWarning size={14} /> Yakin?
+              <IconWarning size={12} /> SURE?
             </button>
           )}
         </div>

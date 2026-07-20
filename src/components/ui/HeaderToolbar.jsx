@@ -64,45 +64,45 @@ export function HeaderToolbar({
       {/* Left: Undo / Redo, Snap Grid & Central Hero Studio Pills */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, pointerEvents: 'auto', flexWrap: 'wrap' }}>
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 4,
-          background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
-          borderRadius: 24, padding: '4px 8px', backdropFilter: 'blur(20px)',
-          boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)'
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+          borderRadius: 8, padding: '4px 8px', backdropFilter: 'blur(8px)',
+          boxShadow: 'none'
         }}>
           <button
             onClick={handleUndo}
             disabled={historyPast.length === 0}
             title="Undo (Ctrl+Z)"
             style={{
-              padding: '4px 10px', borderRadius: 14, border: 'none', cursor: historyPast.length === 0 ? 'not-allowed' : 'pointer',
-              background: 'transparent', color: historyPast.length === 0 ? (isNight ? '#48484A' : '#C7C7CC') : (isNight ? '#E5E5EA' : '#1D1D1F'),
-              fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4,
+              padding: '4px 10px', borderRadius: 6, border: 'none', cursor: historyPast.length === 0 ? 'not-allowed' : 'pointer',
+              background: 'transparent', color: historyPast.length === 0 ? (isNight ? '#555' : '#CCC') : (isNight ? '#E5E5E5' : '#171717'),
+              fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 4,
               opacity: historyPast.length === 0 ? 0.5 : 1, transition: 'all 0.2s'
             }}
-          >↩️ Undo</button>
+          >UNDO</button>
           <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)' }} />
           <button
             onClick={handleRedo}
             disabled={historyFuture.length === 0}
             title="Redo (Ctrl+Y)"
             style={{
-              padding: '4px 10px', borderRadius: 14, border: 'none', cursor: historyFuture.length === 0 ? 'not-allowed' : 'pointer',
-              background: 'transparent', color: historyFuture.length === 0 ? (isNight ? '#48484A' : '#C7C7CC') : (isNight ? '#E5E5EA' : '#1D1D1F'),
-              fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4,
+              padding: '4px 10px', borderRadius: 6, border: 'none', cursor: historyFuture.length === 0 ? 'not-allowed' : 'pointer',
+              background: 'transparent', color: historyFuture.length === 0 ? (isNight ? '#555' : '#CCC') : (isNight ? '#E5E5E5' : '#171717'),
+              fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 4,
               opacity: historyFuture.length === 0 ? 0.5 : 1, transition: 'all 0.2s'
             }}
-          >↪️ Redo</button>
+          >REDO</button>
         </div>
 
         {/* Snap to Grid Toggle Pill */}
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 20,
-          background: snapGrid ? '#5856D6' : (isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)'),
-          border: snapGrid ? '1px solid #5856D6' : (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)'),
-          color: snapGrid ? '#ffffff' : (isNight ? '#E5E5EA' : '#3A3A3C'), fontSize: 13, fontWeight: 600,
-          transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', backdropFilter: 'blur(20px)',
-          boxShadow: snapGrid ? '0 4px 14px rgba(88, 86, 214, 0.35)' : (isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)')
+          display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8,
+          background: snapGrid ? (isNight ? '#E5E5E5' : '#171717') : (isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'),
+          border: snapGrid ? '1px solid transparent' : (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)'),
+          color: snapGrid ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), fontSize: 12, fontWeight: 500, letterSpacing: '0.5px',
+          transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+          boxShadow: 'none'
         }}>
           <button
             onClick={() => { setSnapGrid(!snapGrid); SoundEngine.playClick(); }}
@@ -112,15 +112,15 @@ export function HeaderToolbar({
             }}
             title="Aktifkan atau nonaktifkan penguncian posisi objek ke grid"
           >
-            <IconGrid size={15} />
-            <span>Snap Grid: {snapGrid ? 'ON' : 'OFF'}</span>
+            <IconGrid size={14} />
+            <span>SNAP: {snapGrid ? 'ON' : 'OFF'}</span>
           </button>
           {snapGrid && (
             <button
               onClick={() => { setSnapSize(snapSize === 0.5 ? 1.0 : 0.5); SoundEngine.playClick(); }}
               style={{
-                background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 10, padding: '2px 6px',
-                color: '#fff', fontSize: 11, fontWeight: 800, cursor: 'pointer'
+                background: isNight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.4)', border: 'none', borderRadius: 4, padding: '2px 6px',
+                color: 'inherit', fontSize: 11, fontWeight: 600, cursor: 'pointer'
               }}
               title="Ubah resolusi snap grid"
             >{snapSize}m</button>
@@ -131,17 +131,16 @@ export function HeaderToolbar({
         <button
           onClick={() => { if (setCentralModalOpen) { setCentralModalOpen(true); SoundEngine.playPop(); } }}
           style={{
-            display: 'flex', alignItems: 'center', gap: 8, padding: '7px 16px', borderRadius: 20,
-            background: isNight ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(232, 121, 249, 0.25))' : 'linear-gradient(135deg, rgba(0, 122, 255, 0.15), rgba(192, 38, 211, 0.15))',
-            border: isNight ? '1.5px solid rgba(56, 189, 248, 0.6)' : '1.5px solid rgba(0, 122, 255, 0.5)',
-            color: isNight ? '#38bdf8' : '#007AFF', fontSize: 13, fontWeight: 800, cursor: 'pointer',
-            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)', backdropFilter: 'blur(20px)',
-            boxShadow: isNight ? '0 8px 32px rgba(56, 189, 248, 0.28)' : '0 8px 32px rgba(0, 122, 255, 0.2)'
+            display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 8,
+            background: isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(0, 0, 0, 0.15)',
+            color: isNight ? '#E5E5E5' : '#171717', fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', cursor: 'pointer',
+            transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+            boxShadow: 'none'
           }}
-          title="Buka Studio Altar untuk mengganti bentuk objek tengah, warna, material, atau upload model 3D custom"
+          title="Buka Studio Altar"
         >
-          <span style={{ fontSize: 16 }}>💎</span>
-          <span>Altar: {getHeroLabel()} ▾</span>
+          <span>{getHeroLabel().toUpperCase()}</span>
         </button>
       </div>
 
@@ -152,16 +151,16 @@ export function HeaderToolbar({
           onClick={handleTakePhoto}
           title="Ambil Foto HD dari Canvas 3D tanpa elemen UI"
           style={{
-            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 15px', borderRadius: 20,
-            background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
-            color: isNight ? '#38bdf8' : '#007AFF', fontSize: 13, fontWeight: 700, cursor: 'pointer',
-            transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', backdropFilter: 'blur(20px)',
-            boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)'
+            display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
+            background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+            color: isNight ? '#A3A3A3' : '#525252', fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', cursor: 'pointer',
+            transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+            boxShadow: 'none'
           }}
         >
-          <IconCamera size={15} />
-          <span>Ambil Foto</span>
+          <IconCamera size={14} />
+          <span>FOTO</span>
         </button>
 
         <button
@@ -173,66 +172,66 @@ export function HeaderToolbar({
           }}
           title={audioActive ? 'Mute Ambient Audio' : 'Aktifkan Ambient Audio'}
           style={{
-            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 15px', borderRadius: 20,
-            background: audioActive ? '#30D158' : (isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)'),
-            border: audioActive ? '1px solid #30D158' : (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)'),
-            color: audioActive ? '#ffffff' : (isNight ? '#E5E5EA' : '#3A3A3C'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
-            transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', backdropFilter: 'blur(20px)',
-            boxShadow: audioActive ? '0 4px 14px rgba(48, 209, 88, 0.35)' : (isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)')
+            display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
+            background: audioActive ? (isNight ? '#E5E5E5' : '#171717') : (isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'),
+            border: audioActive ? '1px solid transparent' : (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)'),
+            color: audioActive ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', cursor: 'pointer',
+            transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+            boxShadow: 'none'
           }}
         >
-          {audioActive ? <IconAudioOn size={15} /> : <IconAudioOff size={15} />}
-          <span>{audioActive ? 'Audio: ON' : 'Audio: OFF'}</span>
+          {audioActive ? <IconAudioOn size={14} /> : <IconAudioOff size={14} />}
+          <span>AUDIO: {audioActive ? 'ON' : 'OFF'}</span>
         </button>
 
         <button
           onClick={() => { setAutoRotate(!autoRotate); SoundEngine.playClick(); }}
           title="Aktifkan atau nonaktifkan putaran otomatis kamera"
           style={{
-            display: 'flex', alignItems: 'center', gap: 6, padding: '7px 15px', borderRadius: 20,
-            background: autoRotate ? '#0A84FF' : (isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)'),
-            border: autoRotate ? '1px solid #0A84FF' : (isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)'),
-            color: autoRotate ? '#ffffff' : (isNight ? '#E5E5EA' : '#3A3A3C'), fontSize: 13, fontWeight: 600, cursor: 'pointer',
-            transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', backdropFilter: 'blur(20px)',
-            boxShadow: autoRotate ? '0 4px 14px rgba(10, 132, 255, 0.35)' : (isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)')
+            display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8,
+            background: autoRotate ? (isNight ? '#E5E5E5' : '#171717') : (isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'),
+            border: autoRotate ? '1px solid transparent' : (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)'),
+            color: autoRotate ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), fontSize: 12, fontWeight: 500, letterSpacing: '0.5px', cursor: 'pointer',
+            transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+            boxShadow: 'none'
           }}
         >
-          {autoRotate ? <IconRotateOn size={15} /> : <IconRotateOff size={15} />}
-          <span>{autoRotate ? 'Putar: ON' : 'Putar: OFF'}</span>
+          {autoRotate ? <IconRotateOn size={14} /> : <IconRotateOff size={14} />}
+          <span>PUTAR: {autoRotate ? 'ON' : 'OFF'}</span>
         </button>
 
         {/* Time Switcher Toggle with Smooth Apple Pill Transition */}
         <div style={{
-          display: 'flex', alignItems: 'center', background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)', borderRadius: 28, padding: 4,
-          transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)', backdropFilter: 'blur(20px)',
-          boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)'
+          display: 'flex', alignItems: 'center', background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)', borderRadius: 8, padding: 3,
+          transition: 'all 0.3s ease', backdropFilter: 'blur(8px)',
+          boxShadow: 'none'
         }}>
           <button onClick={() => { setTimeMode('day'); SoundEngine.setAmbient(audioActive, false); SoundEngine.playClick(); }} style={{
-            padding: '6px 16px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
-            background: !isNight ? '#ffffff' : 'transparent',
-            color: !isNight ? '#007AFF' : (isNight ? '#98989D' : '#636366'), display: 'flex', alignItems: 'center', gap: 6,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-            boxShadow: !isNight ? '0 2px 10px rgba(0, 0, 0, 0.12)' : 'none'
-          }}><IconSun size={15} /> Siang</button>
+            padding: '4px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500, letterSpacing: '0.5px',
+            background: !isNight ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
+            color: !isNight ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), display: 'flex', alignItems: 'center', gap: 6,
+            transition: 'all 0.3s ease',
+            boxShadow: 'none'
+          }}><IconSun size={14} /> DAY</button>
           <button onClick={() => { setTimeMode('night'); SoundEngine.setAmbient(audioActive, true); SoundEngine.playClick(); }} style={{
-            padding: '6px 16px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
-            background: isNight ? '#BF5AF2' : 'transparent',
-            color: isNight ? '#ffffff' : (isNight ? '#98989D' : '#636366'), display: 'flex', alignItems: 'center', gap: 6,
-            transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)',
-            boxShadow: isNight ? '0 2px 12px rgba(191, 90, 242, 0.4)' : 'none'
-          }}><IconGalaxy size={15} /> Galaxy Malam</button>
+            padding: '4px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 500, letterSpacing: '0.5px',
+            background: isNight ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
+            color: isNight ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), display: 'flex', alignItems: 'center', gap: 6,
+            transition: 'all 0.3s ease',
+            boxShadow: 'none'
+          }}><IconGalaxy size={14} /> NIGHT</button>
         </div>
 
-        <button onClick={() => setShowTutorial(true)} title="Bantuan Tutorial" style={{
-          width: 34, height: 34, borderRadius: '50%',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(255, 255, 255, 0.4)',
-          background: isNight ? 'rgba(30, 41, 59, 0.65)' : 'rgba(255, 255, 255, 0.65)',
-          color: isNight ? '#0A84FF' : '#007AFF', backdropFilter: 'blur(20px)',
-          fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
-          boxShadow: isNight ? '0 8px 32px rgba(0, 0, 0, 0.2)' : '0 8px 32px rgba(31, 38, 135, 0.07)'
-        }}>❓</button>
+        <button onClick={() => setShowTutorial(true)} title="Tutorial" style={{
+          padding: '6px 12px', borderRadius: 8,
+          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
+          background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
+          color: isNight ? '#A3A3A3' : '#525252', backdropFilter: 'blur(8px)',
+          fontWeight: 500, fontSize: 12, letterSpacing: '0.5px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          boxShadow: 'none'
+        }}>HELP</button>
       </div>
     </header>
   );
