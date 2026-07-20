@@ -25,15 +25,17 @@ export function RealTimeAnalytics({ onFpsUpdate }) {
 export function TelemetryBadge({ fps = 60, performanceTier = 'high', objectCount = 0, isNight = true }) {
   return (
     <div style={{
-      position: 'absolute', top: 72, left: 24, zIndex: 20,
-      display: 'flex', alignItems: 'center', gap: 10, padding: '6px 14px', borderRadius: 20,
-      background: isNight ? 'rgba(28, 28, 32, 0.75)' : 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(16px) saturate(180%)',
-      WebkitBackdropFilter: 'blur(16px) saturate(180%)',
-      border: isNight ? '1px solid rgba(255, 255, 255, 0.12)' : '1px solid rgba(0, 0, 0, 0.08)',
-      color: isNight ? '#E5E5EA' : '#3A3A3C', fontSize: 12, fontWeight: 600,
-      boxShadow: isNight ? '0 8px 24px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.06)',
-      transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)', pointerEvents: 'none'
+      position: 'absolute', top: 16, left: 24, zIndex: 30,
+      background: isNight ? 'rgba(20, 20, 20, 0.45)' : 'rgba(255, 255, 255, 0.45)',
+      backdropFilter: 'blur(30px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+      border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
+      boxShadow: isNight ? '0 4px 16px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 4px 16px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
+      padding: '4px 10px', borderRadius: 16,
+      color: isNight ? '#E5E5E5' : '#171717',
+      fontFamily: 'monospace', fontSize: 10, fontWeight: 600, letterSpacing: '0.5px',
+      display: 'flex', alignItems: 'center', gap: 6,
+      pointerEvents: 'none'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
         <span style={{

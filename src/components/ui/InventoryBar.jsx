@@ -59,15 +59,14 @@ export function InventoryBar({
             setInventoryOpen(!inventoryOpen);
             SoundEngine.playClick(); 
           }} 
-          style={{
-            background: isNight ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
-            borderRadius: 8, padding: '4px 12px',
+            background: isNight ? 'rgba(20, 20, 20, 0.3)' : 'rgba(255, 255, 255, 0.3)',
+            backdropFilter: 'blur(30px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+            border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
+            borderRadius: 24, padding: '4px 16px',
             color: isNight ? '#E5E5E5' : '#171717',
-            fontWeight: 500, fontSize: 11, letterSpacing: '0.5px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-            boxShadow: 'none',
+            fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+            boxShadow: isNight ? '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
             transition: 'all 0.3s ease'
           }}
           title={inventoryOpen ? "Sembunyikan Dock" : "Buka Dock"}
@@ -93,13 +92,13 @@ export function InventoryBar({
         transform: inventoryOpen ? 'translateY(0px) scale(1)' : 'translateY(48px) scale(0.82)',
         overflowY: inventoryExpanded ? 'auto' : 'visible',
         overflowX: 'visible',
-        background: isNight ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)') : '0px solid transparent',
-        borderRadius: 12,
-        boxShadow: inventoryOpen ? '0 4px 24px rgba(0, 0, 0, 0.1)' : 'none',
-        transition: 'all 0.4s ease',
+        background: isNight ? 'rgba(20, 20, 20, 0.35)' : 'rgba(255, 255, 255, 0.4)',
+        backdropFilter: 'blur(30px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+        border: inventoryOpen ? (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)') : '0px solid transparent',
+        borderRadius: 24,
+        boxShadow: inventoryOpen ? (isNight ? '0 12px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), inset 0 -1px 1px rgba(0,0,0,0.5)' : '0 12px 40px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(0,0,0,0.05)') : 'none',
+        transition: 'all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
         pointerEvents: inventoryOpen ? 'auto' : 'none'
       }}>
         {/* macOS Dock Items Container */}
@@ -130,31 +129,30 @@ export function InventoryBar({
                     SoundEngine.playClick();
                   }
                 }}
-                style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                   padding: inventoryExpanded ? '6px 4px' : '2px 4px',
-                  borderRadius: 8,
-                  background: isActive ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
-                  border: '1px solid transparent',
+                  borderRadius: 12,
+                  background: isActive ? (isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)') : 'transparent',
+                  border: 'none',
                   cursor: item ? 'grab' : 'default',
-                  transform: isActive ? 'scale(1.05) translateY(-2px)' : 'scale(1)',
+                  transform: isActive ? 'scale(1.05)' : 'scale(1)',
                   flexShrink: 0
                 }}
                 title={`Place ${item ? item.label : itemType}`}
               >
                 <div style={{
-                  width: 32, height: 32, borderRadius: 6,
-                  background: isActive ? (isNight ? '#171717' : '#FAFAFA') : (isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'),
+                  width: 34, height: 34, borderRadius: 10,
+                  background: isActive ? (isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)') : 'transparent',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: 'none',
-                  color: isActive ? (isNight ? '#FAFAFA' : '#171717') : (isNight ? '#A3A3A3' : '#525252'),
+                  color: isNight ? '#E5E5E5' : '#171717',
                   transition: 'all 0.2s ease'
                 }}>
-                  {item ? React.cloneElement(item.icon, { size: 18 }) : null}
+                  {item ? React.cloneElement(item.icon, { size: 20 }) : null}
                 </div>
                 <span style={{
-                  fontSize: 9, fontWeight: 500,
-                  color: isActive ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#737373' : '#A3A3A3'),
+                  fontSize: 10, fontWeight: 600,
+                  color: isActive ? (isNight ? '#FFF' : '#000') : (isNight ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'),
                   textAlign: 'center', whiteSpace: 'nowrap',
                   letterSpacing: '0.5px'
                 }}>
@@ -191,11 +189,11 @@ export function InventoryBar({
             onClick={() => { setInventoryExpanded(!inventoryExpanded); SoundEngine.playClick(); }}
             title={inventoryExpanded ? "Kecilkan" : "Perbesar"}
             style={{
-              padding: '4px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4,
-              background: isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+              padding: '6px 10px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 4,
+              background: isNight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)',
               color: isNight ? '#E5E5E5' : '#171717',
-              border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)',
-              fontWeight: 500, fontSize: 10, cursor: 'pointer',
+              border: 'none',
+              fontWeight: 600, fontSize: 10, cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap'
             }}
@@ -207,13 +205,13 @@ export function InventoryBar({
             onClick={() => { setDeleteMode(!deleteMode); setSelectedId(null); SoundEngine.playClick(); }}
             title={deleteMode ? "Matikan Mode Hapus" : "Aktifkan Mode Hapus"}
             style={{
-              padding: '4px 10px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4,
-              background: deleteMode ? '#ef4444' : (isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'),
+              padding: '6px 12px', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 4,
+              background: deleteMode ? '#ef4444' : (isNight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)'),
               color: deleteMode ? '#FAFAFA' : (isNight ? '#E5E5E5' : '#171717'),
-              border: deleteMode ? '1px solid #ef4444' : (isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.08)'),
-              fontWeight: 500, fontSize: 10, cursor: 'pointer', letterSpacing: '0.5px',
+              border: 'none',
+              fontWeight: 600, fontSize: 10, cursor: 'pointer', letterSpacing: '0.5px',
               transition: 'all 0.2s ease',
-              boxShadow: 'none',
+              boxShadow: deleteMode ? '0 4px 12px rgba(239, 68, 68, 0.4)' : 'none',
               whiteSpace: 'nowrap'
             }}
           >
@@ -223,18 +221,18 @@ export function InventoryBar({
 
           {!resetConfirm ? (
             <button onClick={() => setResetConfirm(true)} title="Reset semua objek di atas pulau" style={{
-              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, border: '1px solid #ef4444',
-              background: 'transparent', color: '#ef4444', fontWeight: 500, cursor: 'pointer', fontSize: 10, letterSpacing: '0.5px',
+              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 16, border: '1px solid rgba(239, 68, 68, 0.5)',
+              background: 'transparent', color: '#ef4444', fontWeight: 600, cursor: 'pointer', fontSize: 10, letterSpacing: '0.5px',
               transition: 'all 0.2s ease', whiteSpace: 'nowrap'
             }}>
               <IconReset size={12} /> RESET
             </button>
           ) : (
             <button onClick={handleResetAll} style={{
-              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, border: 'none',
+              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 16, border: 'none',
               background: '#ef4444', color: '#FAFAFA', fontWeight: 600, cursor: 'pointer', fontSize: 10, letterSpacing: '0.5px',
               transition: 'all 0.2s ease', whiteSpace: 'nowrap',
-              boxShadow: 'none'
+              boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)'
             }}>
               <IconWarning size={12} /> SURE?
             </button>
