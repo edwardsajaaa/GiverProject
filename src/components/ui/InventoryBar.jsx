@@ -59,6 +59,7 @@ export function InventoryBar({
             setInventoryOpen(!inventoryOpen);
             SoundEngine.playClick(); 
           }} 
+          style={{
             background: isNight ? 'rgba(20, 20, 20, 0.3)' : 'rgba(255, 255, 255, 0.3)',
             backdropFilter: 'blur(30px) saturate(180%)',
             WebkitBackdropFilter: 'blur(30px) saturate(180%)',
@@ -129,6 +130,7 @@ export function InventoryBar({
                     SoundEngine.playClick();
                   }
                 }}
+                style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                   padding: inventoryExpanded ? '6px 4px' : '2px 4px',
                   borderRadius: 12,
