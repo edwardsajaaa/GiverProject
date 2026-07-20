@@ -38,66 +38,92 @@ class ModelErrorBoundary extends React.Component {
 
 // Komponen pemuat Model 3D Custom (GLTF/GLB/OBJ/FBX) yang diupload User
 function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
-  const groupRef = useRef();
-  const nameLower = fileName ? fileName.toLowerCase() : '';
-  const urlLower = url ? url.toLowerCase() : '';
+  const [modelScene, setModelScene] = useState(null);
 
-  const isObj = nameLower.endsWith('.obj') || urlLower.endsWith('.obj') || urlLower.includes('obj');
-  const isFbx = nameLower.endsWith('.fbx') || urlLower.endsWith('.fbx') || urlLower.includes('fbx');
-  const loaderClass = isFbx ? FBXLoader : (isObj ? OBJLoader : GLTFLoader);
+  useEffect(() => {
+    let active = true;
+    const nameLower = fileName ? fileName.toLowerCase() : '';
+    const urlLower = url ? url.toLowerCase() : '';
 
-  const loadedData = useLoader(loaderClass, url, (loader) => {
+    const isObj = nameLower.endsWith('.obj') || urlLower.endsWith('.obj') || urlLower.includes('obj');
+    const isFbx = nameLower.endsWith('.fbx') || urlLower.endsWith('.fbx') || urlLower.includes('fbx');
+    const loaderClass = isFbx ? FBXLoader : (isObj ? OBJLoader : GLTFLoader);
+
+    const loader = new loaderClass();
     if (loaderClass === GLTFLoader) {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
       loader.setDRACOLoader(dracoLoader);
     }
-  });
-  const modelScene = useMemo(() => {
-    if (!loadedData) return null;
-    const raw = (isObj || isFbx) ? loadedData : (loadedData.scene || loadedData);
-    if (!raw) return null;
 
-    const cloned = raw.clone(true);
-    // Auto-scale dan auto-center agar pas di atas Altar (bounding box ~1.3m)
-    const box = new THREE.Box3().setFromObject(cloned);
-    const size = box.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim > 0) {
-      const scaleFactor = 1.3 / maxDim;
-      cloned.scale.setScalar(scaleFactor);
-    }
-    const center = box.getCenter(new THREE.Vector3());
-    cloned.position.sub(center.multiplyScalar(cloned.scale.x));
+    // Gunakan LoadingManager khusus untuk menangkap error tekstur tapi tetap melanjutkan
+    const manager = new THREE.LoadingManager();
+    manager.onStart = function ( url, itemsLoaded, itemsTotal ) {};
+    manager.onLoad = function ( ) {};
+    manager.onError = function ( url ) {
+      console.warn("Terjadi error saat memuat tekstur/resource (FBX/OBJ):", url, "- Mengabaikan error dan menggunakan material fallback.");
+    };
+    loader.manager = manager;
 
-    // Terapkan warna/material kustom pada semua mesh dalam model yang diupload
-    cloned.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        if (materialType === 'wireframe') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
-          });
-        } else if (materialType === 'metallic') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, metalness: 0.9, roughness: 0.15
-          });
-        } else if (materialType === 'glass') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
-          });
-        } else {
-          // Holographic / Default
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
-          });
-        }
+    loader.load(
+      url,
+      (loadedData) => {
+        if (!active) return;
+        const raw = (isObj || isFbx) ? loadedData : (loadedData.scene || loadedData);
+        if (!raw) return;
+
+        const cloned = raw.clone(true);
+        
+        // Auto-scale dan auto-center yang aman secara matematis
+        const box = new THREE.Box3().setFromObject(cloned);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
+
+        // Gunakan wrapper agar tidak merusak transform bawaan dari file FBX/OBJ
+        const wrapper = new THREE.Group();
+        const innerWrapper = new THREE.Group();
+        innerWrapper.position.copy(center).multiplyScalar(-1); // Geser ke pusat
+        innerWrapper.add(cloned);
+        wrapper.scale.setScalar(scaleFactor); // Skalakan keseluruhan
+        wrapper.add(innerWrapper);
+
+        // Terapkan warna/material kustom pada semua mesh
+        wrapper.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (materialType === 'wireframe') {
+              child.material = new THREE.MeshStandardMaterial({
+                color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
+              });
+            } else if (materialType === 'metallic') {
+              child.material = new THREE.MeshStandardMaterial({
+                color: color, metalness: 0.9, roughness: 0.15
+              });
+            } else if (materialType === 'glass') {
+              child.material = new THREE.MeshStandardMaterial({
+                color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
+              });
+            } else {
+              child.material = new THREE.MeshStandardMaterial({
+                color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
+              });
+            }
+          }
+        });
+
+        setModelScene(wrapper);
+      },
+      undefined,
+      (error) => {
+        console.error("Gagal memuat model utama:", error);
       }
-    });
+    );
 
-    return cloned;
-  }, [loadedData, isObj, isFbx, color, materialType]);
+    return () => { active = false; };
+  }, [url, fileName, color, materialType]);
 
   return modelScene ? (
     <group scale={[scaleVal, scaleVal, scaleVal]}>
