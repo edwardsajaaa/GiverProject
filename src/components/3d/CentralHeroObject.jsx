@@ -99,7 +99,11 @@ function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
     return cloned;
   }, [loadedData, isObj, isFbx, color, materialType]);
 
-  return modelScene ? <primitive object={modelScene} scale={[scaleVal, scaleVal, scaleVal]} /> : null;
+  return modelScene ? (
+    <group scale={[scaleVal, scaleVal, scaleVal]}>
+      <primitive object={modelScene} />
+    </group>
+  ) : null;
 }
 
 // Fallback jika loading model atau error
