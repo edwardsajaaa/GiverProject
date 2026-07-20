@@ -49,7 +49,7 @@ export function MainCanvas({
       shadows={performanceTier === 'high'}
       dpr={[1, 1.5]}
       gl={{ powerPreference: "high-performance", antialias: false }}
-      camera={{ position: [6, 4, 6], fov: 60 }}
+      camera={{ position: [14, 8, 14], fov: 60 }}
       style={{
         background: 'transparent',
         width: '100%', height: '100%',
@@ -95,7 +95,7 @@ export function MainCanvas({
         autoRotateSpeed={speed * 1.5}
         maxPolarAngle={Math.PI / 2 + 0.15}
         minDistance={1.5}
-        maxDistance={38}
+        maxDistance={80}
         onStart={handleStart}
         onEnd={handleEnd}
       />
