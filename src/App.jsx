@@ -26,7 +26,7 @@ export default function App() {
     snapGrid, setSnapGrid,
     snapSize, setSnapSize,
     historyPast, historyFuture,
-    placedObjects,
+    placedObjects, setPlacedObjects,
     handleUndo, handleRedo,
     draggingItem,
     transformMode, setTransformMode,
