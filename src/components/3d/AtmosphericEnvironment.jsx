@@ -26,7 +26,7 @@ function createGalaxyData(isLowEnd) {
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const arms = 2;
-  const radius = 48;
+  const radius = 120;
 
   const colorCore = new THREE.Color('#ffffff');
   const colorInner = new THREE.Color('#ffe0b2');
@@ -82,7 +82,7 @@ function createStarsData(isLowEnd) {
     const v = Math.random();
     const theta = u * 2.0 * Math.PI;
     const phi = Math.acos(2.0 * v - 1.0);
-    const r = Math.cbrt(Math.random()) * 45 + 28;
+    const r = Math.cbrt(Math.random()) * 80 + 40;
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
     positions[i * 3 + 1] = r * Math.cos(phi);
     positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
@@ -260,8 +260,10 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
     }
 
     if (!scene.fog) {
-      scene.fog = new THREE.Fog(nightFog.clone().lerp(dayFog, p), 18, 48);
+      scene.fog = new THREE.Fog(nightFog.clone().lerp(dayFog, p), 40, 120);
     } else {
+      scene.fog.near = 40;
+      scene.fog.far = 120;
       scene.fog.color.copy(nightFog).lerp(dayFog, p);
     }
 
