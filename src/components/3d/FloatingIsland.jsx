@@ -39,7 +39,7 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
     if (pondMatRef.current) {
       pondMatRef.current.color.lerp(targetPond, lerpSpeed);
       pondMatRef.current.emissive.lerp(isNight ? new THREE.Color('#0284c7') : new THREE.Color('#000000'), lerpSpeed);
-      pondMatRef.current.emissiveIntensity = THREE.MathUtils.lerp(pondMatRef.current.emissiveIntensity, isNight ? 0.4 : 0, lerpSpeed);
+      pondMatRef.current.emissiveIntensity = THREE.MathUtils.lerp(pondMatRef.current.emissiveIntensity, isNight ? 1.5 : 0.2, lerpSpeed);
     }
 
     ringMatsRef.current.forEach(mat => {
@@ -55,7 +55,7 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         const targetEmissive = isNight ? (i % 2 === 0 ? new THREE.Color('#0284c7') : new THREE.Color('#c026d3')) : new THREE.Color('#000000');
         mat.color.lerp(targetColor, lerpSpeed);
         mat.emissive.lerp(targetEmissive, lerpSpeed);
-        mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, isNight ? 1.5 : 0, lerpSpeed);
+        mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, isNight ? 4.0 : 0.1, lerpSpeed);
       }
     });
   });
@@ -91,7 +91,7 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
           transparent
           opacity={0.85}
           emissive={isNightInit ? '#0284c7' : '#000000'}
-          emissiveIntensity={isNightInit ? 0.4 : 0}
+          emissiveIntensity={isNightInit ? 1.5 : 0.2}
         />
       </mesh>
 
@@ -109,15 +109,15 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         return (
           <mesh key={i} position={[Math.cos(angle) * (radius - 0.4), 0.18, Math.sin(angle) * (radius - 0.4)]} rotation={[0, -angle, 0]} castShadow>
             <coneGeometry args={[0.15, 0.36, 6]} />
-            <meshStandardMaterial ref={el => coneMatsRef.current[i] = el} color={isNightInit ? (i % 2 === 0 ? '#38bdf8' : '#e879f9') : '#358a47'} emissive={isNightInit ? (i % 2 === 0 ? '#0284c7' : '#c026d3') : '#000000'} emissiveIntensity={isNightInit ? 1.5 : 0} roughness={0.6} />
+            <meshStandardMaterial ref={el => coneMatsRef.current[i] = el} color={isNightInit ? (i % 2 === 0 ? '#38bdf8' : '#e879f9') : '#358a47'} emissive={isNightInit ? (i % 2 === 0 ? '#0284c7' : '#c026d3') : '#000000'} emissiveIntensity={isNightInit ? 4.0 : 0.1} roughness={0.3} metalness={0.2} />
           </mesh>
         );
       })}
 
       {/* Rock Cliffs Layer 1 */}
-      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 64]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.95} /></mesh>
+      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 64]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.8} metalness={0.15} /></mesh>
       {/* Rock Cliffs Layer 2 (Tapered Bottom) */}
-      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 64]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.95} /></mesh>
+      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 64]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.85} metalness={0.2} /></mesh>
     </group>
   );
 }

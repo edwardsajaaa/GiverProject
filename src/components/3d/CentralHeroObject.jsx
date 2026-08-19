@@ -203,7 +203,7 @@ export function CentralHeroObject({
             metalness={0.92}
             roughness={0.12}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 0.4 : 0.1}
+            emissiveIntensity={hovered ? 2.5 : 1.0}
           />
         );
       case 'glass':
@@ -215,7 +215,7 @@ export function CentralHeroObject({
             transparent
             opacity={0.72}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 0.5 : 0.2}
+            emissiveIntensity={hovered ? 3.0 : 1.5}
           />
         );
       case 'wireframe':
@@ -224,7 +224,7 @@ export function CentralHeroObject({
             color={centralObjectColor}
             wireframe
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 1.2 : 0.8}
+            emissiveIntensity={hovered ? 4.0 : 2.5}
           />
         );
       case 'holographic':
@@ -237,7 +237,7 @@ export function CentralHeroObject({
             transparent
             opacity={0.92}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 0.75 : 0.4}
+            emissiveIntensity={hovered ? 3.5 : 1.8}
           />
         );
     }

@@ -8,7 +8,7 @@ export function DynamicLights({ timeMode = 'night', placedObjects = [], isLowEnd
   return (
     <group>
       {/* Central soft ambient night glow */}
-      <pointLight position={[0, 4, 0]} intensity={0.4} color="#38bdf8" distance={15} decay={2} />
+      <pointLight position={[0, 4, 0]} intensity={1.2} color="#38bdf8" distance={20} decay={2} />
 
       {/* Dynamic light emitters based on placed objects */}
       {!isLowEnd && placedObjects.map((obj) => {
@@ -17,7 +17,7 @@ export function DynamicLights({ timeMode = 'night', placedObjects = [], isLowEnd
             <pointLight
               key={`light-${obj.id}`}
               position={[obj.position[0], obj.position[1] + 1.2, obj.position[2]]}
-              intensity={2.2}
+              intensity={4.5}
               color="#ffd54f"
               distance={8}
               decay={2}
@@ -30,7 +30,7 @@ export function DynamicLights({ timeMode = 'night', placedObjects = [], isLowEnd
             <pointLight
               key={`light-${obj.id}`}
               position={[obj.position[0], obj.position[1] + 0.6, obj.position[2]]}
-              intensity={2.8}
+              intensity={6.0}
               color="#f97316"
               distance={9}
               decay={2}
@@ -43,7 +43,7 @@ export function DynamicLights({ timeMode = 'night', placedObjects = [], isLowEnd
             <pointLight
               key={`light-${obj.id}`}
               position={[obj.position[0], obj.position[1] + 0.8, obj.position[2]]}
-              intensity={1.4}
+              intensity={3.5}
               color={obj.type === 'crystal' ? '#c084fc' : '#fbbf24'}
               distance={6}
               decay={2}

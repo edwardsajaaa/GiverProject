@@ -8,6 +8,8 @@ import { FloatingIsland } from './FloatingIsland';
 import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
+import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
+import { ToneMappingMode, BlendFunction } from 'postprocessing';
 
 function SceneAccess({ sceneRef }) {
   const { scene, camera } = useThree();
@@ -99,6 +101,23 @@ export function MainCanvas({
         onStart={handleStart}
         onEnd={handleEnd}
       />
+
+      <EffectComposer disableNormalPass multisampling={performanceTier === 'high' ? 4 : 0}>
+        <Bloom 
+          luminanceThreshold={0.15} 
+          mipmapBlur 
+          intensity={performanceTier === 'high' ? 1.8 : 1.2} 
+        />
+        <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+        {performanceTier === 'high' && (
+          <Vignette
+            eskil={false}
+            offset={0.3}
+            darkness={0.6}
+            blendFunction={BlendFunction.NORMAL}
+          />
+        )}
+      </EffectComposer>
     </Canvas>
   );
 }
