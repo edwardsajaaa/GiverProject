@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSandboxState } from './hooks/useSandboxState';
 import { HeaderToolbar } from './components/ui/HeaderToolbar';
 import { InventoryBar } from './components/ui/InventoryBar';
@@ -7,7 +7,10 @@ import { TelemetryBadge } from './components/ui/TelemetryBadge';
 import { OnboardingModal } from './components/ui/OnboardingModal';
 import { CentralObjectModal } from './components/ui/CentralObjectModal';
 import { GreetingModal } from './components/ui/GreetingModal';
-import { MainCanvas } from './components/3d/MainCanvas';
+import { Loader } from '@react-three/drei';
+
+// Lazy load MainCanvas agar bundle awal (UI HTML) sangat ringan dan cepat dimuat
+const MainCanvas = React.lazy(() => import('./components/3d/MainCanvas').then(m => ({ default: m.MainCanvas })));
 
 export default function App() {
   const {
@@ -132,32 +135,34 @@ export default function App() {
           </div>
         )}
 
-        <MainCanvas
-          performanceTier={performanceTier}
-          isNight={isNight}
-          timeMode={timeMode}
-          handleFpsUpdate={handleFpsUpdate}
-          sceneRef={sceneRef}
-          handleGroundTap={handleGroundTap}
-          placedObjects={placedObjects}
-          deleteMode={deleteMode}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          transformMode={transformMode}
-          setPlacedObjects={setPlacedObjects}
-          handleDeleteObject={handleDeleteObject}
-          autoRotate={autoRotate}
-          paused={paused}
-          speed={1}
-          handleStart={handleStart}
-          handleEnd={handleEnd}
-          centralObjectType={centralObjectType}
-          centralObjectColor={centralObjectColor}
-          centralObjectMaterial={centralObjectMaterial}
-          centralObjectScale={centralObjectScale}
-          centralObjectUrl={centralObjectUrl}
-          setCentralModalOpen={setCentralModalOpen}
-        />
+        <Suspense fallback={null}>
+          <MainCanvas
+            performanceTier={performanceTier}
+            isNight={isNight}
+            timeMode={timeMode}
+            handleFpsUpdate={handleFpsUpdate}
+            sceneRef={sceneRef}
+            handleGroundTap={handleGroundTap}
+            placedObjects={placedObjects}
+            deleteMode={deleteMode}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            transformMode={transformMode}
+            setPlacedObjects={setPlacedObjects}
+            handleDeleteObject={handleDeleteObject}
+            autoRotate={autoRotate}
+            paused={paused}
+            speed={1}
+            handleStart={handleStart}
+            handleEnd={handleEnd}
+            centralObjectType={centralObjectType}
+            centralObjectColor={centralObjectColor}
+            centralObjectMaterial={centralObjectMaterial}
+            centralObjectScale={centralObjectScale}
+            centralObjectUrl={centralObjectUrl}
+            setCentralModalOpen={setCentralModalOpen}
+          />
+        </Suspense>
       </div>
 
       {/* 5. Apple macOS / visionOS Bottom Dock Inventory Bar */}
@@ -211,6 +216,14 @@ export default function App() {
         setCentralObjectUrl={setCentralObjectUrl}
         centralObjectName={centralObjectName}
         setCentralObjectName={setCentralObjectName}
+      />
+
+      {/* 8. Fullscreen Loading Overlay (dari @react-three/drei) */}
+      <Loader 
+        containerStyles={{ background: isNight ? '#0A0A0A' : '#FAFAFA' }}
+        innerStyles={{ width: '300px' }}
+        barStyles={{ height: '8px', background: '#38bdf8' }}
+        dataStyles={{ color: isNight ? '#F5F5F7' : '#1D1D1F', fontSize: '14px', fontWeight: 700 }}
       />
     </div>
   );
