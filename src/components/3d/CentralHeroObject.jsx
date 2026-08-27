@@ -36,101 +36,73 @@ class ModelErrorBoundary extends React.Component {
   }
 }
 
-// Komponen pemuat Model 3D Custom (GLTF/GLB/OBJ/FBX) yang diupload User
+import { useGLTF } from '@react-three/drei';
+
+// Komponen pemuat Model 3D Custom (Khusus GLB yang stabil)
 function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
-  const [modelScene, setModelScene] = useState(null);
+  // Gunakan useGLTF dari drei yang jauh lebih stabil untuk R3F
+  // Note: Hanya mendukung .glb / .gltf yang sifatnya standalone (semua tekstur ter-embed di dalam file)
+  const { scene } = useGLTF(url, true, true, (loader) => {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+    loader.setDRACOLoader(dracoLoader);
+  });
 
-  useEffect(() => {
-    let active = true;
-    const nameLower = fileName ? fileName.toLowerCase() : '';
-    const urlLower = url ? url.toLowerCase() : '';
+  const wrapperScene = useMemo(() => {
+    if (!scene) return null;
+    const cloned = scene.clone(true);
+    
+    // Auto-scale dan auto-center
+    const box = new THREE.Box3().setFromObject(cloned);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
 
-    const isObj = nameLower.endsWith('.obj') || urlLower.endsWith('.obj') || urlLower.includes('obj');
-    const isFbx = nameLower.endsWith('.fbx') || urlLower.endsWith('.fbx') || urlLower.includes('fbx');
-    const loaderClass = isFbx ? FBXLoader : (isObj ? OBJLoader : GLTFLoader);
+    // Geser ke pusat
+    cloned.position.copy(center).multiplyScalar(-1);
 
-    const loader = new loaderClass();
-    if (loaderClass === GLTFLoader) {
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-      loader.setDRACOLoader(dracoLoader);
-    }
+    // Buat grup wrapper untuk handle skala agar tidak berantakan
+    const wrapper = new THREE.Group();
+    wrapper.scale.setScalar(scaleFactor);
+    wrapper.add(cloned);
 
-    // Gunakan LoadingManager khusus untuk menangkap error tekstur tapi tetap melanjutkan
-    const manager = new THREE.LoadingManager();
-    manager.onStart = function ( url, itemsLoaded, itemsTotal ) {};
-    manager.onLoad = function ( ) {};
-    manager.onError = function ( url ) {
-      console.warn("Terjadi error saat memuat tekstur/resource (FBX/OBJ):", url, "- Mengabaikan error dan menggunakan material fallback.");
-    };
-    loader.manager = manager;
-
-    loader.load(
-      url,
-      (loadedData) => {
-        if (!active) return;
-        const raw = (isObj || isFbx) ? loadedData : (loadedData.scene || loadedData);
-        if (!raw) return;
-
-        const cloned = raw.clone(true);
+    // Terapkan material kustom
+    wrapper.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
         
-        // Auto-scale dan auto-center yang aman secara matematis
-        const box = new THREE.Box3().setFromObject(cloned);
-        const size = box.getSize(new THREE.Vector3());
-        const center = box.getCenter(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
-
-        // Gunakan wrapper agar tidak merusak transform bawaan dari file FBX/OBJ
-        const wrapper = new THREE.Group();
-        const innerWrapper = new THREE.Group();
-        innerWrapper.position.copy(center).multiplyScalar(-1); // Geser ke pusat
-        innerWrapper.add(cloned);
-        wrapper.scale.setScalar(scaleFactor); // Skalakan keseluruhan
-        wrapper.add(innerWrapper);
-
-        // Terapkan warna/material kustom pada semua mesh
-        wrapper.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-            if (materialType === 'wireframe') {
-              child.material = new THREE.MeshStandardMaterial({
-                color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
-              });
-            } else if (materialType === 'metallic') {
-              child.material = new THREE.MeshStandardMaterial({
-                color: color, metalness: 0.9, roughness: 0.15
-              });
-            } else if (materialType === 'glass') {
-              child.material = new THREE.MeshStandardMaterial({
-                color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
-              });
-            } else {
-              child.material = new THREE.MeshStandardMaterial({
-                color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
-              });
-            }
-          }
-        });
-
-        setModelScene(wrapper);
-      },
-      undefined,
-      (error) => {
-        console.error("Gagal memuat model utama:", error);
+        if (materialType === 'wireframe') {
+          child.material = new THREE.MeshStandardMaterial({
+            color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
+          });
+        } else if (materialType === 'metallic') {
+          child.material = new THREE.MeshStandardMaterial({
+            color: color, metalness: 0.9, roughness: 0.15
+          });
+        } else if (materialType === 'glass') {
+          child.material = new THREE.MeshStandardMaterial({
+            color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
+          });
+        } else {
+          child.material = new THREE.MeshStandardMaterial({
+            color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
+          });
+        }
       }
-    );
+    });
 
-    return () => { active = false; };
-  }, [url, fileName, color, materialType]);
+    return wrapper;
+  }, [scene, color, materialType]);
 
-  return modelScene ? (
+  return wrapperScene ? (
     <group scale={[scaleVal, scaleVal, scaleVal]}>
-      <primitive object={modelScene} />
+      <primitive object={wrapperScene} />
     </group>
   ) : null;
 }
+
 
 // Fallback jika loading model atau error
 function FallbackHeroCube({ color, scaleVal }) {
