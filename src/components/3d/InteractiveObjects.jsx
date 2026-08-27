@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { TransformControls } from '@react-three/drei';
+import { TransformControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
 export function Flower3D({ position = [0, 0, 0] }) {
@@ -439,6 +439,41 @@ export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDel
             <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.65} />
           </mesh>
         )}
+        
+        {/* Indikator Pesan & Papan Ucapan (Greeting Card) */}
+        {obj.message && (
+          <Html position={[0, 1.8, 0]} center zIndexRange={[100, 0]}>
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
+              transform: selected ? 'scale(1)' : 'scale(0.8)',
+              opacity: selected ? 1 : 0.8,
+              transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}>
+              {!selected ? (
+                <div style={{
+                  background: 'rgba(255,255,255,0.9)', padding: '6px', borderRadius: '50%',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)', fontSize: 16
+                }}>💌</div>
+              ) : (
+                <div style={{
+                  background: timeMode === 'night' ? 'rgba(20,24,34,0.9)' : 'rgba(255,255,255,0.95)',
+                  backdropFilter: 'blur(10px)', color: timeMode === 'night' ? '#FFF' : '#000',
+                  padding: '12px 16px', borderRadius: 16, width: 160,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)', textAlign: 'center',
+                  border: timeMode === 'night' ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: timeMode === 'night' ? '#38bdf8' : '#007AFF', marginBottom: 4 }}>
+                    DARI: {obj.senderName}
+                  </div>
+                  <div style={{ fontSize: 12, lineHeight: 1.4, wordWrap: 'break-word' }}>
+                    "{obj.message}"
+                  </div>
+                </div>
+              )}
+            </div>
+          </Html>
+        )}
+
         <mesh position={[0, 0.6, 0]} visible={false}>
           <cylinderGeometry args={[0.9, 0.9, 1.8, 32]} />
           <meshBasicMaterial />

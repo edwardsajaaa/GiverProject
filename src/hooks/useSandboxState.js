@@ -10,6 +10,7 @@ export function useSandboxState() {
   const [inventoryOpen, setInventoryOpen] = useState(true);
   const [inventoryExpanded, setInventoryExpanded] = useState(false);
   const [audioActive, setAudioActive] = useState(false);
+  const [pendingGreeting, setPendingGreeting] = useState(null); // Menahan objek sebelum pesan diisi
 
   // Central Altar Hero Object State (Bukan objek hiasan dock, tapi Hero centerpiece utama)
   const [initialCentral] = useState(() => StorageEngine.loadCentralObject());
@@ -128,16 +129,19 @@ export function useSandboxState() {
     const half = 10;
     const clampedX = snapVal(Math.max(-half, Math.min(half, x)));
     const clampedZ = snapVal(Math.max(-half, Math.min(half, z)));
-    setPlacedObjects(prev => [...prev, {
-      id: Date.now() + Math.random(),
+    
+    // Alih-alih langsung naruh, kita simpan di pendingGreeting untuk memunculkan Form Ucapan
+    setPendingGreeting({
+      id: Date.now() + Math.random().toString(),
       type: activePlacementType,
       position: [clampedX, 0, clampedZ],
       rotationY: 0,
       scale: 1,
-    }]);
-    SoundEngine.playPop();
+    });
+    
+    SoundEngine.playClick();
     setActivePlacementType(null);
-  }, [activePlacementType, setPlacedObjects, snapVal]);
+  }, [activePlacementType, snapVal]);
 
   const handleDeleteObject = useCallback((id) => {
     setPlacedObjects(prev => prev.filter(o => o.id !== id));
@@ -241,17 +245,18 @@ export function useSandboxState() {
       const half = 10;
       const clampedX = snapVal(Math.max(-half, Math.min(half, intersection.x)));
       const clampedZ = snapVal(Math.max(-half, Math.min(half, intersection.z)));
-      setPlacedObjects(prev => [...prev, {
-        id: Date.now() + Math.random(),
+      
+      setPendingGreeting({
+        id: Date.now() + Math.random().toString(),
         type: itemType,
         position: [clampedX, 0, clampedZ],
         rotationY: 0,
         scale: 1,
-      }]);
-      SoundEngine.playPop();
+      });
+      SoundEngine.playClick();
     }
     setDraggingItem(null);
-  }, [draggingItem, setPlacedObjects, snapVal]);
+  }, [draggingItem, snapVal]);
 
   return {
     timeMode, setTimeMode, isNight,
@@ -275,6 +280,7 @@ export function useSandboxState() {
     draggingItem, setDraggingItem,
     transformMode, setTransformMode,
     activePlacementType, setActivePlacementType,
+    pendingGreeting, setPendingGreeting,
     deleteMode, setDeleteMode,
     selectedId, setSelectedId,
     resetConfirm, setResetConfirm,

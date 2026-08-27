@@ -6,6 +6,7 @@ import { TransformToolbar } from './components/ui/TransformToolbar';
 import { TelemetryBadge } from './components/ui/TelemetryBadge';
 import { OnboardingModal } from './components/ui/OnboardingModal';
 import { CentralObjectModal } from './components/ui/CentralObjectModal';
+import { GreetingModal } from './components/ui/GreetingModal';
 import { MainCanvas } from './components/3d/MainCanvas';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
     draggingItem,
     transformMode, setTransformMode,
     activePlacementType, setActivePlacementType,
+    pendingGreeting, setPendingGreeting,
     deleteMode, setDeleteMode,
     selectedId, setSelectedId,
     resetConfirm, setResetConfirm,
@@ -183,6 +185,13 @@ export default function App() {
         isNight={isNight}
         showTutorial={showTutorial}
         setShowTutorial={setShowTutorial}
+      />
+
+      <GreetingModal
+        isNight={isNight}
+        pendingGreeting={pendingGreeting}
+        setPendingGreeting={setPendingGreeting}
+        setPlacedObjects={setPlacedObjects}
       />
 
       {/* 7. Central Altar Centerpiece Studio Modal */}
