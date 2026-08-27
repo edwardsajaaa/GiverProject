@@ -8,7 +8,7 @@ import { FloatingIsland } from './FloatingIsland';
 import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
-import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, ToneMapping, DepthOfField } from '@react-three/postprocessing';
 import { ToneMappingMode, BlendFunction } from 'postprocessing';
 
 function SceneAccess({ sceneRef }) {
@@ -110,12 +110,20 @@ export function MainCanvas({
         />
         <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
         {performanceTier === 'high' && (
-          <Vignette
-            eskil={false}
-            offset={0.3}
-            darkness={0.6}
-            blendFunction={BlendFunction.NORMAL}
-          />
+          <>
+            <DepthOfField
+              target={[0, 0, 0]}         // Fokus tepat di tengah pulau
+              focalLength={0.4}          // Jarak fokus kamera (semakin tinggi, makin sempit area fokusnya)
+              bokehScale={8}             // Ukuran blur di background (semakin besar makin nge-blur)
+              height={480}               // Resolusi DoF internal untuk performa
+            />
+            <Vignette
+              eskil={false}
+              offset={0.3}
+              darkness={0.6}
+              blendFunction={BlendFunction.NORMAL}
+            />
+          </>
         )}
       </EffectComposer>
     </Canvas>

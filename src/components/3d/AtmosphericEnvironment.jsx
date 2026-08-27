@@ -194,7 +194,45 @@ function GalaxySky({ isLowEnd }) {
       )}
 
       {comet.active && <CosmicCometItem pos={comet.pos} dir={comet.speed} scale={1.25} />}
+      <Fireflies isLowEnd={isLowEnd} />
     </group>
+  );
+}
+
+function Fireflies({ isLowEnd, count = 50 }) {
+  const pointsRef = useRef();
+  const fireflyData = useMemo(() => {
+    const c = isLowEnd ? Math.floor(count / 2) : count;
+    const pos = new Float32Array(c * 3);
+    const phases = new Float32Array(c);
+    for (let i = 0; i < c; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 20; // Spread over the island
+      pos[i * 3 + 1] = Math.random() * 8 + 1;  // Height above ground
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
+      phases[i] = Math.random() * Math.PI * 2;
+    }
+    return { pos, phases, count: c };
+  }, [isLowEnd, count]);
+
+  useFrame((state, delta) => {
+    if (!pointsRef.current) return;
+    const time = state.clock.getElapsedTime();
+    const positions = pointsRef.current.geometry.attributes.position.array;
+    for (let i = 0; i < fireflyData.count; i++) {
+      positions[i * 3 + 1] += Math.sin(time * 0.5 + fireflyData.phases[i]) * delta * 0.5; // Bob up/down
+      positions[i * 3] += Math.cos(time * 0.3 + fireflyData.phases[i]) * delta * 0.2; // drift left/right
+      positions[i * 3 + 2] += Math.sin(time * 0.4 + fireflyData.phases[i]) * delta * 0.2; // drift forward/back
+    }
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={fireflyData.count} array={fireflyData.pos} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.6} color="#fef08a" map={GALAXY_TEXTURE} transparent opacity={0.8} depthWrite={false} blending={THREE.AdditiveBlending} />
+    </points>
   );
 }
 
