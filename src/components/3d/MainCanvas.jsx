@@ -113,9 +113,9 @@ export function MainCanvas({
           <>
             <DepthOfField
               target={[0, 0, 0]}         // Fokus tepat di tengah pulau
-              focalLength={0.4}          // Jarak fokus kamera (semakin tinggi, makin sempit area fokusnya)
-              bokehScale={8}             // Ukuran blur di background (semakin besar makin nge-blur)
-              height={480}               // Resolusi DoF internal untuk performa
+              focalLength={0.1}          // Jarak fokus diturunkan agar area fokus lebih luas (tidak terlalu buram)
+              bokehScale={3}             // Ukuran blur dikurangi dari 8 ke 3 untuk performa jauh lebih ringan
+              height={300}               // Resolusi direndahkan untuk performa
             />
             <Vignette
               eskil={false}

@@ -14,22 +14,22 @@ export function Flower3D({ position = [0, 0, 0] }) {
   return (
     <group ref={groupRef} position={position}>
       <mesh position={[0, 0.5, 0]} castShadow>
-        <cylinderGeometry args={[0.04, 0.06, 1, 32]} />
+        <cylinderGeometry args={[0.04, 0.06, 1, 16]} />
         <meshStandardMaterial color="#2d8a4e" roughness={0.7} />
       </mesh>
       <group position={[0, 0.35, 0]}>
         <mesh position={[0.15, 0, 0.05]} rotation={[0.3, 0.5, -0.6]} castShadow>
-          <sphereGeometry args={[0.16, 32, 32]} />
+          <sphereGeometry args={[0.16, 32, 16]} />
           <meshStandardMaterial color="#3aad5c" roughness={0.6} />
         </mesh>
         <mesh position={[-0.15, 0.1, -0.05]} rotation={[0.4, -0.4, 0.6]} castShadow>
-          <sphereGeometry args={[0.14, 32, 32]} />
+          <sphereGeometry args={[0.14, 32, 16]} />
           <meshStandardMaterial color="#3aad5c" roughness={0.6} />
         </mesh>
       </group>
       <group position={[0, 1.05, 0]}>
         <mesh castShadow>
-          <sphereGeometry args={[0.18, 32, 32]} />
+          <sphereGeometry args={[0.18, 32, 16]} />
           <meshStandardMaterial color="#ffd700" roughness={0.4} />
         </mesh>
         {Array.from({ length: 6 }).map((_, idx) => {
@@ -38,7 +38,7 @@ export function Flower3D({ position = [0, 0, 0] }) {
           const pz = Math.sin(angle) * 0.22;
           return (
             <mesh key={idx} position={[px, -0.02, pz]} rotation={[0.2 * Math.cos(angle), -angle, 0.2 * Math.sin(angle)]} castShadow>
-              <sphereGeometry args={[0.15, 32, 32]} />
+              <sphereGeometry args={[0.15, 32, 16]} />
               <meshStandardMaterial color="#ff6b9d" roughness={0.5} />
             </mesh>
           );
@@ -59,20 +59,20 @@ export function Tree3D({ position = [0, 0, 0] }) {
   return (
     <group ref={groupRef} position={position}>
       <mesh position={[0, 0.6, 0]} castShadow>
-        <cylinderGeometry args={[0.12, 0.2, 1.2, 32]} />
+        <cylinderGeometry args={[0.12, 0.2, 1.2, 16]} />
         <meshStandardMaterial color="#8B5E3C" roughness={0.9} />
       </mesh>
       <group position={[0, 1.6, 0]}>
         <mesh position={[0, 0.8, 0]} castShadow>
-          <coneGeometry args={[0.65, 1.1, 32]} />
+          <coneGeometry args={[0.65, 1.1, 16]} />
           <meshStandardMaterial color="#4caf50" roughness={0.6} />
         </mesh>
         <mesh position={[0, 0.35, 0]} castShadow>
-          <coneGeometry args={[0.9, 1.2, 32]} />
+          <coneGeometry args={[0.9, 1.2, 16]} />
           <meshStandardMaterial color="#388e3c" roughness={0.6} />
         </mesh>
         <mesh position={[0, -0.15, 0]} castShadow>
-          <coneGeometry args={[1.15, 1.3, 32]} />
+          <coneGeometry args={[1.15, 1.3, 16]} />
           <meshStandardMaterial color="#2e7d32" roughness={0.6} />
         </mesh>
       </group>
@@ -125,20 +125,20 @@ export function Lamp3D({ position = [0, 0, 0], timeMode = 'night' }) {
   return (
     <group position={position}>
       <mesh position={[0, 1, 0]} castShadow>
-        <cylinderGeometry args={[0.04, 0.06, 2, 32]} />
+        <cylinderGeometry args={[0.04, 0.06, 2, 16]} />
         <meshStandardMaterial ref={pole1Ref} color={isNight ? '#2d3342' : '#555555'} metalness={0.6} roughness={0.4} />
       </mesh>
       <mesh position={[0, 2.1, 0]} castShadow>
-        <cylinderGeometry args={[0.2, 0.08, 0.25, 32]} />
+        <cylinderGeometry args={[0.2, 0.08, 0.25, 16]} />
         <meshStandardMaterial ref={pole2Ref} color={isNight ? '#1e222d' : '#444444'} metalness={0.6} roughness={0.3} />
       </mesh>
       <mesh position={[0, 1.95, 0]}>
-        <sphereGeometry args={[0.08, 32, 32]} />
+        <sphereGeometry args={[0.08, 32, 16]} />
         <meshStandardMaterial ref={bulbRef} color="#fff8e1" emissive={isNight ? '#ffbe3b' : '#ffd54f'} emissiveIntensity={isNight ? 3.5 : 1.2} />
       </mesh>
       <pointLight ref={lightRef} position={[0, 1.9, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={isNight ? 10 : 4} decay={2} />
       <mesh position={[0, 1.95, 0]}>
-        <sphereGeometry args={[0.3, 32, 32]} />
+        <sphereGeometry args={[0.3, 32, 16]} />
         <meshBasicMaterial ref={haloRef} color="#ffcf48" transparent opacity={isNight ? 0.18 : 0.0} />
       </mesh>
     </group>
@@ -183,24 +183,24 @@ export function Mushroom3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.45, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.14, 0.9, 32]} />
+        <cylinderGeometry args={[0.08, 0.14, 0.9, 16]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.7} />
       </mesh>
       <group ref={capRef} position={[0, 0.9, 0]}>
         <mesh position={[0, 0.2, 0]} castShadow>
-          <sphereGeometry args={[0.55, 32, 32, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
+          <sphereGeometry args={[0.55, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
           <meshStandardMaterial color="#f472b6" roughness={0.4} emissive="#be185d" emissiveIntensity={0.35} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[0.2, 0.38, 0.15]}>
-          <sphereGeometry args={[0.08, 32, 32]} />
+          <sphereGeometry args={[0.08, 32, 16]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
         <mesh position={[-0.22, 0.32, -0.1]}>
-          <sphereGeometry args={[0.07, 32, 32]} />
+          <sphereGeometry args={[0.07, 32, 16]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
         <mesh position={[0.05, 0.45, -0.2]}>
-          <sphereGeometry args={[0.06, 32, 32]} />
+          <sphereGeometry args={[0.06, 32, 16]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
       </group>
@@ -244,19 +244,19 @@ export function Fountain3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.8, 0.9, 0.4, 32]} />
+        <cylinderGeometry args={[0.8, 0.9, 0.4, 16]} />
         <meshStandardMaterial color="#94a3b8" roughness={0.8} />
       </mesh>
       <mesh position={[0, 0.39, 0]}>
-        <cylinderGeometry args={[0.68, 0.68, 0.04, 32]} />
+        <cylinderGeometry args={[0.68, 0.68, 0.04, 16]} />
         <meshStandardMaterial color="#38bdf8" roughness={0.1} metalness={0.2} transparent opacity={0.8} />
       </mesh>
       <mesh position={[0, 0.6, 0]} castShadow>
-        <cylinderGeometry args={[0.15, 0.2, 0.8, 32]} />
+        <cylinderGeometry args={[0.15, 0.2, 0.8, 16]} />
         <meshStandardMaterial color="#cbd5e1" roughness={0.7} />
       </mesh>
       <mesh ref={waterRef} position={[0, 0.85, 0]}>
-        <sphereGeometry args={[0.22, 32, 32]} />
+        <sphereGeometry args={[0.22, 32, 16]} />
         <meshStandardMaterial color="#7dd3fc" roughness={0.1} transparent opacity={0.85} emissive="#0284c7" emissiveIntensity={0.4} />
       </mesh>
     </group>
@@ -267,15 +267,15 @@ export function Tower3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.9, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.45, 0.55, 1.8, 32]} />
+        <cylinderGeometry args={[0.45, 0.55, 1.8, 16]} />
         <meshStandardMaterial color="#94a3b8" roughness={0.85} />
       </mesh>
       <mesh position={[0, 2.1, 0]} castShadow>
-        <coneGeometry args={[0.55, 0.7, 32]} />
+        <coneGeometry args={[0.55, 0.7, 16]} />
         <meshStandardMaterial color="#ef4444" roughness={0.6} />
       </mesh>
       <mesh position={[0, 1.82, 0]} castShadow>
-        <cylinderGeometry args={[0.5, 0.5, 0.15, 32]} />
+        <cylinderGeometry args={[0.5, 0.5, 0.15, 16]} />
         <meshStandardMaterial color="#64748b" roughness={0.8} />
       </mesh>
     </group>
@@ -286,31 +286,31 @@ export function Cactus3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.7, 0]} castShadow>
-        <cylinderGeometry args={[0.16, 0.18, 1.4, 32]} />
+        <cylinderGeometry args={[0.16, 0.18, 1.4, 16]} />
         <meshStandardMaterial color="#22c55e" roughness={0.8} />
       </mesh>
       <group position={[0.25, 0.65, 0]}>
         <mesh position={[0, 0, 0]} rotation={[0, 0, -1.2]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.4, 32]} />
+          <cylinderGeometry args={[0.1, 0.1, 0.4, 16]} />
           <meshStandardMaterial color="#16a34a" roughness={0.8} />
         </mesh>
         <mesh position={[0.15, 0.2, 0]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.4, 32]} />
+          <cylinderGeometry args={[0.1, 0.1, 0.4, 16]} />
           <meshStandardMaterial color="#16a34a" roughness={0.8} />
         </mesh>
       </group>
       <group position={[-0.25, 0.85, 0]}>
         <mesh position={[0, 0, 0]} rotation={[0, 0, 1.2]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.35, 32]} />
+          <cylinderGeometry args={[0.1, 0.1, 0.35, 16]} />
           <meshStandardMaterial color="#16a34a" roughness={0.8} />
         </mesh>
         <mesh position={[-0.12, 0.18, 0]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.35, 32]} />
+          <cylinderGeometry args={[0.1, 0.1, 0.35, 16]} />
           <meshStandardMaterial color="#16a34a" roughness={0.8} />
         </mesh>
       </group>
       <mesh position={[0, 1.45, 0]}>
-        <sphereGeometry args={[0.12, 32, 32]} />
+        <sphereGeometry args={[0.12, 32, 16]} />
         <meshStandardMaterial color="#facc15" roughness={0.4} />
       </mesh>
     </group>
@@ -329,15 +329,15 @@ export function Campfire3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, 0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.08, 0.7, 32]} />
+        <cylinderGeometry args={[0.08, 0.08, 0.7, 16]} />
         <meshStandardMaterial color="#78350f" roughness={0.9} />
       </mesh>
       <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, -0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.08, 0.7, 32]} />
+        <cylinderGeometry args={[0.08, 0.08, 0.7, 16]} />
         <meshStandardMaterial color="#78350f" roughness={0.9} />
       </mesh>
       <mesh ref={flameRef} position={[0, 0.4, 0]}>
-        <coneGeometry args={[0.25, 0.6, 32]} />
+        <coneGeometry args={[0.25, 0.6, 16]} />
         <meshStandardMaterial color="#f97316" roughness={0.2} emissive="#ea580c" emissiveIntensity={1.2} transparent opacity={0.9} />
       </mesh>
       <pointLight position={[0, 0.5, 0]} color="#f97316" intensity={2.2} distance={6} decay={2} />
@@ -357,11 +357,11 @@ export function Monument3D({ position = [0, 0, 0] }) {
         <meshStandardMaterial color="#94a3b8" roughness={0.7} />
       </mesh>
       <mesh position={[0, 1.25, 0]} castShadow>
-        <cylinderGeometry args={[0.15, 0.24, 1.6, 32]} />
+        <cylinderGeometry args={[0.15, 0.24, 1.6, 16]} />
         <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
       </mesh>
       <mesh position={[0, 2.15, 0]} castShadow>
-        <sphereGeometry args={[0.16, 32, 32]} />
+        <sphereGeometry args={[0.16, 32, 16]} />
         <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={0.8} emissive="#d97706" emissiveIntensity={0.5} />
       </mesh>
     </group>
@@ -475,7 +475,7 @@ export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDel
         )}
 
         <mesh position={[0, 0.6, 0]} visible={false}>
-          <cylinderGeometry args={[0.9, 0.9, 1.8, 32]} />
+          <cylinderGeometry args={[0.9, 0.9, 1.8, 16]} />
           <meshBasicMaterial />
         </mesh>
       </group>
