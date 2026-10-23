@@ -55,7 +55,9 @@ export default function App() {
     handleDragStart, handleDragEnd, handleDragOver, handleDrop,
     handleGroundTap,
     handleDeleteObject, handleDeleteSelected,
-    handleResetAll
+    handleDuplicateSelected,
+    handleResetAll,
+    handleExportJson, handleImportJson
   } = useSandboxState();
 
   const [fps, setFps] = useState(60);
@@ -106,6 +108,8 @@ export default function App() {
         centralObjectName={centralObjectName}
         setCentralModalOpen={setCentralModalOpen}
         setWorldModalOpen={setWorldModalOpen}
+        handleExportJson={handleExportJson}
+        handleImportJson={handleImportJson}
       />
 
       {/* 3. Transform Dynamic Island & Placement Hint Banners */}
@@ -115,6 +119,7 @@ export default function App() {
         transformMode={transformMode}
         setTransformMode={setTransformMode}
         handleDeleteSelected={handleDeleteSelected}
+        handleDuplicateSelected={handleDuplicateSelected}
         draggingItem={draggingItem}
         activePlacementType={activePlacementType}
         setActivePlacementType={setActivePlacementType}

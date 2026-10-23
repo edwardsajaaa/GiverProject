@@ -54,6 +54,7 @@ export function MainCanvas({
       gl={{ 
         powerPreference: "high-performance", 
         antialias: false,
+        preserveDrawingBuffer: true,
         toneMapping: THREE.ACESFilmicToneMapping 
       }}
       camera={{ position: [14, 8, 14], fov: 60 }}

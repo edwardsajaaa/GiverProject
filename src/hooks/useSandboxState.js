@@ -173,7 +173,23 @@ export function useSandboxState() {
     handleDeleteObject(selectedId);
   }, [selectedId, handleDeleteObject]);
 
-  // Global Keybindings (Ctrl+Z, Ctrl+Y, Escape, Delete, Space, T, R, S)
+  const handleDuplicateSelected = useCallback(() => {
+    if (!selectedId) return;
+    setPlacedObjects((prev) => {
+      const target = prev.find((o) => o.id === selectedId);
+      if (!target) return prev;
+      const clone = {
+        ...target,
+        id: Date.now() + Math.random().toString(),
+        position: [target.position[0] + 0.6, target.position[1], target.position[2] + 0.6]
+      };
+      setSelectedId(clone.id);
+      return [...prev, clone];
+    });
+    SoundEngine.playPop();
+  }, [selectedId, setPlacedObjects]);
+
+  // Global Keybindings (Ctrl+Z, Ctrl+Y, Escape, Delete, Space, T, R, S, D)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -203,12 +219,14 @@ export function useSandboxState() {
         setTransformMode('rotate');
       } else if (e.key.toLowerCase() === 's') {
         setTransformMode('scale');
+      } else if (e.key.toLowerCase() === 'd') {
+        if (selectedId) handleDuplicateSelected();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, selectedId, handleDeleteSelected]);
+  }, [handleUndo, handleRedo, selectedId, handleDeleteSelected, handleDuplicateSelected]);
 
   // Context Loss Handler
   useEffect(() => {
@@ -423,6 +441,7 @@ export function useSandboxState() {
     handleDragStart, handleDragEnd, handleDragOver, handleDrop,
     handleGroundTap,
     handleDeleteObject, handleDeleteSelected,
+    handleDuplicateSelected,
     handleRotateSelected, handleScaleSelected,
     handleResetAll,
     handleExportJson, handleImportJson

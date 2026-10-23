@@ -7,6 +7,7 @@ export function TransformToolbar({
   transformMode,
   setTransformMode,
   handleDeleteSelected,
+  handleDuplicateSelected,
   draggingItem,
   activePlacementType,
   setActivePlacementType
@@ -58,6 +59,18 @@ export function TransformToolbar({
               cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
             }}>
             SKALA
+          </button>
+
+          <button 
+            onClick={handleDuplicateSelected} 
+            title="Duplikasi Objek (D)" 
+            style={{
+              padding: '4px 12px', borderRadius: 16, border: 'none', 
+              background: 'transparent', 
+              color: isNight ? '#38bdf8' : '#0284c7', 
+              cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
+            }}>
+            DUPLIKAT
           </button>
           
           <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', margin: '0 4px' }} />

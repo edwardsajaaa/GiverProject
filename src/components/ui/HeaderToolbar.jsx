@@ -19,7 +19,9 @@ export function HeaderToolbar({
   centralObjectType,
   centralObjectName,
   setCentralModalOpen,
-  setWorldModalOpen
+  setWorldModalOpen,
+  handleExportJson,
+  handleImportJson
 }) {
   const isNight = timeMode === 'night';
 
@@ -176,6 +178,30 @@ export function HeaderToolbar({
           <IconCamera size={14} />
           <span>FOTO</span>
         </button>
+
+        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+
+        {/* Ekspor & Impor JSON */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {handleExportJson && (
+            <button onClick={handleExportJson} title="Ekspor Diorama ke File JSON" style={{
+              padding: '6px 10px', borderRadius: 18, border: 'none', cursor: 'pointer',
+              background: 'transparent', color: isNight ? '#E5E5E5' : '#171717',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.5px'
+            }}>
+              EKSPOR
+            </button>
+          )}
+          {handleImportJson && (
+            <button onClick={handleImportJson} title="Impor Diorama dari File JSON" style={{
+              padding: '6px 10px', borderRadius: 18, border: 'none', cursor: 'pointer',
+              background: 'transparent', color: isNight ? '#E5E5E5' : '#171717',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.5px'
+            }}>
+              IMPOR
+            </button>
+          )}
+        </div>
 
         {/* Tutorial */}
         <button onClick={() => { setShowTutorial(true); SoundEngine.playClick(); }} title="Bantuan Tutorial" style={{

@@ -1,7 +1,8 @@
 {
-  "name": "my-3d-web",
+  "name": "giverproject",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Interactive 3D Web Sandbox & Spatial Diorama Builder",
   "type": "module",
   "scripts": {
     "dev": "vite",
