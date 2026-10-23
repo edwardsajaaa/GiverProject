@@ -18,7 +18,8 @@ export function HeaderToolbar({
   sceneRef,
   centralObjectType,
   centralObjectName,
-  setCentralModalOpen
+  setCentralModalOpen,
+  setWorldModalOpen
 }) {
   const isNight = timeMode === 'night';
 
@@ -115,6 +116,16 @@ export function HeaderToolbar({
           {getHeroLabel().toUpperCase()}
         </button>
 
+        {/* Dunia & Gaya */}
+        <button onClick={() => { if (setWorldModalOpen) { setWorldModalOpen(true); SoundEngine.playPop(); } }} title="Kustomisasi Dunia & Gaya Seni" style={{
+          display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 18,
+          background: isNight ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)', border: 'none',
+          color: isNight ? '#38bdf8' : '#0284c7', fontSize: 11, fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer',
+          transition: 'all 0.3s ease'
+        }}>
+          🌍 DUNIA & GAYA
+        </button>
+
         <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
 
         {/* Audio & Rotate */}
@@ -139,46 +150,39 @@ export function HeaderToolbar({
 
         <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
 
-        {/* Photo */}
-        <button onClick={handleTakePhoto} title="Foto HD" style={{
-          padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
+        {/* Day / Night */}
+        <button onClick={() => {
+          const next = isNight ? 'day' : 'night';
+          setTimeMode(next);
+          SoundEngine.setAmbient(audioActive, next === 'night');
+          SoundEngine.playClick();
+        }} title="Toggle Day / Night" style={{
+          padding: '6px 14px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
           background: 'transparent', border: 'none', cursor: 'pointer',
-          color: isNight ? '#E5E5E5' : '#171717', 
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
+          color: isNight ? '#E5E5E5' : '#171717', fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
         }}>
-          <IconCamera size={14} /> FOTO
+          {isNight ? <IconGalaxy size={14} /> : <IconSun size={14} />}
+          <span>{isNight ? 'MALAM' : 'SIANG'}</span>
         </button>
 
         <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
 
-        {/* Time Mode */}
-        <div style={{ display: 'flex', alignItems: 'center', background: isNight ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)', borderRadius: 18, padding: 2 }}>
-          <button onClick={() => { setTimeMode('day'); SoundEngine.setAmbient(audioActive, false); SoundEngine.playClick(); }} style={{
-            padding: '4px 10px', borderRadius: 16, border: 'none', cursor: 'pointer',
-            background: !isNight ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
-            color: !isNight ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'),
-            display: 'flex', alignItems: 'center', gap: 4, transition: 'all 0.3s ease'
-          }}>
-            <IconSun size={14} />
-          </button>
-          <button onClick={() => { setTimeMode('night'); SoundEngine.setAmbient(audioActive, true); SoundEngine.playClick(); }} style={{
-            padding: '4px 10px', borderRadius: 16, border: 'none', cursor: 'pointer',
-            background: isNight ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
-            color: isNight ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'),
-            display: 'flex', alignItems: 'center', gap: 4, transition: 'all 0.3s ease'
-          }}>
-            <IconGalaxy size={14} />
-          </button>
-        </div>
-
-        {/* Help */}
-        <button onClick={() => setShowTutorial(true)} title="Tutorial" style={{
-          padding: '6px 12px', borderRadius: 18, border: 'none', cursor: 'pointer',
-          background: 'transparent', color: isNight ? '#E5E5E5' : '#171717', 
-          fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
+        {/* Camera Snapshot / Photo Mode */}
+        <button onClick={handleTakePhoto} title="Ambil Foto Sandbox" style={{
+          padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
+          background: 'transparent', border: 'none', cursor: 'pointer',
+          color: isNight ? '#E5E5E5' : '#171717', fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
         }}>
-          HELP
+          <IconCamera size={14} />
+          <span>FOTO</span>
         </button>
+
+        {/* Tutorial */}
+        <button onClick={() => { setShowTutorial(true); SoundEngine.playClick(); }} title="Bantuan Tutorial" style={{
+          width: 28, height: 28, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: isNight ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)', border: 'none', cursor: 'pointer',
+          color: isNight ? '#A3A3A3' : '#525252', fontSize: 11, fontWeight: 700, marginLeft: 2
+        }}>?</button>
       </div>
     </header>
   );

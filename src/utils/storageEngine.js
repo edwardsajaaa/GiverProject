@@ -1,9 +1,25 @@
-// ============ STORAGE ENGINE ============
 const STORAGE_KEY = 'giver_sandbox_save_v3';
 const ONBOARDED_KEY = 'giver_sandbox_onboarded_v3';
 const CENTRAL_OBJECT_KEY = 'giver_central_object_v1';
+const WORLD_CONFIG_KEY = 'giver_world_config_v1';
 
 export const StorageEngine = {
+  loadWorldConfig() {
+    try {
+      const saved = localStorage.getItem(WORLD_CONFIG_KEY);
+      return saved ? JSON.parse(saved) : { biome: 'floating_island', artStyle: 'lowpoly' };
+    } catch {
+      return { biome: 'floating_island', artStyle: 'lowpoly' };
+    }
+  },
+
+  saveWorldConfig(config) {
+    try {
+      localStorage.setItem(WORLD_CONFIG_KEY, JSON.stringify(config));
+    } catch {
+      /* ignore */
+    }
+  },
   loadCentralObject() {
     try {
       const saved = localStorage.getItem(CENTRAL_OBJECT_KEY);

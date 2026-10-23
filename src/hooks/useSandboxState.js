@@ -23,6 +23,16 @@ export function useSandboxState() {
   const [centralObjectName, setCentralObjectName] = useState(initialCentral.customName || null);
   const [centralModalOpen, setCentralModalOpen] = useState(false);
 
+  // World Biome & Art Style Customization State
+  const [initialWorld] = useState(() => StorageEngine.loadWorldConfig());
+  const [biome, setBiome] = useState(initialWorld.biome || 'floating_island');
+  const [artStyle, setArtStyle] = useState(initialWorld.artStyle || 'lowpoly');
+  const [worldModalOpen, setWorldModalOpen] = useState(false);
+
+  useEffect(() => {
+    StorageEngine.saveWorldConfig({ biome, artStyle });
+  }, [biome, artStyle]);
+
   // Otomatis pulihkan file 3D kustom dari IndexedDB saat halaman dimuat ulang
   useEffect(() => {
     ModelStorage.loadHeroModel().then(saved => {
@@ -61,269 +71,327 @@ export function useSandboxState() {
   });
   const [historyFuture, setHistoryFuture] = useState([]);
 
-  const setPlacedObjects = useCallback((updater) => {
-    setPlacedObjectsRaw(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      setHistoryPast(p => [...p.slice(-25), prev]);
-      setHistoryFuture([]);
+  const setPlacedObjects = useCallback((action) => {
+    setPlacedObjectsRaw((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      if (JSON.stringify(prev) !== JSON.stringify(next)) {
+        setHistoryPast((past) => [...past.slice(-24), prev]);
+        setHistoryFuture([]);
+        StorageEngine.saveScene(next);
+      }
       return next;
     });
   }, []);
 
-  // Autosave to localStorage
-  useEffect(() => {
-    StorageEngine.saveScene(placedObjects);
-  }, [placedObjects]);
-
   const handleUndo = useCallback(() => {
     if (historyPast.length === 0) return;
     const previous = historyPast[historyPast.length - 1];
-    setHistoryPast(p => p.slice(0, -1));
-    setHistoryFuture(f => [placedObjects, ...f]);
+    setHistoryPast((past) => past.slice(0, past.length - 1));
+    setHistoryFuture((future) => [placedObjects, ...future]);
     setPlacedObjectsRaw(previous);
+    StorageEngine.saveScene(previous);
     SoundEngine.playClick();
   }, [historyPast, placedObjects]);
 
   const handleRedo = useCallback(() => {
     if (historyFuture.length === 0) return;
     const next = historyFuture[0];
-    setHistoryFuture(f => f.slice(1));
-    setHistoryPast(p => [...p, placedObjects]);
+    setHistoryFuture((future) => future.slice(1));
+    setHistoryPast((past) => [...past, placedObjects]);
     setPlacedObjectsRaw(next);
+    StorageEngine.saveScene(next);
     SoundEngine.playClick();
   }, [historyFuture, placedObjects]);
 
-  const [transformMode, setTransformMode] = useState('translate'); // 'translate', 'rotate', 'scale'
+  // Transform Toolbar mode ('translate' | 'rotate' | 'scale')
+  const [transformMode, setTransformMode] = useState('translate');
 
-  const [draggingItem, setDraggingItem] = useState(null);
-  const [activePlacementType, setActivePlacementType] = useState(null); // Touch Tap-to-Place
-  const [deleteMode, setDeleteMode] = useState(false);
+  // Selected object in 3D scene
   const [selectedId, setSelectedId] = useState(null);
+
+  // Active item from bottom dock ready to tap on ground to place
+  const [activePlacementType, setActivePlacementType] = useState(null);
+
+  // Dragging state from Bottom Dock
+  const [draggingItem, setDraggingItem] = useState(null);
+
+  // Delete mode
+  const [deleteMode, setDeleteMode] = useState(false);
+
+  // Reset confirmation
   const [resetConfirm, setResetConfirm] = useState(false);
+
+  // WebGL context loss recovery
   const [webglLost, setWebglLost] = useState(false);
+
+  // First time tutorial
   const [showTutorial, setShowTutorial] = useState(() => !StorageEngine.isOnboarded());
 
-  // Performance Tiering with user preference persistence
-  const isLowEndDevice = useMemo(() => {
-    if (typeof navigator !== 'undefined' && (navigator.hardwareConcurrency <= 4 || /Mobi|Android/i.test(navigator.userAgent))) return true;
-    return false;
-  }, []);
-
+  // Performance telemetry (tier: 'high' | 'low')
   const [performanceTier, setPerformanceTier] = useState(() => {
-    try {
-      const saved = localStorage.getItem('giver_sandbox_gpu_tier');
-      if (saved === 'low' || saved === 'high') return saved;
-    } catch (_ERR) {
-      void _ERR;
-    }
-    return isLowEndDevice ? 'low' : 'high';
+    const saved = localStorage.getItem('giver_perf_tier');
+    if (saved) return saved;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const lowCores = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 4;
+    return (isMobile || lowCores) ? 'low' : 'high';
   });
 
   const togglePerformanceTier = useCallback(() => {
     setPerformanceTier(prev => {
       const next = prev === 'high' ? 'low' : 'high';
-      try { 
-        localStorage.setItem('giver_sandbox_gpu_tier', next); 
-      } catch (_ERR) {
-        void _ERR;
-      }
+      try { localStorage.setItem('giver_perf_tier', next); } catch { /* ignore */ }
       SoundEngine.playClick();
       return next;
     });
   }, []);
 
-  const lowFpsCount = useRef(0);
-  const handleFpsUpdate = useCallback((newFps) => {
-    if (performanceTier === 'high' && newFps < 38) {
-      lowFpsCount.current++;
-      if (lowFpsCount.current >= 3) {
+  const isLowEndDevice = useMemo(() => performanceTier === 'low', [performanceTier]);
+
+  const fpsDropCount = useRef(0);
+  const handleFpsUpdate = useCallback((fps) => {
+    if (fps < 24) {
+      fpsDropCount.current += 1;
+      if (fpsDropCount.current > 12 && performanceTier !== 'low') {
+        console.warn('⚡ Low FPS detected for sustained period, switching to ECO GPU Mode.');
         setPerformanceTier('low');
-        try { 
-          localStorage.setItem('giver_sandbox_gpu_tier', 'low'); 
-        } catch (_ERR) {
-          void _ERR;
-        }
-        lowFpsCount.current = 0;
+        try { localStorage.setItem('giver_perf_tier', 'low'); } catch { /* ignore */ }
       }
     } else {
-      lowFpsCount.current = 0;
+      fpsDropCount.current = Math.max(0, fpsDropCount.current - 1);
     }
   }, [performanceTier]);
 
-  const sceneRef = useRef(null);
-  const canvasContainerRef = useRef(null);
-  const isNight = timeMode === 'night';
+  // Global Keybindings (Ctrl+Z, Ctrl+Y, Escape, Delete, Space, T, R, S)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-  const [inventory] = useState(() => [
-    'flower', 'tree', 'rock', 'lamp', 'crystal', 'mushroom',
-    'pyramid', 'fountain', 'tower', 'cactus', 'campfire', 'monument'
-  ]);
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) handleRedo();
+        else handleUndo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        handleRedo();
+      } else if (e.key === 'Escape') {
+        setSelectedId(null);
+        setActivePlacementType(null);
+        setDeleteMode(false);
+        setResetConfirm(false);
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (selectedId) {
+          handleDeleteSelected();
+        }
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        setAutoRotate((prev) => !prev);
+      } else if (e.key.toLowerCase() === 't') {
+        setTransformMode('translate');
+      } else if (e.key.toLowerCase() === 'r') {
+        setTransformMode('rotate');
+      } else if (e.key.toLowerCase() === 's') {
+        setTransformMode('scale');
+      }
+    };
 
-  const handleStart = useCallback(() => setPaused(true), []);
-  const handleEnd = useCallback(() => setPaused(false), []);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo, selectedId]);
 
-  const handleDragStart = useCallback((e, itemType) => {
-    setDraggingItem(itemType);
-    if (e && e.dataTransfer) {
-      e.dataTransfer.setData('itemType', itemType);
-    }
+  // Context Loss Handler
+  useEffect(() => {
+    const handleContextLost = (e) => {
+      e.preventDefault();
+      console.warn('WebGL Context Lost!');
+      setWebglLost(true);
+    };
+    const handleContextRestored = () => {
+      console.log('WebGL Context Restored!');
+      setWebglLost(false);
+    };
+
+    window.addEventListener('webglcontextlost', handleContextLost, false);
+    window.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    return () => {
+      window.removeEventListener('webglcontextlost', handleContextLost);
+      window.removeEventListener('webglcontextrestored', handleContextRestored);
+    };
   }, []);
 
-  const handleDragEnd = useCallback(() => setDraggingItem(null), []);
+  const sceneRef = useRef(null);
+  const canvasContainerRef = useRef(null);
 
-  const handleGroundTap = useCallback((x, z) => {
-    if (!activePlacementType) return;
-    const half = 10;
-    const clampedX = snapVal(Math.max(-half, Math.min(half, x)));
-    const clampedZ = snapVal(Math.max(-half, Math.min(half, z)));
-    
-    // Alih-alih langsung naruh, kita simpan di pendingGreeting untuk memunculkan Form Ucapan
-    setPendingGreeting({
-      id: Date.now() + Math.random().toString(),
-      type: activePlacementType,
-      position: [clampedX, 0, clampedZ],
-      rotationY: 0,
-      scale: 1,
-    });
-    
-    SoundEngine.playClick();
+  const isNight = timeMode === 'night';
+
+  const inventory = [
+    { type: 'crystal', label: 'Batu Kristal', icon: '💎', defaultScale: 0.6 },
+    { type: 'lantern', label: 'Lentera Kosmik', icon: '🏮', defaultScale: 0.8 },
+    { type: 'flower', label: 'Bunga Sakura', icon: '🌸', defaultScale: 0.7 },
+    { type: 'rock', label: 'Batu Alam', icon: '🪨', defaultScale: 0.8 },
+    { type: 'mushroom', label: 'Jamur Ajaib', icon: '🍄', defaultScale: 0.6 },
+    { type: 'box', label: 'Kotak Harta', icon: '📦', defaultScale: 0.7 }
+  ];
+
+  const handleStart = () => setPaused(true);
+  const handleEnd = () => setPaused(false);
+
+  const handleDragStart = (e, type) => {
+    setDraggingItem(type);
+    if (e.dataTransfer) {
+      e.dataTransfer.setData('text/plain', type);
+      e.dataTransfer.effectAllowed = 'copy';
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggingItem(null);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'copy';
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+
+    // Cek jika ada file 3D (.glb / .gltf) yang di-drag langsung dari Windows Explorer / Desktop
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      const lower = file.name.toLowerCase();
+      if (lower.endsWith('.glb') || lower.endsWith('.gltf')) {
+        ModelStorage.saveHeroModel(file).then(blobUrl => {
+          setCentralObjectUrl(blobUrl);
+          setCentralObjectName(file.name);
+          setCentralObjectType('custom');
+          setCentralObjectMaterial('original');
+          SoundEngine.playPop();
+        }).catch(err => {
+          console.error("Gagal menyimpan model drag-drop:", err);
+          const tempUrl = URL.createObjectURL(file);
+          setCentralObjectUrl(tempUrl);
+          setCentralObjectName(file.name);
+          setCentralObjectType('custom');
+        });
+        return;
+      }
+    }
+
+    const itemType = e.dataTransfer ? e.dataTransfer.getData('text/plain') : draggingItem;
+    if (!itemType) return;
+
+    if (!canvasContainerRef.current) return;
+    const rect = canvasContainerRef.current.getBoundingClientRect();
+    const xRatio = (e.clientX - rect.left) / rect.width;
+    const yRatio = (e.clientY - rect.top) / rect.height;
+
+    // Convert mouse to ground coordinate on radius 7.5
+    const groundX = snapVal((xRatio - 0.5) * 15);
+    const groundZ = snapVal((yRatio - 0.5) * 15);
+
+    const dist = Math.sqrt(groundX * groundX + groundZ * groundZ);
+    if (dist <= 8.5) {
+      spawnObject(itemType, groundX, groundZ);
+    }
+    setDraggingItem(null);
+  };
+
+  const spawnObject = (type, x, z) => {
+    const matched = inventory.find((item) => item.type === type);
+    const scale = matched ? matched.defaultScale : 0.7;
+
+    const newObj = {
+      id: Date.now() + Math.random(),
+      type,
+      position: [snapVal(x), 0, snapVal(z)],
+      rotation: [0, Math.random() * Math.PI * 2, 0],
+      scale: [scale, scale, scale],
+      greeting: ''
+    };
+
+    setPlacedObjects((prev) => [...prev, newObj]);
+    setSelectedId(newObj.id);
     setActivePlacementType(null);
-  }, [activePlacementType, snapVal]);
+    setPendingGreeting(newObj); // Buka popup pesan interaktif langsung
+    SoundEngine.playPop();
+  };
 
-  const handleDeleteObject = useCallback((id) => {
-    setPlacedObjects(prev => prev.filter(o => o.id !== id));
-    setSelectedId(s => s === id ? null : s);
-    SoundEngine.playDelete();
-  }, [setPlacedObjects]);
-
-  const handleDeleteSelected = useCallback(() => {
-    if (!selectedId) return;
-    setPlacedObjects(prev => prev.filter(o => o.id !== selectedId));
-    setSelectedId(null);
-    SoundEngine.playDelete();
-  }, [selectedId, setPlacedObjects]);
-
-  const handleRotateSelected = useCallback((angleDelta) => {
-    if (!selectedId) return;
-    setPlacedObjects(prev => prev.map(o => o.id === selectedId ? { ...o, rotationY: (o.rotationY || 0) + angleDelta } : o));
-    SoundEngine.playClick();
-  }, [selectedId, setPlacedObjects]);
-
-  const handleScaleSelected = useCallback((scaleDelta) => {
-    if (!selectedId) return;
-    setPlacedObjects(prev => prev.map(o => o.id === selectedId ? { ...o, scale: Math.max(0.4, Math.min(2.8, (o.scale || 1) + scaleDelta)) } : o));
-    SoundEngine.playClick();
-  }, [selectedId, setPlacedObjects]);
-
-  const handleResetAll = useCallback(() => {
-    if (!resetConfirm) {
-      setResetConfirm(true);
-      setTimeout(() => setResetConfirm(false), 3000);
+  const handleGroundTap = (x, z) => {
+    if (activePlacementType) {
+      spawnObject(activePlacementType, snapVal(x), snapVal(z));
       return;
     }
+    // Deselect if tapping empty ground
+    setSelectedId(null);
+  };
+
+  const handleDeleteObject = (id) => {
+    setPlacedObjects((prev) => prev.filter((obj) => obj.id !== id));
+    if (selectedId === id) setSelectedId(null);
+    SoundEngine.playDelete();
+  };
+
+  const handleDeleteSelected = () => {
+    if (!selectedId) return;
+    handleDeleteObject(selectedId);
+  };
+
+  const handleRotateSelected = () => {
+    if (!selectedId) return;
+    setPlacedObjects((prev) =>
+      prev.map((obj) => {
+        if (obj.id === selectedId) {
+          return {
+            ...obj,
+            rotation: [obj.rotation[0], obj.rotation[1] + Math.PI / 4, obj.rotation[2]]
+          };
+        }
+        return obj;
+      })
+    );
+    SoundEngine.playClick();
+  };
+
+  const handleScaleSelected = () => {
+    if (!selectedId) return;
+    setPlacedObjects((prev) =>
+      prev.map((obj) => {
+        if (obj.id === selectedId) {
+          const currentScale = obj.scale[0];
+          const newScale = currentScale >= 1.5 ? 0.4 : currentScale + 0.3;
+          return {
+            ...obj,
+            scale: [newScale, newScale, newScale]
+          };
+        }
+        return obj;
+      })
+    );
+    SoundEngine.playClick();
+  };
+
+  const handleResetAll = () => {
     setPlacedObjects([]);
     setSelectedId(null);
-    setDeleteMode(false);
     setResetConfirm(false);
+    StorageEngine.saveScene([]);
     SoundEngine.playDelete();
-  }, [resetConfirm, setPlacedObjects]);
+  };
 
-  const handleExportJson = useCallback(() => {
-    StorageEngine.exportJson({ version: "3.1", timeMode, placedObjects }, () => {
-      SoundEngine.playPop();
-    });
-  }, [timeMode, placedObjects]);
+  const handleExportJson = () => {
+    StorageEngine.exportJson({ timeMode, placedObjects }, () => SoundEngine.playPop());
+  };
 
-  const handleImportJson = useCallback(() => {
+  const handleImportJson = () => {
     StorageEngine.importJson({
       setPlacedObjects,
       setTimeMode,
       onSuccess: () => SoundEngine.playPop()
     });
-  }, [setPlacedObjects]);
-
-  // Comprehensive Keyboard Shortcuts: Ctrl+Z (Undo), Ctrl+Y (Redo), Ctrl+S (Export), Ctrl+O (Import)
-  // Tool Shortcuts: T (Translate), R (Rotate), S (Scale), Del (Delete)
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Input elements should not trigger hotkeys
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
-      if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); handleRedo(); }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); handleExportJson(); }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') { e.preventDefault(); handleImportJson(); }
-      
-      // Transform Modes
-      if (!e.ctrlKey && !e.metaKey) {
-        if (e.key.toLowerCase() === 't') setTransformMode('translate');
-        if (e.key.toLowerCase() === 'r') setTransformMode('rotate');
-        if (e.key.toLowerCase() === 's') setTransformMode('scale');
-        if (e.key === 'Delete' || e.key === 'Backspace') handleDeleteSelected();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, handleExportJson, handleImportJson, handleDeleteSelected]);
-
-  const handleDragOver = useCallback((e) => {
-    e.preventDefault();
-    if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
-  }, []);
-
-  const handleDrop = useCallback(async (e) => {
-    e.preventDefault();
-
-    // Dukungan drag-and-drop file .glb / .gltf langsung dari Windows Explorer / Finder
-    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      const lower = file.name.toLowerCase();
-      if (lower.endsWith('.glb') || lower.endsWith('.gltf')) {
-        try {
-          const { blobUrl, fileName } = await ModelStorage.saveHeroModel(file);
-          setCentralObjectUrl(blobUrl);
-          setCentralObjectName(fileName);
-          setCentralObjectType('custom');
-          setCentralObjectMaterial('original');
-          SoundEngine.playPop();
-          return;
-        } catch (err) {
-          console.error('Gagal memuat file 3D yang di-drop:', err);
-        }
-      }
-    }
-
-    const itemType = e.dataTransfer ? e.dataTransfer.getData('itemType') : draggingItem;
-    if (!itemType || !sceneRef.current || !canvasContainerRef.current) return;
-
-    const rect = canvasContainerRef.current.getBoundingClientRect();
-    const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-    const { camera } = sceneRef.current;
-    if (!camera) return;
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(ndcX, ndcY), camera);
-    const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    const intersection = new THREE.Vector3();
-    const hit = raycaster.ray.intersectPlane(floorPlane, intersection);
-
-    if (hit) {
-      const half = 10;
-      const clampedX = snapVal(Math.max(-half, Math.min(half, intersection.x)));
-      const clampedZ = snapVal(Math.max(-half, Math.min(half, intersection.z)));
-      
-      setPendingGreeting({
-        id: Date.now() + Math.random().toString(),
-        type: itemType,
-        position: [clampedX, 0, clampedZ],
-        rotationY: 0,
-        scale: 1,
-      });
-      SoundEngine.playClick();
-    }
-    setDraggingItem(null);
-  }, [draggingItem, snapVal]);
+  };
 
   return {
     timeMode, setTimeMode, isNight,
@@ -339,6 +407,9 @@ export function useSandboxState() {
     centralObjectUrl, setCentralObjectUrl,
     centralObjectName, setCentralObjectName,
     centralModalOpen, setCentralModalOpen,
+    biome, setBiome,
+    artStyle, setArtStyle,
+    worldModalOpen, setWorldModalOpen,
     snapGrid, setSnapGrid,
     snapSize, setSnapSize,
     historyPast, historyFuture,

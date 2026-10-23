@@ -6,6 +6,7 @@ import { TransformToolbar } from './components/ui/TransformToolbar';
 import { TelemetryBadge } from './components/ui/TelemetryBadge';
 import { OnboardingModal } from './components/ui/OnboardingModal';
 import { CentralObjectModal } from './components/ui/CentralObjectModal';
+import { WorldStyleModal } from './components/ui/WorldStyleModal';
 import { GreetingModal } from './components/ui/GreetingModal';
 import { CanvasErrorBoundary } from './components/common/CanvasErrorBoundary';
 import { Loader } from '@react-three/drei';
@@ -28,6 +29,9 @@ export default function App() {
     centralObjectUrl, setCentralObjectUrl,
     centralObjectName, setCentralObjectName,
     centralModalOpen, setCentralModalOpen,
+    biome, setBiome,
+    artStyle, setArtStyle,
+    worldModalOpen, setWorldModalOpen,
     snapGrid, setSnapGrid,
     snapSize, setSnapSize,
     historyPast, historyFuture,
@@ -51,7 +55,6 @@ export default function App() {
     handleDragStart, handleDragEnd, handleDragOver, handleDrop,
     handleGroundTap,
     handleDeleteObject, handleDeleteSelected,
-    handleRotateSelected, handleScaleSelected,
     handleResetAll
   } = useSandboxState();
 
@@ -102,6 +105,7 @@ export default function App() {
         centralObjectType={centralObjectType}
         centralObjectName={centralObjectName}
         setCentralModalOpen={setCentralModalOpen}
+        setWorldModalOpen={setWorldModalOpen}
       />
 
       {/* 3. Transform Dynamic Island & Placement Hint Banners */}
@@ -110,8 +114,6 @@ export default function App() {
         selectedId={selectedId}
         transformMode={transformMode}
         setTransformMode={setTransformMode}
-        handleRotateSelected={handleRotateSelected}
-        handleScaleSelected={handleScaleSelected}
         handleDeleteSelected={handleDeleteSelected}
         draggingItem={draggingItem}
         activePlacementType={activePlacementType}
@@ -165,6 +167,8 @@ export default function App() {
               centralObjectScale={centralObjectScale}
               centralObjectUrl={centralObjectUrl}
               setCentralModalOpen={setCentralModalOpen}
+              biome={biome}
+              artStyle={artStyle}
             />
           </Suspense>
         </CanvasErrorBoundary>
@@ -223,7 +227,18 @@ export default function App() {
         setCentralObjectName={setCentralObjectName}
       />
 
-      {/* 8. Fullscreen Loading Overlay (dari @react-three/drei) */}
+      {/* 8. World Biome & Art Style Customization Modal */}
+      <WorldStyleModal
+        isNight={isNight}
+        isOpen={worldModalOpen}
+        setIsOpen={setWorldModalOpen}
+        biome={biome}
+        setBiome={setBiome}
+        artStyle={artStyle}
+        setArtStyle={setArtStyle}
+      />
+
+      {/* 9. Fullscreen Loading Overlay (dari @react-three/drei) */}
       <Loader 
         containerStyles={{ background: isNight ? '#0A0A0A' : '#FAFAFA' }}
         innerStyles={{ width: '300px' }}

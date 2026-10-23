@@ -6,8 +6,6 @@ export function TransformToolbar({
   selectedId,
   transformMode,
   setTransformMode,
-  handleRotateSelected,
-  handleScaleSelected,
   handleDeleteSelected,
   draggingItem,
   activePlacementType,
