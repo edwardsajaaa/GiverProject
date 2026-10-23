@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { SoundEngine } from '../utils/SoundEngine';
 import { StorageEngine } from '../utils/storageEngine';
 import { ModelStorage } from '../utils/modelStorage';
+import { ITEM_DEFS } from '../components/objects/ItemDefs';
 
 export function useSandboxState() {
   const [timeMode, setTimeMode] = useState('night');
@@ -235,14 +236,7 @@ export function useSandboxState() {
 
   const isNight = timeMode === 'night';
 
-  const inventory = [
-    { type: 'crystal', label: 'Batu Kristal', icon: '💎', defaultScale: 0.6 },
-    { type: 'lantern', label: 'Lentera Kosmik', icon: '🏮', defaultScale: 0.8 },
-    { type: 'flower', label: 'Bunga Sakura', icon: '🌸', defaultScale: 0.7 },
-    { type: 'rock', label: 'Batu Alam', icon: '🪨', defaultScale: 0.8 },
-    { type: 'mushroom', label: 'Jamur Ajaib', icon: '🍄', defaultScale: 0.6 },
-    { type: 'box', label: 'Kotak Harta', icon: '📦', defaultScale: 0.7 }
-  ];
+  const inventory = Object.keys(ITEM_DEFS);
 
   const handleStart = () => setPaused(true);
   const handleEnd = () => setPaused(false);
@@ -311,22 +305,19 @@ export function useSandboxState() {
   };
 
   const spawnObject = (type, x, z) => {
-    const matched = inventory.find((item) => item.type === type);
-    const scale = matched ? matched.defaultScale : 0.7;
-
     const newObj = {
-      id: Date.now() + Math.random(),
+      id: Date.now() + Math.random().toString(),
       type,
       position: [snapVal(x), 0, snapVal(z)],
-      rotation: [0, Math.random() * Math.PI * 2, 0],
-      scale: [scale, scale, scale],
-      greeting: ''
+      rotationY: Math.random() * Math.PI * 2,
+      scale: 1,
+      senderName: 'Tamu',
+      message: ''
     };
 
-    setPlacedObjects((prev) => [...prev, newObj]);
     setSelectedId(newObj.id);
     setActivePlacementType(null);
-    setPendingGreeting(newObj); // Buka popup pesan interaktif langsung
+    setPendingGreeting(newObj);
     SoundEngine.playPop();
   };
 
@@ -346,7 +337,7 @@ export function useSandboxState() {
         if (obj.id === selectedId) {
           return {
             ...obj,
-            rotation: [obj.rotation[0], obj.rotation[1] + Math.PI / 4, obj.rotation[2]]
+            rotationY: (obj.rotationY || 0) + Math.PI / 4
           };
         }
         return obj;
@@ -360,11 +351,11 @@ export function useSandboxState() {
     setPlacedObjects((prev) =>
       prev.map((obj) => {
         if (obj.id === selectedId) {
-          const currentScale = obj.scale[0];
-          const newScale = currentScale >= 1.5 ? 0.4 : currentScale + 0.3;
+          const currentScale = typeof obj.scale === 'number' ? obj.scale : 1;
+          const newScale = currentScale >= 2.0 ? 0.5 : currentScale + 0.3;
           return {
             ...obj,
-            scale: [newScale, newScale, newScale]
+            scale: Number(newScale.toFixed(1))
           };
         }
         return obj;

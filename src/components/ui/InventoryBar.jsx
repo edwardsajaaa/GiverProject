@@ -140,7 +140,7 @@ export function InventoryBar({
                   transform: isActive ? 'scale(1.05)' : 'scale(1)',
                   flexShrink: 0
                 }}
-                title={`Place ${item ? item.label : itemType}`}
+                title={`Place ${item ? item.label : (typeof itemType === 'string' ? itemType : itemType?.label || '')}`}
               >
                 <div style={{
                   width: 34, height: 34, borderRadius: 10,
@@ -158,7 +158,7 @@ export function InventoryBar({
                   textAlign: 'center', whiteSpace: 'nowrap',
                   letterSpacing: '0.5px'
                 }}>
-                  {item ? item.label : itemType}
+                  {item ? item.label : (typeof itemType === 'string' ? itemType : itemType?.label || '')}
                 </span>
               </div>
             );
@@ -244,4 +244,3 @@ export function InventoryBar({
     </div>
   );
 }
-
