@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { TransformControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -19,17 +19,17 @@ export function Flower3D({ position = [0, 0, 0] }) {
       </mesh>
       <group position={[0, 0.35, 0]}>
         <mesh position={[0.15, 0, 0.05]} rotation={[0.3, 0.5, -0.6]} castShadow>
-          <sphereGeometry args={[0.16, 32, 16]} />
+          <sphereGeometry args={[0.16, 12, 10]} />
           <meshStandardMaterial color="#3aad5c" roughness={0.6} />
         </mesh>
         <mesh position={[-0.15, 0.1, -0.05]} rotation={[0.4, -0.4, 0.6]} castShadow>
-          <sphereGeometry args={[0.14, 32, 16]} />
+          <sphereGeometry args={[0.14, 12, 10]} />
           <meshStandardMaterial color="#3aad5c" roughness={0.6} />
         </mesh>
       </group>
       <group position={[0, 1.05, 0]}>
         <mesh castShadow>
-          <sphereGeometry args={[0.18, 32, 16]} />
+          <sphereGeometry args={[0.18, 14, 12]} />
           <meshStandardMaterial color="#ffd700" roughness={0.4} />
         </mesh>
         {Array.from({ length: 6 }).map((_, idx) => {
@@ -38,7 +38,7 @@ export function Flower3D({ position = [0, 0, 0] }) {
           const pz = Math.sin(angle) * 0.22;
           return (
             <mesh key={idx} position={[px, -0.02, pz]} rotation={[0.2 * Math.cos(angle), -angle, 0.2 * Math.sin(angle)]} castShadow>
-              <sphereGeometry args={[0.15, 32, 16]} />
+              <sphereGeometry args={[0.15, 12, 10]} />
               <meshStandardMaterial color="#ff6b9d" roughness={0.5} />
             </mesh>
           );
@@ -84,11 +84,11 @@ export function Rock3D({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <mesh position={[0, 0.28, 0]} rotation={[0.2, 0.5, 0.1]} castShadow receiveShadow>
-        <icosahedronGeometry args={[0.45, 12]} />
+        <icosahedronGeometry args={[0.45, 1]} />
         <meshStandardMaterial color="#78909c" roughness={0.9} metalness={0.1} />
       </mesh>
       <mesh position={[-0.3, 0.18, 0.1]} rotation={[0.5, 1.2, 0]} castShadow receiveShadow>
-        <icosahedronGeometry args={[0.3, 12]} />
+        <icosahedronGeometry args={[0.3, 1]} />
         <meshStandardMaterial color="#90a4ae" roughness={0.9} metalness={0.1} />
       </mesh>
     </group>
@@ -133,12 +133,12 @@ export function Lamp3D({ position = [0, 0, 0], timeMode = 'night' }) {
         <meshStandardMaterial ref={pole2Ref} color={isNight ? '#1e222d' : '#444444'} metalness={0.6} roughness={0.3} />
       </mesh>
       <mesh position={[0, 1.95, 0]}>
-        <sphereGeometry args={[0.08, 32, 16]} />
+        <sphereGeometry args={[0.08, 12, 10]} />
         <meshStandardMaterial ref={bulbRef} color="#fff8e1" emissive={isNight ? '#ffbe3b' : '#ffd54f'} emissiveIntensity={isNight ? 3.5 : 1.2} />
       </mesh>
       <pointLight ref={lightRef} position={[0, 1.9, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={isNight ? 10 : 4} decay={2} />
       <mesh position={[0, 1.95, 0]}>
-        <sphereGeometry args={[0.3, 32, 16]} />
+        <sphereGeometry args={[0.3, 14, 12]} />
         <meshBasicMaterial ref={haloRef} color="#ffcf48" transparent opacity={isNight ? 0.18 : 0.0} />
       </mesh>
     </group>
@@ -188,19 +188,19 @@ export function Mushroom3D({ position = [0, 0, 0] }) {
       </mesh>
       <group ref={capRef} position={[0, 0.9, 0]}>
         <mesh position={[0, 0.2, 0]} castShadow>
-          <sphereGeometry args={[0.55, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
+          <sphereGeometry args={[0.55, 14, 12, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
           <meshStandardMaterial color="#f472b6" roughness={0.4} emissive="#be185d" emissiveIntensity={0.35} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[0.2, 0.38, 0.15]}>
-          <sphereGeometry args={[0.08, 32, 16]} />
+          <sphereGeometry args={[0.08, 10, 8]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
         <mesh position={[-0.22, 0.32, -0.1]}>
-          <sphereGeometry args={[0.07, 32, 16]} />
+          <sphereGeometry args={[0.07, 10, 8]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
         <mesh position={[0.05, 0.45, -0.2]}>
-          <sphereGeometry args={[0.06, 32, 16]} />
+          <sphereGeometry args={[0.06, 10, 8]} />
           <meshBasicMaterial color="#ffffff" />
         </mesh>
       </group>
@@ -256,7 +256,7 @@ export function Fountain3D({ position = [0, 0, 0] }) {
         <meshStandardMaterial color="#cbd5e1" roughness={0.7} />
       </mesh>
       <mesh ref={waterRef} position={[0, 0.85, 0]}>
-        <sphereGeometry args={[0.22, 32, 16]} />
+        <sphereGeometry args={[0.22, 14, 12]} />
         <meshStandardMaterial color="#7dd3fc" roughness={0.1} transparent opacity={0.85} emissive="#0284c7" emissiveIntensity={0.4} />
       </mesh>
     </group>
@@ -310,7 +310,7 @@ export function Cactus3D({ position = [0, 0, 0] }) {
         </mesh>
       </group>
       <mesh position={[0, 1.45, 0]}>
-        <sphereGeometry args={[0.12, 32, 16]} />
+        <sphereGeometry args={[0.12, 12, 10]} />
         <meshStandardMaterial color="#facc15" roughness={0.4} />
       </mesh>
     </group>
@@ -361,7 +361,7 @@ export function Monument3D({ position = [0, 0, 0] }) {
         <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
       </mesh>
       <mesh position={[0, 2.15, 0]} castShadow>
-        <sphereGeometry args={[0.16, 32, 16]} />
+        <sphereGeometry args={[0.16, 14, 12]} />
         <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={0.8} emissive="#d97706" emissiveIntensity={0.5} />
       </mesh>
     </group>
@@ -435,7 +435,7 @@ export function PlacedObjectWrapper({ obj, deleteMode, selected, onSelect, onDel
         <Comp position={[0, 0, 0]} timeMode={timeMode} />
         {showRing && (
           <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.65, 0.82, 64]} />
+            <ringGeometry args={[0.65, 0.82, 32]} />
             <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.65} />
           </mesh>
         )}

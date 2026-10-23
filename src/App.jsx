@@ -7,6 +7,7 @@ import { TelemetryBadge } from './components/ui/TelemetryBadge';
 import { OnboardingModal } from './components/ui/OnboardingModal';
 import { CentralObjectModal } from './components/ui/CentralObjectModal';
 import { GreetingModal } from './components/ui/GreetingModal';
+import { CanvasErrorBoundary } from './components/common/CanvasErrorBoundary';
 import { Loader } from '@react-three/drei';
 
 // Lazy load MainCanvas agar bundle awal (UI HTML) sangat ringan dan cepat dimuat
@@ -135,34 +136,36 @@ export default function App() {
           </div>
         )}
 
-        <Suspense fallback={null}>
-          <MainCanvas
-            performanceTier={performanceTier}
-            isNight={isNight}
-            timeMode={timeMode}
-            handleFpsUpdate={handleFpsUpdate}
-            sceneRef={sceneRef}
-            handleGroundTap={handleGroundTap}
-            placedObjects={placedObjects}
-            deleteMode={deleteMode}
-            selectedId={selectedId}
-            setSelectedId={setSelectedId}
-            transformMode={transformMode}
-            setPlacedObjects={setPlacedObjects}
-            handleDeleteObject={handleDeleteObject}
-            autoRotate={autoRotate}
-            paused={paused}
-            speed={1}
-            handleStart={handleStart}
-            handleEnd={handleEnd}
-            centralObjectType={centralObjectType}
-            centralObjectColor={centralObjectColor}
-            centralObjectMaterial={centralObjectMaterial}
-            centralObjectScale={centralObjectScale}
-            centralObjectUrl={centralObjectUrl}
-            setCentralModalOpen={setCentralModalOpen}
-          />
-        </Suspense>
+        <CanvasErrorBoundary isNight={isNight}>
+          <Suspense fallback={null}>
+            <MainCanvas
+              performanceTier={performanceTier}
+              isNight={isNight}
+              timeMode={timeMode}
+              handleFpsUpdate={handleFpsUpdate}
+              sceneRef={sceneRef}
+              handleGroundTap={handleGroundTap}
+              placedObjects={placedObjects}
+              deleteMode={deleteMode}
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+              transformMode={transformMode}
+              setPlacedObjects={setPlacedObjects}
+              handleDeleteObject={handleDeleteObject}
+              autoRotate={autoRotate}
+              paused={paused}
+              speed={1}
+              handleStart={handleStart}
+              handleEnd={handleEnd}
+              centralObjectType={centralObjectType}
+              centralObjectColor={centralObjectColor}
+              centralObjectMaterial={centralObjectMaterial}
+              centralObjectScale={centralObjectScale}
+              centralObjectUrl={centralObjectUrl}
+              setCentralModalOpen={setCentralModalOpen}
+            />
+          </Suspense>
+        </CanvasErrorBoundary>
       </div>
 
       {/* 5. Apple macOS / visionOS Bottom Dock Inventory Bar */}
