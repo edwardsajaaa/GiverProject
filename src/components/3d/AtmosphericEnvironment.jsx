@@ -107,12 +107,12 @@ function CosmicCometItem({ pos, dir, scale = 1.1 }) {
 
   return (
     <group position={pos} scale={scale}>
-      <mesh><sphereGeometry args={[0.38, 32, 32]} /><meshBasicMaterial color="#ffffff" /></mesh>
-      <mesh><sphereGeometry args={[1.05, 32, 32]} /><meshBasicMaterial color="#a855f7" transparent opacity={0.5} blending={THREE.AdditiveBlending} /></mesh>
+      <mesh><sphereGeometry args={[0.38, 32, 32]} /><meshBasicMaterial color=\"#ffffff\" /></mesh>
+      <mesh><sphereGeometry args={[1.05, 32, 32]} /><meshBasicMaterial color=\"#a855f7\" transparent opacity={0.5} blending={THREE.AdditiveBlending} /></mesh>
       <group ref={groupRef}>
-        <mesh position={[0, 4.8, 0]}><coneGeometry args={[0.36, 9.6, 32]} /><meshBasicMaterial color="#c084fc" transparent opacity={0.8} blending={THREE.AdditiveBlending} /></mesh>
-        <mesh position={[0, 6.2, 0]}><coneGeometry args={[0.65, 12.4, 32]} /><meshBasicMaterial color="#38bdf8" transparent opacity={0.38} blending={THREE.AdditiveBlending} /></mesh>
-        <mesh position={[0.45, 4.2, 0]} rotation={[0, 0, -0.14]}><coneGeometry args={[0.58, 8.4, 32]} /><meshBasicMaterial color="#fef08a" transparent opacity={0.45} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0, 4.8, 0]}><coneGeometry args={[0.36, 9.6, 32]} /><meshBasicMaterial color=\"#c084fc\" transparent opacity={0.8} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0, 6.2, 0]}><coneGeometry args={[0.65, 12.4, 32]} /><meshBasicMaterial color=\"#38bdf8\" transparent opacity={0.38} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0.45, 4.2, 0]} rotation={[0, 0, -0.14]}><coneGeometry args={[0.58, 8.4, 32]} /><meshBasicMaterial color=\"#fef08a\" transparent opacity={0.45} blending={THREE.AdditiveBlending} /></mesh>
       </group>
     </group>
   );
@@ -166,8 +166,8 @@ function GalaxySky({ isLowEnd }) {
     <group>
       <points ref={starFieldRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={starsData.positions.length / 3} array={starsData.positions} itemSize={3} />
-          <bufferAttribute attach="attributes-color" count={starsData.colors.length / 3} array={starsData.colors} itemSize={3} />
+          <bufferAttribute attach=\"attributes-position\" count={starsData.positions.length / 3} array={starsData.positions} itemSize={3} />
+          <bufferAttribute attach=\"attributes-color\" count={starsData.colors.length / 3} array={starsData.colors} itemSize={3} />
         </bufferGeometry>
         <pointsMaterial size={0.38} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.9} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
       </points>
@@ -175,23 +175,18 @@ function GalaxySky({ isLowEnd }) {
       <group position={[0, -20, 0]} rotation={[-0.15, 0, 0.05]}>
         <points ref={galaxyGroupRef}>
           <bufferGeometry>
-            <bufferAttribute attach="attributes-position" count={galaxyData.positions.length / 3} array={galaxyData.positions} itemSize={3} />
-            <bufferAttribute attach="attributes-color" count={galaxyData.colors.length / 3} array={galaxyData.colors} itemSize={3} />
+            <bufferAttribute attach=\"attributes-position\" count={galaxyData.positions.length / 3} array={galaxyData.positions} itemSize={3} />
+            <bufferAttribute attach=\"attributes-color\" count={galaxyData.colors.length / 3} array={galaxyData.colors} itemSize={3} />
           </bufferGeometry>
           <pointsMaterial size={0.62} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.92} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
         </points>
       </group>
 
       <group position={[-14, 18, -20]}>
-        <mesh><sphereGeometry args={[3.2, 32, 32]} /><meshBasicMaterial color="#ffe57f" transparent opacity={0.25} side={THREE.BackSide} /></mesh>
+        <mesh><sphereGeometry args={[3.2, 32, 32]} /><meshBasicMaterial color=\"#ffe57f\" transparent opacity={0.25} side={THREE.BackSide} /></mesh>
       </group>
 
-      {shootingStar.active && (
-        <group position={shootingStar.pos}>
-          <mesh><sphereGeometry args={[0.22, 12, 12]} /><meshBasicMaterial color="#ffffff" /></mesh>
-          <mesh><sphereGeometry args={[0.55, 12, 12]} /><meshBasicMaterial color="#38bdf8" transparent opacity={0.4} blending={THREE.AdditiveBlending} /></mesh>
-        </group>
-      )}
+      {shootingStar.active && (\n        <group position={shootingStar.pos}>\n          <mesh><sphereGeometry args={[0.22, 12, 12]} /><meshBasicMaterial color=\"#ffffff\" /></mesh>\n          <mesh><sphereGeometry args={[0.55, 12, 12]} /><meshBasicMaterial color=\"#38bdf8\" transparent opacity={0.4} blending={THREE.AdditiveBlending} /></mesh>\n        </group>\n      )}
 
       {comet.active && <CosmicCometItem pos={comet.pos} dir={comet.speed} scale={1.25} />}
       <Fireflies isLowEnd={isLowEnd} />
@@ -199,25 +194,24 @@ function GalaxySky({ isLowEnd }) {
   );
 }
 
-function generateFireflies(isLowEnd, count = 50) {
-  const c = isLowEnd ? Math.floor(count / 2) : count;
+function generateFireflies(isLowEnd, count = 22) {
+  const c = isLowEnd ? 10 : count;
   const pos = new Float32Array(c * 3);
   const phases = new Float32Array(c);
   for (let i = 0; i < c; i++) {
-    // Deterministic golden-ratio pseudo-random distribution based on index
     const r1 = ((i * 137.5) % 100) / 100;
     const r2 = ((i * 269.3) % 100) / 100;
     const r3 = ((i * 391.7) % 100) / 100;
     const r4 = ((i * 513.1) % 100) / 100;
-    pos[i * 3] = (r1 - 0.5) * 20;
-    pos[i * 3 + 1] = r2 * 8 + 1;
-    pos[i * 3 + 2] = (r3 - 0.5) * 20;
+    pos[i * 3] = (r1 - 0.5) * 18;
+    pos[i * 3 + 1] = r2 * 6 + 1.2;
+    pos[i * 3 + 2] = (r3 - 0.5) * 18;
     phases[i] = r4 * Math.PI * 2;
   }
   return { pos, phases, count: c };
 }
 
-function Fireflies({ isLowEnd, count = 50 }) {
+function Fireflies({ isLowEnd, count = 22 }) {
   const pointsRef = useRef();
   const fireflyData = useMemo(() => generateFireflies(isLowEnd, count), [isLowEnd, count]);
 
@@ -226,9 +220,9 @@ function Fireflies({ isLowEnd, count = 50 }) {
     const time = state.clock.getElapsedTime();
     const positions = pointsRef.current.geometry.attributes.position.array;
     for (let i = 0; i < fireflyData.count; i++) {
-      positions[i * 3 + 1] += Math.sin(time * 0.5 + fireflyData.phases[i]) * delta * 0.5; // Bob up/down
-      positions[i * 3] += Math.cos(time * 0.3 + fireflyData.phases[i]) * delta * 0.2; // drift left/right
-      positions[i * 3 + 2] += Math.sin(time * 0.4 + fireflyData.phases[i]) * delta * 0.2; // drift forward/back
+      positions[i * 3 + 1] += Math.sin(time * 0.5 + fireflyData.phases[i]) * delta * 0.3;
+      positions[i * 3] += Math.cos(time * 0.3 + fireflyData.phases[i]) * delta * 0.15;
+      positions[i * 3 + 2] += Math.sin(time * 0.4 + fireflyData.phases[i]) * delta * 0.15;
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
@@ -236,9 +230,9 @@ function Fireflies({ isLowEnd, count = 50 }) {
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={fireflyData.count} array={fireflyData.pos} itemSize={3} />
+        <bufferAttribute attach=\"attributes-position\" count={fireflyData.count} array={fireflyData.pos} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.6} color="#fef08a" map={GALAXY_TEXTURE} transparent opacity={0.8} depthWrite={false} blending={THREE.AdditiveBlending} />
+      <pointsMaterial size={0.18} color=\"#fef08a\" map={GALAXY_TEXTURE} transparent opacity={0.4} depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   );
 }
@@ -246,31 +240,31 @@ function Fireflies({ isLowEnd, count = 50 }) {
 function DaySky({ isLowEnd }) {
   const cloudsRef = useRef([]);
   const cloudConfigs = useMemo(() => isLowEnd ? [
-    { id: 1, pos: [-16, 14, -18], scale: 1.8, speed: 0.25 },
-    { id: 2, pos: [14, 16, -14], scale: 2.2, speed: 0.18 },
+    { id: 1, pos: [-35, 42, -50], scale: 2.8, speed: 0.35 },
+    { id: 2, pos: [25, 46, -45], scale: 3.2, speed: 0.28 },
   ] : [
-    { id: 1, pos: [-16, 14, -18], scale: 1.8, speed: 0.25 },
-    { id: 2, pos: [14, 16, -14], scale: 2.2, speed: 0.18 },
-    { id: 3, pos: [-6, 18, -22], scale: 1.5, speed: 0.3 },
+    { id: 1, pos: [-35, 42, -50], scale: 2.8, speed: 0.35 },
+    { id: 2, pos: [25, 46, -45], scale: 3.2, speed: 0.28 },
+    { id: 3, pos: [-10, 48, -60], scale: 2.4, speed: 0.4 },
   ], [isLowEnd]);
 
   useFrame((state, delta) => {
     cloudsRef.current.forEach((el, i) => {
       if (el) {
         el.position.x += cloudConfigs[i].speed * delta;
-        if (el.position.x > 30) el.position.x = -30;
+        if (el.position.x > 60) el.position.x = -60;
       }
     });
   });
 
   return (
     <group>
-      <mesh position={[18, 22, -28]}><sphereGeometry args={[4.2, 32, 32]} /><meshBasicMaterial color="#fff8db" /></mesh>
+      <mesh position={[35, 52, -65]}><sphereGeometry args={[6.5, 32, 32]} /><meshBasicMaterial color=\"#fffbeb\" /></mesh>
       {cloudConfigs.map((c, idx) => (
         <group key={c.id} position={c.pos} scale={c.scale} ref={el => cloudsRef.current[idx] = el}>
-          <mesh castShadow><sphereGeometry args={[1.2, 10, 10]} /><meshStandardMaterial color="#ffffff" roughness={0.2} /></mesh>
-          <mesh position={[1.1, -0.2, 0]} castShadow><sphereGeometry args={[0.9, 10, 10]} /><meshStandardMaterial color="#f0f7ff" roughness={0.2} /></mesh>
-          <mesh position={[-1.1, -0.2, 0]} castShadow><sphereGeometry args={[0.95, 10, 10]} /><meshStandardMaterial color="#f0f7ff" roughness={0.2} /></mesh>
+          <mesh castShadow={false}><sphereGeometry args={[1.6, 12, 12]} /><meshStandardMaterial color=\"#ffffff\" roughness={0.3} /></mesh>
+          <mesh position={[1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.2, 12, 12]} /><meshStandardMaterial color=\"#f0f7ff\" roughness={0.3} /></mesh>
+          <mesh position={[-1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.3, 12, 12]} /><meshStandardMaterial color=\"#f0f7ff\" roughness={0.3} /></mesh>
         </group>
       ))}
     </group>
@@ -290,9 +284,8 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
     const target = isNight ? 0 : 1;
     const lerpSpeed = delta * 3.5;
     progressRef.current = THREE.MathUtils.lerp(progressRef.current, target, lerpSpeed);
-    const p = progressRef.current; // 0 (night) to 1 (day)
+    const p = progressRef.current;
 
-    // 1. Scene Background & Fog
     const nightBg = new THREE.Color('#050712');
     const dayBg = new THREE.Color('#85cbee');
     const nightFog = new THREE.Color('#060814');
@@ -312,7 +305,6 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
       scene.fog.color.copy(nightFog).lerp(dayFog, p);
     }
 
-    // 2. Lights
     if (ambientRef.current) {
       const nightAmb = new THREE.Color('#464c80');
       const dayAmb = new THREE.Color('#fff8e7');
@@ -331,7 +323,6 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
       );
     }
 
-    // 3. Smooth transition of Galaxy and Day sky groups
     if (galaxyGroupRef.current) {
       galaxyGroupRef.current.visible = p < 0.98;
       galaxyGroupRef.current.position.y = THREE.MathUtils.lerp(0, -35, p);
@@ -348,12 +339,12 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
 
   return (
     <group>
-      <ambientLight ref={ambientRef} intensity={0.45} color="#464c80" />
+      <ambientLight ref={ambientRef} intensity={0.45} color=\"#464c80\" />
       <directionalLight
         ref={dirLightRef}
         position={[10, 15, 10]}
         intensity={0.9}
-        color="#b3d4ff"
+        color=\"#b3d4ff\"
         castShadow={!isLowEnd}
         shadow-mapSize={[1024, 1024]}
       />

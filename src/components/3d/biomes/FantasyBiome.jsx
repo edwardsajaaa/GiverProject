@@ -8,25 +8,31 @@ export function FantasyBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowp
 
   useFrame(({ clock }) => {
     if (crystalRingRef.current) {
-      crystalRingRef.current.rotation.y = clock.getElapsedTime() * 0.15;
+      crystalRingRef.current.rotation.y = clock.getElapsedTime() * 0.12;
     }
   });
 
-  // 8 floating crystalline monoliths orbiting the island
   const crystalMonoliths = [
-    { angle: 0, height: 4, color: '#ec4899', radius: 13 },
-    { angle: (Math.PI / 4) * 1, height: 6, color: '#8b5cf6', radius: 14 },
-    { angle: (Math.PI / 4) * 2, height: 3.5, color: '#38bdf8', radius: 13.5 },
-    { angle: (Math.PI / 4) * 3, height: 5, color: '#a855f7', radius: 14.2 },
-    { angle: (Math.PI / 4) * 4, height: 4.5, color: '#ec4899', radius: 13 },
-    { angle: (Math.PI / 4) * 5, height: 7, color: '#6366f1', radius: 15 },
-    { angle: (Math.PI / 4) * 6, height: 3.8, color: '#06b6d4', radius: 13.2 },
-    { angle: (Math.PI / 4) * 7, height: 5.5, color: '#d946ef', radius: 14 }
+    { angle: 0, y: 1.5, color: '#ec4899', radius: 13.5 },
+    { angle: (Math.PI / 3) * 1, y: 2.2, color: '#8b5cf6', radius: 14.5 },
+    { angle: (Math.PI / 3) * 2, y: 1.2, color: '#38bdf8', radius: 13.8 },
+    { angle: (Math.PI / 3) * 3, y: 2.5, color: '#a855f7', radius: 14.2 },
+    { angle: (Math.PI / 3) * 4, y: 1.6, color: '#ec4899', radius: 13.6 },
+    { angle: (Math.PI / 3) * 5, y: 2.8, color: '#6366f1', radius: 14.8 }
   ];
 
   return (
     <group>
-      {/* 1. Main Fantasy Ground (Interactive) */}
+      <mesh position={[0, -2.6, 0]}>
+        <cylinderGeometry args={[11.5, 3.5, 4.8, 6]} />
+        <meshStandardMaterial
+          color={isNight ? '#0b0816' : '#2e1065'}
+          roughness={0.85}
+          metalness={0.2}
+          flatShading={true}
+        />
+      </mesh>
+
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -37,41 +43,28 @@ export function FantasyBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowp
           }
         }}
       >
-        <cylinderGeometry args={[11, 11, 0.4, 32]} />
+        <cylinderGeometry args={[11.5, 11.5, 0.4, 6]} />
         <meshStandardMaterial
-          color={isNight ? '#1e1136' : '#581c87'}
-          roughness={0.4}
+          color={isNight ? '#160d29' : '#4c1d95'}
+          roughness={0.5}
           metalness={0.2}
           flatShading={artStyle === 'retro_8bit'}
         />
       </mesh>
 
-      {/* 2. Mystical Luminous Center Pool */}
-      <mesh position={[0, 0.01, 0]} receiveShadow>
-        <cylinderGeometry args={[4.2, 4.2, 0.05, 32]} />
+      <mesh position={[0, 0.015, 0]} receiveShadow>
+        <cylinderGeometry args={[4.2, 4.2, 0.04, 6]} />
         <meshStandardMaterial
           color={isNight ? '#c084fc' : '#d8b4fe'}
           emissive={isNight ? '#9333ea' : '#7e22ce'}
-          emissiveIntensity={isNight ? 1.5 : 0.4}
-          roughness={0.1}
-          metalness={0.8}
+          emissiveIntensity={isNight ? 1.4 : 0.4}
+          roughness={0.15}
+          metalness={0.7}
         />
       </mesh>
 
-      {/* 3. Under-island Spire */}
-      <mesh position={[0, -3.8, 0]}>
-        <coneGeometry args={[10.5, 7.5, 9]} />
-        <meshStandardMaterial
-          color={isNight ? '#0c0714' : '#2e1065'}
-          roughness={0.8}
-          metalness={0.3}
-          flatShading={true}
-        />
-      </mesh>
-
-      {/* 4. Magical Rune Ring */}
       <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[8.2, 8.6, 32]} />
+        <ringGeometry args={[8.2, 8.6, 6]} />
         <meshBasicMaterial
           color={isNight ? '#e879f9' : '#c084fc'}
           transparent
@@ -79,14 +72,13 @@ export function FantasyBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowp
         />
       </mesh>
 
-      {/* 5. Orbiting Crystal Monoliths */}
       <group ref={crystalRingRef}>
         {crystalMonoliths.map((mono, i) => {
           const x = Math.cos(mono.angle) * mono.radius;
           const z = Math.sin(mono.angle) * mono.radius;
           return (
-            <mesh key={i} position={[x, mono.height / 2 - 1, z]} rotation={[0.1, mono.angle, 0.2]}>
-              <octahedronGeometry args={[1.0, 0]} />
+            <mesh key={i} position={[x, mono.y, z]} rotation={[0.2, mono.angle, 0.2]}>
+              <octahedronGeometry args={[0.9, 0]} />
               <meshStandardMaterial
                 color={mono.color}
                 emissive={mono.color}
@@ -100,12 +92,11 @@ export function FantasyBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowp
         })}
       </group>
 
-      {/* Ethereal Glow */}
       <pointLight
         position={[0, 2, 0]}
         color={isNight ? '#d946ef' : '#c084fc'}
-        distance={24}
-        intensity={isNight ? 1.4 : 0.8}
+        distance={22}
+        intensity={isNight ? 1.2 : 0.6}
       />
     </group>
   );
