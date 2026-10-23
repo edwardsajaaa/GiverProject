@@ -4,7 +4,7 @@ import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { RealTimeAnalytics } from '../ui/TelemetryBadge';
 import { AtmosphericEnvironment } from './AtmosphericEnvironment';
-import { FloatingIsland } from './FloatingIsland';
+import { WorldEnvironment } from './biomes/WorldEnvironment';
 import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
@@ -43,7 +43,9 @@ export function MainCanvas({
   centralObjectScale = 1.0,
   centralObjectUrl = null,
   centralObjectName = null,
-  setCentralModalOpen
+  setCentralModalOpen,
+  biome = 'floating_island',
+  artStyle = 'lowpoly'
 }) {
   return (
     <Canvas
@@ -65,7 +67,7 @@ export function MainCanvas({
       <SceneAccess sceneRef={sceneRef} />
       <AtmosphericEnvironment timeMode={timeMode} isLowEnd={performanceTier === 'low'} />
       <DynamicLights timeMode={timeMode} placedObjects={placedObjects} isLowEnd={performanceTier === 'low'} />
-      <FloatingIsland timeMode={timeMode} onGroundTap={handleGroundTap} />
+      <WorldEnvironment biome={biome} artStyle={artStyle} timeMode={timeMode} onGroundTap={handleGroundTap} />
       
       <CentralHeroObject
         centralObjectType={centralObjectType}
@@ -108,18 +110,14 @@ export function MainCanvas({
       {/* Hanya aktifkan EffectComposer jika mode GPU 'high' untuk menghemat daya GPU drastis */}
       {performanceTier === 'high' && (
         <EffectComposer disableNormalPass multisampling={0}>
-          <Bloom 
-            luminanceThreshold={0.2} 
-            mipmapBlur 
-            intensity={1.2} 
+          <Bloom
+            intensity={0.65}
+            luminanceThreshold={0.5}
+            luminanceSmoothing={0.35}
+            blendFunction={BlendFunction.SCREEN}
           />
+          <Vignette eskil={false} offset={0.12} darkness={0.4} />
           <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
-          <Vignette
-            eskil={false}
-            offset={0.3}
-            darkness={0.5}
-            blendFunction={BlendFunction.NORMAL}
-          />
         </EffectComposer>
       )}
     </Canvas>
