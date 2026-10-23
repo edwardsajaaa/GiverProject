@@ -161,6 +161,17 @@ export function useSandboxState() {
     }
   }, [performanceTier]);
 
+  const handleDeleteObject = useCallback((id) => {
+    setPlacedObjects((prev) => prev.filter((obj) => obj.id !== id));
+    setSelectedId((cur) => (cur === id ? null : cur));
+    SoundEngine.playDelete();
+  }, [setPlacedObjects]);
+
+  const handleDeleteSelected = useCallback(() => {
+    if (!selectedId) return;
+    handleDeleteObject(selectedId);
+  }, [selectedId, handleDeleteObject]);
+
   // Global Keybindings (Ctrl+Z, Ctrl+Y, Escape, Delete, Space, T, R, S)
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -196,7 +207,7 @@ export function useSandboxState() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, selectedId]);
+  }, [handleUndo, handleRedo, selectedId, handleDeleteSelected]);
 
   // Context Loss Handler
   useEffect(() => {
@@ -326,17 +337,6 @@ export function useSandboxState() {
     }
     // Deselect if tapping empty ground
     setSelectedId(null);
-  };
-
-  const handleDeleteObject = (id) => {
-    setPlacedObjects((prev) => prev.filter((obj) => obj.id !== id));
-    if (selectedId === id) setSelectedId(null);
-    SoundEngine.playDelete();
-  };
-
-  const handleDeleteSelected = () => {
-    if (!selectedId) return;
-    handleDeleteObject(selectedId);
   };
 
   const handleRotateSelected = () => {
