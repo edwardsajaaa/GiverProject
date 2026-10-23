@@ -1,34 +1,31 @@
-import React, { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React, { useMemo, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 const BUILDING_COUNT = 36;
 
-// Precompute building positions and dimensions statically once (module-level)
 const STATIC_BUILDINGS = (() => {
   const dummy = new THREE.Object3D();
   const matrices = [];
-  const radiusDist = 28;
+  const radiusDist = 26;
 
   for (let i = 0; i < BUILDING_COUNT; i++) {
-    // Deterministic pseudo-random values based on index
     const seed1 = Math.abs(Math.sin(i * 12.9898));
     const seed2 = Math.abs(Math.cos(i * 38.233));
     const seed3 = Math.abs(Math.sin(i * 93.185));
 
-    const angle = (i / BUILDING_COUNT) * Math.PI * 2 + (Math.sin(i * 1.5) * 0.2);
-    const dist = radiusDist + seed1 * 20;
+    const angle = (i / BUILDING_COUNT) * Math.PI * 2 + (Math.sin(i * 1.5) * 0.15);
+    const dist = radiusDist + seed1 * 18;
     const x = Math.cos(angle) * dist;
     const z = Math.sin(angle) * dist;
     
-    const width = 3 + seed2 * 4;
-    const depth = 3 + seed3 * 4;
-    const height = 12 + seed1 * 28;
-    const y = height / 2 - 12;
+    const width = 4 + seed2 * 5;
+    const depth = 4 + seed3 * 5;
+    const height = 18 + seed1 * 32;
+    const y = height / 2 - 0.4;
 
     dummy.position.set(x, y, z);
     dummy.scale.set(width, height, depth);
-    dummy.rotation.y = seed2 * Math.PI;
+    dummy.rotation.y = seed2 * Math.PI * 0.5;
     dummy.updateMatrix();
     matrices.push(dummy.matrix.clone());
   }
@@ -52,11 +49,37 @@ const PALETTE_DAY = [
   new THREE.Color('#a1a1aa')
 ];
 
+function StreetLamp({ position, rotationY = 0, isNight }) {
+  return (
+    <group position={position} rotation={[0, rotationY, 0]}>
+      <mesh position={[0, 1.8, 0]}>
+        <cylinderGeometry args={[0.07, 0.1, 3.6, 8]} />
+        <meshStandardMaterial color="#475569" metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[0.45, 3.55, 0]}>
+        <boxGeometry args={[1.0, 0.08, 0.12]} />
+        <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
+      </mesh>
+      <mesh position={[0.85, 3.48, 0]}>
+        <boxGeometry args={[0.3, 0.08, 0.2]} />
+        <meshStandardMaterial
+          color={isNight ? '#fef08a' : '#ffffff'}
+          emissive={isNight ? '#eab308' : '#94a3b8'}
+          emissiveIntensity={isNight ? 2.5 : 0.2}
+          roughness={0.2}
+        />
+      </mesh>
+      {isNight && (
+        <pointLight position={[0.85, 3.2, 0]} color="#fef08a" distance={15} intensity={1.5} />
+      )}
+    </group>
+  );
+}
+
 export function CyberCityBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowpoly' }) {
   const isNight = timeMode === 'night';
   const instancedRef = useRef();
 
-  // Generate color buffer purely
   const colors = useMemo(() => {
     const colArray = new Float32Array(BUILDING_COUNT * 3);
     const palette = isNight ? PALETTE_NIGHT : PALETTE_DAY;
@@ -70,8 +93,7 @@ export function CyberCityBiome({ timeMode = 'night', onGroundTap, artStyle = 'lo
     return colArray;
   }, [isNight]);
 
-  // Apply matrix to instanced mesh once on mount
-  React.useEffect(() => {
+  useEffect(() => {
     if (instancedRef.current) {
       STATIC_BUILDINGS.forEach((matrix, i) => {
         instancedRef.current.setMatrixAt(i, matrix);
@@ -80,17 +102,18 @@ export function CyberCityBiome({ timeMode = 'night', onGroundTap, artStyle = 'lo
     }
   }, []);
 
-  // Subtle rooftop antenna beacon pulse
-  const beaconRef = useRef();
-  useFrame(({ clock }) => {
-    if (beaconRef.current) {
-      beaconRef.current.intensity = 1.0 + Math.sin(clock.getElapsedTime() * 4) * 0.8;
-    }
-  });
-
   return (
     <group>
-      {/* 1. Distant Skyscrapers (Single Draw Call via InstancedMesh) */}
+      <mesh position={[0, -0.6, 0]} receiveShadow>
+        <boxGeometry args={[140, 0.4, 140]} />
+        <meshStandardMaterial
+          color={isNight ? '#0b0f19' : '#1e293b'}
+          roughness={0.85}
+          metalness={0.2}
+          flatShading={artStyle === 'retro_8bit'}
+        />
+      </mesh>
+
       <instancedMesh
         ref={instancedRef}
         args={[null, null, BUILDING_COUNT]}
@@ -105,13 +128,12 @@ export function CyberCityBiome({ timeMode = 'night', onGroundTap, artStyle = 'lo
         </boxGeometry>
         <meshStandardMaterial
           roughness={0.7}
-          metalness={0.4}
+          metalness={0.3}
           vertexColors
           flatShading={artStyle === 'retro_8bit'}
         />
       </instancedMesh>
 
-      {/* 2. Main Rooftop Plaza Platform (Interactive Ground) */}
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -122,74 +144,63 @@ export function CyberCityBiome({ timeMode = 'night', onGroundTap, artStyle = 'lo
           }
         }}
       >
-        <cylinderGeometry args={[11, 11, 0.4, 8]} />
+        <boxGeometry args={[22, 0.4, 22]} />
         <meshStandardMaterial
-          color={isNight ? '#090d16' : '#27272a'}
-          roughness={0.3}
-          metalness={0.6}
+          color={isNight ? '#131825' : '#334155'}
+          roughness={0.65}
+          metalness={0.25}
           flatShading={artStyle === 'retro_8bit'}
         />
       </mesh>
 
-      {/* 3. Rooftop Cyber Heli-Pad / Circuit Ring */}
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <ringGeometry args={[9.5, 9.8, 32]} />
-        <meshBasicMaterial
-          color={isNight ? '#00f0ff' : '#0284c7'}
-          transparent
-          opacity={0.7}
-        />
+      <group position={[0, 0.01, 0]}>
+        {[-3, -1.8, -0.6, 0.6, 1.8, 3].map((offZ, idx) => (
+          <mesh key={`cw-n-${idx}`} position={[0, 0, 9.2 + offZ]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[1.5, 0.35]} />
+            <meshBasicMaterial color={isNight ? '#94a3b8' : '#e2e8f0'} />
+          </mesh>
+        ))}
+        {[-3, -1.8, -0.6, 0.6, 1.8, 3].map((offZ, idx) => (
+          <mesh key={`cw-s-${idx}`} position={[0, 0, -9.2 + offZ]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[1.5, 0.35]} />
+            <meshBasicMaterial color={isNight ? '#94a3b8' : '#e2e8f0'} />
+          </mesh>
+        ))}
+        {[-3, -1.8, -0.6, 0.6, 1.8, 3].map((offX, idx) => (
+          <mesh key={`cw-e-${idx}`} position={[9.2 + offX, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+            <planeGeometry args={[1.5, 0.35]} />
+            <meshBasicMaterial color={isNight ? '#94a3b8' : '#e2e8f0'} />
+          </mesh>
+        ))}
+        {[-3, -1.8, -0.6, 0.6, 1.8, 3].map((offX, idx) => (
+          <mesh key={`cw-w-${idx}`} position={[-9.2 + offX, 0, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+            <planeGeometry args={[1.5, 0.35]} />
+            <meshBasicMaterial color={isNight ? '#94a3b8' : '#e2e8f0'} />
+          </mesh>
+        ))}
+      </group>
+
+      <mesh position={[0, 0.02, 10.6]} receiveShadow>
+        <boxGeometry args={[22.4, 0.12, 0.9]} />
+        <meshStandardMaterial color={isNight ? '#334155' : '#64748b'} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.02, -10.6]} receiveShadow>
+        <boxGeometry args={[22.4, 0.12, 0.9]} />
+        <meshStandardMaterial color={isNight ? '#334155' : '#64748b'} roughness={0.7} />
+      </mesh>
+      <mesh position={[10.6, 0.02, 0]} receiveShadow>
+        <boxGeometry args={[0.9, 0.12, 20.6]} />
+        <meshStandardMaterial color={isNight ? '#334155' : '#64748b'} roughness={0.7} />
+      </mesh>
+      <mesh position={[-10.6, 0.02, 0]} receiveShadow>
+        <boxGeometry args={[0.9, 0.12, 20.6]} />
+        <meshStandardMaterial color={isNight ? '#334155' : '#64748b'} roughness={0.7} />
       </mesh>
 
-      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <ringGeometry args={[5.5, 5.7, 32]} />
-        <meshBasicMaterial
-          color={isNight ? '#f43f5e' : '#e11d48'}
-          transparent
-          opacity={0.5}
-        />
-      </mesh>
-
-      {/* 4. Sub-deck Support Structure */}
-      <mesh position={[0, -2.5, 0]}>
-        <cylinderGeometry args={[10.5, 6, 4.6, 8]} />
-        <meshStandardMaterial
-          color={isNight ? '#05070c' : '#18181b'}
-          roughness={0.8}
-          metalness={0.5}
-          flatShading={artStyle === 'retro_8bit'}
-        />
-      </mesh>
-
-      {/* 5. Cyber Neon Accent Rails around the perimeter */}
-      {[0, 1, 2, 3, 4, 5, 6, 7].map((idx) => {
-        const ang = (idx / 8) * Math.PI * 2 + Math.PI / 8;
-        const x = Math.cos(ang) * 10.8;
-        const z = Math.sin(ang) * 10.8;
-        return (
-          <group key={idx} position={[x, 0.6, z]}>
-            {/* Post */}
-            <mesh position={[0, 0, 0]}>
-              <cylinderGeometry args={[0.08, 0.08, 1.2, 6]} />
-              <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.2} />
-            </mesh>
-            {/* Blinking Top Cap */}
-            <mesh position={[0, 0.65, 0]}>
-              <sphereGeometry args={[0.12, 8, 8]} />
-              <meshBasicMaterial color={idx % 2 === 0 ? '#00f0ff' : '#ec4899'} />
-            </mesh>
-          </group>
-        );
-      })}
-
-      {/* Pulsing Light Beacon on rooftop */}
-      <pointLight
-        ref={beaconRef}
-        position={[0, 1.5, 0]}
-        color={isNight ? '#00f0ff' : '#38bdf8'}
-        distance={25}
-        intensity={1.2}
-      />
+      <StreetLamp position={[-9.5, 0, -9.5]} rotationY={Math.PI * 0.25} isNight={isNight} />
+      <StreetLamp position={[9.5, 0, -9.5]} rotationY={Math.PI * 0.75} isNight={isNight} />
+      <StreetLamp position={[9.5, 0, 9.5]} rotationY={Math.PI * 1.25} isNight={isNight} />
+      <StreetLamp position={[-9.5, 0, 9.5]} rotationY={Math.PI * 1.75} isNight={isNight} />
     </group>
   );
 }

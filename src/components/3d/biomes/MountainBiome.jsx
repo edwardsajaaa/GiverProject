@@ -4,43 +4,34 @@ import * as THREE from 'three';
 export function MountainBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowpoly' }) {
   const isNight = timeMode === 'night';
 
-  // Distant low-poly mountain peaks generated statically (0 GC)
   const mountainPeaks = useMemo(() => {
     const peaks = [];
-    const count = 16;
-    const radius = 32;
+    const count = 14;
+    const radius = 34;
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2;
       const dist = radius + (i % 3) * 6;
       const x = Math.cos(angle) * dist;
       const z = Math.sin(angle) * dist;
-      const height = 18 + ((i * 7) % 14);
-      const radiusBottom = 10 + ((i * 3) % 8);
+      const height = 22 + ((i * 7) % 16);
+      const radiusBottom = 12 + ((i * 3) % 8);
       peaks.push({ x, z, height, radiusBottom, id: i });
     }
     return peaks;
   }, []);
 
-  // Low altitude cloud planes
-  const cloudPuffs = useMemo(() => {
-    const clouds = [];
-    for (let i = 0; i < 12; i++) {
-      const ang = (i / 12) * Math.PI * 2 + 0.3;
-      const d = 16 + (i % 4) * 4;
-      clouds.push({
-        x: Math.cos(ang) * d,
-        y: -3.5 - (i % 2) * 1.5,
-        z: Math.sin(ang) * d,
-        scale: 3 + (i % 3) * 1.5,
-        id: i
-      });
-    }
-    return clouds;
-  }, []);
-
   return (
     <group>
-      {/* 1. Main Summit Flat Ridge (Interactive Ground) */}
+      <mesh position={[0, -10, 0]} receiveShadow>
+        <cylinderGeometry args={[12, 34, 20, 8]} />
+        <meshStandardMaterial
+          color={isNight ? '#091124' : '#334155'}
+          roughness={0.95}
+          metalness={0.05}
+          flatShading={true}
+        />
+      </mesh>
+
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -51,54 +42,56 @@ export function MountainBiome({ timeMode = 'night', onGroundTap, artStyle = 'low
           }
         }}
       >
-        <cylinderGeometry args={[11, 11.5, 0.4, 7]} />
+        <boxGeometry args={[22, 0.4, 22]} />
         <meshStandardMaterial
-          color={isNight ? '#1e293b' : '#f1f5f9'}
+          color={isNight ? '#1e293b' : '#e2e8f0'}
           roughness={0.9}
           metalness={0.05}
-          flatShading={true}
+          flatShading={artStyle === 'retro_8bit'}
         />
       </mesh>
 
-      {/* 2. Summit Snow Patch Center */}
-      <mesh position={[0, 0.01, 0]} receiveShadow>
-        <cylinderGeometry args={[8.5, 9, 0.05, 7]} />
+      <mesh position={[0, 0.02, 0]} receiveShadow>
+        <boxGeometry args={[16, 0.05, 16]} />
         <meshStandardMaterial
           color={isNight ? '#cbd5e1' : '#ffffff'}
           roughness={0.6}
-          metalness={0.1}
-          flatShading={true}
-        />
-      </mesh>
-
-      {/* 3. Mountain Cliff Base descending into clouds */}
-      <mesh position={[0, -4.5, 0]} receiveShadow>
-        <cylinderGeometry args={[11.5, 4, 8.5, 7]} />
-        <meshStandardMaterial
-          color={isNight ? '#0f172a' : '#475569'}
-          roughness={0.95}
           metalness={0.05}
           flatShading={true}
         />
       </mesh>
 
-      {/* 4. Distant Surrounding Mountain Peaks */}
+      <mesh position={[0, -0.05, 10.6]} receiveShadow>
+        <boxGeometry args={[22.6, 0.3, 1.2]} />
+        <meshStandardMaterial color={isNight ? '#0f172a' : '#475569'} roughness={0.9} flatShading={true} />
+      </mesh>
+      <mesh position={[0, -0.05, -10.6]} receiveShadow>
+        <boxGeometry args={[22.6, 0.3, 1.2]} />
+        <meshStandardMaterial color={isNight ? '#0f172a' : '#475569'} roughness={0.9} flatShading={true} />
+      </mesh>
+      <mesh position={[10.6, -0.05, 0]} receiveShadow>
+        <boxGeometry args={[1.2, 0.3, 20.2]} />
+        <meshStandardMaterial color={isNight ? '#0f172a' : '#475569'} roughness={0.9} flatShading={true} />
+      </mesh>
+      <mesh position={[-10.6, -0.05, 0]} receiveShadow>
+        <boxGeometry args={[1.2, 0.3, 20.2]} />
+        <meshStandardMaterial color={isNight ? '#0f172a' : '#475569'} roughness={0.9} flatShading={true} />
+      </mesh>
+
       {mountainPeaks.map((peak) => (
-        <group key={peak.id} position={[peak.x, peak.height / 2 - 10, peak.z]}>
-          {/* Rock Body */}
+        <group key={peak.id} position={[peak.x, peak.height / 2 - 12, peak.z]}>
           <mesh castShadow={false} receiveShadow={false}>
             <coneGeometry args={[peak.radiusBottom, peak.height, 5]} />
             <meshStandardMaterial
-              color={isNight ? '#0b1329' : '#334155'}
+              color={isNight ? '#091124' : '#334155'}
               roughness={0.9}
               flatShading={true}
             />
           </mesh>
-          {/* Snowy Top Cap */}
           <mesh position={[0, peak.height * 0.28, 0]}>
             <coneGeometry args={[peak.radiusBottom * 0.45, peak.height * 0.45, 5]} />
             <meshStandardMaterial
-              color={isNight ? '#64748b' : '#f8fafc'}
+              color={isNight ? '#475569' : '#f8fafc'}
               roughness={0.5}
               flatShading={true}
             />
@@ -106,27 +99,15 @@ export function MountainBiome({ timeMode = 'night', onGroundTap, artStyle = 'low
         </group>
       ))}
 
-      {/* 5. Sea of Clouds below summit */}
-      {cloudPuffs.map((c) => (
-        <mesh key={c.id} position={[c.x, c.y, c.z]}>
-          <sphereGeometry args={[c.scale, 7, 5]} />
-          <meshStandardMaterial
-            color={isNight ? '#1e293b' : '#ffffff'}
-            transparent
-            opacity={isNight ? 0.35 : 0.65}
-            roughness={1}
-            flatShading={artStyle === 'retro_8bit'}
-          />
-        </mesh>
-      ))}
-
-      {/* Summit Wind / Ambient Warm Beacon */}
-      <pointLight
-        position={[0, 4, 0]}
-        color={isNight ? '#93c5fd' : '#fef08a'}
-        distance={25}
-        intensity={isNight ? 0.6 : 1.0}
-      />
+      <mesh position={[0, -14, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[160, 160]} />
+        <meshStandardMaterial
+          color={isNight ? '#0f172a' : '#f1f5f9'}
+          transparent
+          opacity={isNight ? 0.7 : 0.85}
+          roughness={1}
+        />
+      </mesh>
     </group>
   );
 }
