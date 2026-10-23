@@ -56,9 +56,12 @@ export default function App() {
     handleGroundTap,
     handleDeleteObject, handleDeleteSelected,
     handleDuplicateSelected,
+    handleUpdateSelectedStyle,
     handleResetAll,
     handleExportJson, handleImportJson
   } = useSandboxState();
+
+  const selectedObject = placedObjects.find((o) => o.id === selectedId);
 
   const [fps, setFps] = useState(60);
 
@@ -116,10 +119,12 @@ export default function App() {
       <TransformToolbar
         isNight={isNight}
         selectedId={selectedId}
+        selectedObject={selectedObject}
         transformMode={transformMode}
         setTransformMode={setTransformMode}
         handleDeleteSelected={handleDeleteSelected}
         handleDuplicateSelected={handleDuplicateSelected}
+        handleUpdateSelectedStyle={handleUpdateSelectedStyle}
         draggingItem={draggingItem}
         activePlacementType={activePlacementType}
         setActivePlacementType={setActivePlacementType}

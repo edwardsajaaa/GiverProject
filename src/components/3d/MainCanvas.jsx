@@ -78,12 +78,14 @@ export function MainCanvas({
         centralObjectUrl={centralObjectUrl}
         centralObjectName={centralObjectName}
         setCentralModalOpen={setCentralModalOpen}
+        artStyle={artStyle}
       />
 
       {placedObjects.map((obj) => (
         <PlacedObjectWrapper
           key={obj.id}
           obj={obj}
+          artStyle={artStyle}
           deleteMode={deleteMode}
           selected={selectedId === obj.id}
           onSelect={setSelectedId}

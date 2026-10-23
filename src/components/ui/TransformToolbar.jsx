@@ -4,10 +4,12 @@ import { ITEM_DEFS } from '../objects/ItemDefs';
 export function TransformToolbar({
   isNight,
   selectedId,
+  selectedObject,
   transformMode,
   setTransformMode,
   handleDeleteSelected,
   handleDuplicateSelected,
+  handleUpdateSelectedStyle,
   draggingItem,
   activePlacementType,
   setActivePlacementType
@@ -72,6 +74,25 @@ export function TransformToolbar({
             }}>
             DUPLIKAT
           </button>
+
+          <select
+            value={selectedObject?.artStyle || 'auto'}
+            onChange={(e) => handleUpdateSelectedStyle && handleUpdateSelectedStyle(e.target.value)}
+            title="Gaya Visual Objek"
+            style={{
+              padding: '4px 8px', borderRadius: 12, border: 'none',
+              background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+              color: isNight ? '#E5E5E5' : '#171717',
+              cursor: 'pointer', fontWeight: 600, fontSize: 10, letterSpacing: '0.5px', outline: 'none'
+            }}
+          >
+            <option value="auto" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>STYLE: AUTO</option>
+            <option value="lowpoly" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>LOW-POLY</option>
+            <option value="anime" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>ANIME TOON</option>
+            <option value="retro_8bit" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>RETRO 8-BIT</option>
+            <option value="synthwave" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>SYNTHWAVE</option>
+            <option value="pbr" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>REALISTIC PBR</option>
+          </select>
           
           <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
           

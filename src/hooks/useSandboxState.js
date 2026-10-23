@@ -189,6 +189,17 @@ export function useSandboxState() {
     SoundEngine.playPop();
   }, [selectedId, setPlacedObjects]);
 
+  const handleUpdateSelectedStyle = useCallback((styleId) => {
+    if (!selectedId) return;
+    setPlacedObjects((prev) => prev.map((o) => {
+      if (o.id === selectedId) {
+        return { ...o, artStyle: styleId === 'auto' ? null : styleId };
+      }
+      return o;
+    }));
+    SoundEngine.playPop();
+  }, [selectedId, setPlacedObjects]);
+
   // Global Keybindings (Ctrl+Z, Ctrl+Y, Escape, Delete, Space, T, R, S, D)
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -442,6 +453,7 @@ export function useSandboxState() {
     handleGroundTap,
     handleDeleteObject, handleDeleteSelected,
     handleDuplicateSelected,
+    handleUpdateSelectedStyle,
     handleRotateSelected, handleScaleSelected,
     handleResetAll,
     handleExportJson, handleImportJson
