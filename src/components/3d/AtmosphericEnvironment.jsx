@@ -107,12 +107,12 @@ function CosmicCometItem({ pos, dir, scale = 1.1 }) {
 
   return (
     <group position={pos} scale={scale}>
-      <mesh><sphereGeometry args={[0.38, 32, 32]} /><meshBasicMaterial color=\"#ffffff\" /></mesh>
-      <mesh><sphereGeometry args={[1.05, 32, 32]} /><meshBasicMaterial color=\"#a855f7\" transparent opacity={0.5} blending={THREE.AdditiveBlending} /></mesh>
+      <mesh><sphereGeometry args={[0.38, 32, 32]} /><meshBasicMaterial color="#ffffff" /></mesh>
+      <mesh><sphereGeometry args={[1.05, 32, 32]} /><meshBasicMaterial color="#a855f7" transparent opacity={0.5} blending={THREE.AdditiveBlending} /></mesh>
       <group ref={groupRef}>
-        <mesh position={[0, 4.8, 0]}><coneGeometry args={[0.36, 9.6, 32]} /><meshBasicMaterial color=\"#c084fc\" transparent opacity={0.8} blending={THREE.AdditiveBlending} /></mesh>
-        <mesh position={[0, 6.2, 0]}><coneGeometry args={[0.65, 12.4, 32]} /><meshBasicMaterial color=\"#38bdf8\" transparent opacity={0.38} blending={THREE.AdditiveBlending} /></mesh>
-        <mesh position={[0.45, 4.2, 0]} rotation={[0, 0, -0.14]}><coneGeometry args={[0.58, 8.4, 32]} /><meshBasicMaterial color=\"#fef08a\" transparent opacity={0.45} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0, 4.8, 0]}><coneGeometry args={[0.36, 9.6, 32]} /><meshBasicMaterial color="#c084fc" transparent opacity={0.8} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0, 6.2, 0]}><coneGeometry args={[0.65, 12.4, 32]} /><meshBasicMaterial color="#38bdf8" transparent opacity={0.38} blending={THREE.AdditiveBlending} /></mesh>
+        <mesh position={[0.45, 4.2, 0]} rotation={[0, 0, -0.14]}><coneGeometry args={[0.58, 8.4, 32]} /><meshBasicMaterial color="#fef08a" transparent opacity={0.45} blending={THREE.AdditiveBlending} /></mesh>
       </group>
     </group>
   );
@@ -166,8 +166,8 @@ function GalaxySky({ isLowEnd }) {
     <group>
       <points ref={starFieldRef}>
         <bufferGeometry>
-          <bufferAttribute attach=\"attributes-position\" count={starsData.positions.length / 3} array={starsData.positions} itemSize={3} />
-          <bufferAttribute attach=\"attributes-color\" count={starsData.colors.length / 3} array={starsData.colors} itemSize={3} />
+          <bufferAttribute attach="attributes-position" count={starsData.positions.length / 3} array={starsData.positions} itemSize={3} />
+          <bufferAttribute attach="attributes-color" count={starsData.colors.length / 3} array={starsData.colors} itemSize={3} />
         </bufferGeometry>
         <pointsMaterial size={0.38} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.9} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
       </points>
@@ -175,18 +175,23 @@ function GalaxySky({ isLowEnd }) {
       <group position={[0, -20, 0]} rotation={[-0.15, 0, 0.05]}>
         <points ref={galaxyGroupRef}>
           <bufferGeometry>
-            <bufferAttribute attach=\"attributes-position\" count={galaxyData.positions.length / 3} array={galaxyData.positions} itemSize={3} />
-            <bufferAttribute attach=\"attributes-color\" count={galaxyData.colors.length / 3} array={galaxyData.colors} itemSize={3} />
+            <bufferAttribute attach="attributes-position" count={galaxyData.positions.length / 3} array={galaxyData.positions} itemSize={3} />
+            <bufferAttribute attach="attributes-color" count={galaxyData.colors.length / 3} array={galaxyData.colors} itemSize={3} />
           </bufferGeometry>
           <pointsMaterial size={0.62} map={GALAXY_TEXTURE} vertexColors transparent opacity={0.92} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
         </points>
       </group>
 
       <group position={[-14, 18, -20]}>
-        <mesh><sphereGeometry args={[3.2, 32, 32]} /><meshBasicMaterial color=\"#ffe57f\" transparent opacity={0.25} side={THREE.BackSide} /></mesh>
+        <mesh><sphereGeometry args={[3.2, 32, 32]} /><meshBasicMaterial color="#ffe57f" transparent opacity={0.25} side={THREE.BackSide} /></mesh>
       </group>
 
-      {shootingStar.active && (\n        <group position={shootingStar.pos}>\n          <mesh><sphereGeometry args={[0.22, 12, 12]} /><meshBasicMaterial color=\"#ffffff\" /></mesh>\n          <mesh><sphereGeometry args={[0.55, 12, 12]} /><meshBasicMaterial color=\"#38bdf8\" transparent opacity={0.4} blending={THREE.AdditiveBlending} /></mesh>\n        </group>\n      )}
+      {shootingStar.active && (
+        <group position={shootingStar.pos}>
+          <mesh><sphereGeometry args={[0.22, 12, 12]} /><meshBasicMaterial color="#ffffff" /></mesh>
+          <mesh><sphereGeometry args={[0.55, 12, 12]} /><meshBasicMaterial color="#38bdf8" transparent opacity={0.4} blending={THREE.AdditiveBlending} /></mesh>
+        </group>
+      )}
 
       {comet.active && <CosmicCometItem pos={comet.pos} dir={comet.speed} scale={1.25} />}
       <Fireflies isLowEnd={isLowEnd} />
@@ -230,9 +235,9 @@ function Fireflies({ isLowEnd, count = 22 }) {
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute attach=\"attributes-position\" count={fireflyData.count} array={fireflyData.pos} itemSize={3} />
+        <bufferAttribute attach="attributes-position" count={fireflyData.count} array={fireflyData.pos} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.18} color=\"#fef08a\" map={GALAXY_TEXTURE} transparent opacity={0.4} depthWrite={false} blending={THREE.AdditiveBlending} />
+      <pointsMaterial size={0.18} color="#fef08a" map={GALAXY_TEXTURE} transparent opacity={0.4} depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   );
 }
@@ -259,12 +264,12 @@ function DaySky({ isLowEnd }) {
 
   return (
     <group>
-      <mesh position={[35, 52, -65]}><sphereGeometry args={[6.5, 32, 32]} /><meshBasicMaterial color=\"#fffbeb\" /></mesh>
+      <mesh position={[35, 52, -65]}><sphereGeometry args={[6.5, 32, 32]} /><meshBasicMaterial color="#fffbeb" /></mesh>
       {cloudConfigs.map((c, idx) => (
         <group key={c.id} position={c.pos} scale={c.scale} ref={el => cloudsRef.current[idx] = el}>
-          <mesh castShadow={false}><sphereGeometry args={[1.6, 12, 12]} /><meshStandardMaterial color=\"#ffffff\" roughness={0.3} /></mesh>
-          <mesh position={[1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.2, 12, 12]} /><meshStandardMaterial color=\"#f0f7ff\" roughness={0.3} /></mesh>
-          <mesh position={[-1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.3, 12, 12]} /><meshStandardMaterial color=\"#f0f7ff\" roughness={0.3} /></mesh>
+          <mesh castShadow={false}><sphereGeometry args={[1.6, 12, 12]} /><meshStandardMaterial color="#ffffff" roughness={0.3} /></mesh>
+          <mesh position={[1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.2, 12, 12]} /><meshStandardMaterial color="#f0f7ff" roughness={0.3} /></mesh>
+          <mesh position={[-1.4, -0.2, 0]} castShadow={false}><sphereGeometry args={[1.3, 12, 12]} /><meshStandardMaterial color="#f0f7ff" roughness={0.3} /></mesh>
         </group>
       ))}
     </group>
@@ -339,12 +344,12 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
 
   return (
     <group>
-      <ambientLight ref={ambientRef} intensity={0.45} color=\"#464c80\" />
+      <ambientLight ref={ambientRef} intensity={0.45} color="#464c80" />
       <directionalLight
         ref={dirLightRef}
         position={[10, 15, 10]}
         intensity={0.9}
-        color=\"#b3d4ff\"
+        color="#b3d4ff"
         castShadow={!isLowEnd}
         shadow-mapSize={[1024, 1024]}
       />
