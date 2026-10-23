@@ -1,11 +1,9 @@
-import React, { useRef, Suspense, useMemo, useState, useEffect } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import React, { useRef, Suspense, useMemo, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as THREE from 'three';
 import { SoundEngine } from '../../utils/SoundEngine';
+import { useGLTF } from '@react-three/drei';
 
 // Error Boundary khusus untuk menangkap error saat loading model 3D (agar web tidak blank)
 class ModelErrorBoundary extends React.Component {
@@ -13,18 +11,18 @@ class ModelErrorBoundary extends React.Component {
     super(props);
     this.state = { hasError: false };
   }
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
+    void _error;
     return { hasError: true };
   }
   componentDidCatch(error, errorInfo) {
     console.error("Gagal memuat model 3D kustom:", error, errorInfo);
     setTimeout(() => {
-      alert(`⚠️ Gagal memuat file 3D.\n\nDetail Error: ${error.message || error.toString()}\n\nCatatan untuk FBX/OBJ: Pastikan Anda MENGEMBED tekstur (Embed Media) saat ekspor, karena browser tidak dapat membaca file tekstur eksternal di komputer Anda secara otomatis.`);
+      alert(`⚠️ Gagal memuat file 3D.\n\nDetail Error: ${error.message || error.toString()}\n\nDisarankan untuk menggunakan file .GLB yang menggabungkan seluruh mesh dan tekstur.`);
     }, 500);
   }
   render() {
     if (this.state.hasError) {
-      // Tampilkan error fallback (berbeda dari sekadar loading) - Sphere Wireframe Merah
       return (
         <mesh scale={[1.2, 1.2, 1.2]}>
           <icosahedronGeometry args={[1, 1]} />
@@ -36,10 +34,8 @@ class ModelErrorBoundary extends React.Component {
   }
 }
 
-import { useGLTF } from '@react-three/drei';
-
 // Komponen pemuat Model 3D Custom (Khusus GLB yang stabil)
-function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
+function CustomUploadedModel({ url, color, materialType, scaleVal }) {
   // Gunakan useGLTF dari drei yang jauh lebih stabil untuk R3F
   // Note: Hanya mendukung .glb / .gltf yang sifatnya standalone (semua tekstur ter-embed di dalam file)
   const { scene } = useGLTF(url, true, true, (loader) => {
@@ -67,7 +63,7 @@ function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
     wrapper.scale.setScalar(scaleFactor);
     wrapper.add(cloned);
 
-    // Terapkan material kustom
+    // Terapkan material: Pertahankan tekstur asli jika 'original' (default untuk uploaded models)
     wrapper.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true;
@@ -85,11 +81,12 @@ function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
           child.material = new THREE.MeshStandardMaterial({
             color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
           });
-        } else {
+        } else if (materialType === 'holographic') {
           child.material = new THREE.MeshStandardMaterial({
             color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
           });
         }
+        // Jika materialType === 'original' (atau tidak di-override), pertahankan material dan tekstur asli model!
       }
     });
 
@@ -166,7 +163,6 @@ export function CentralHeroObject({
 
   // Pemilihan Material untuk Preset
   const renderPresetMaterial = () => {
-    const isHoverScale = hovered ? 1.3 : 1.0;
     switch (centralObjectMaterial) {
       case 'metallic':
         return (

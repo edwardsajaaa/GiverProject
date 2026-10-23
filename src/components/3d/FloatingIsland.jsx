@@ -11,6 +11,23 @@ export function Box() {
   );
 }
 
+const COLOR_TOP_NIGHT = new THREE.Color('#131826');
+const COLOR_TOP_DAY = new THREE.Color('#49a85c');
+const COLOR_SIDE1_NIGHT = new THREE.Color('#0c0f18');
+const COLOR_SIDE1_DAY = new THREE.Color('#6b5344');
+const COLOR_SIDE2_NIGHT = new THREE.Color('#06070b');
+const COLOR_SIDE2_DAY = new THREE.Color('#4a382e');
+const COLOR_POND_NIGHT = new THREE.Color('#0284c7');
+const COLOR_POND_DAY = new THREE.Color('#38bdf8');
+const COLOR_BLACK = new THREE.Color('#000000');
+const COLOR_RING_NIGHT = new THREE.Color('#38bdf8');
+const COLOR_RING_DAY = new THREE.Color('#72d686');
+const COLOR_CYAN = new THREE.Color('#38bdf8');
+const COLOR_PURPLE = new THREE.Color('#e879f9');
+const COLOR_GRASS = new THREE.Color('#358a47');
+const COLOR_EMISSIVE_CYAN = new THREE.Color('#0284c7');
+const COLOR_EMISSIVE_PURPLE = new THREE.Color('#c026d3');
+
 export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
   const topMatRef = useRef();
   const sideMat1Ref = useRef();
@@ -21,12 +38,12 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
 
   useFrame((state, delta) => {
     const isNight = timeMode === 'night';
-    const lerpSpeed = delta * 3.5;
+    const lerpSpeed = Math.min(1, delta * 3.5);
 
-    const targetTop = isNight ? new THREE.Color('#131826') : new THREE.Color('#49a85c');
-    const targetSide1 = isNight ? new THREE.Color('#0c0f18') : new THREE.Color('#6b5344');
-    const targetSide2 = isNight ? new THREE.Color('#06070b') : new THREE.Color('#4a382e');
-    const targetPond = isNight ? new THREE.Color('#0284c7') : new THREE.Color('#38bdf8');
+    const targetTop = isNight ? COLOR_TOP_NIGHT : COLOR_TOP_DAY;
+    const targetSide1 = isNight ? COLOR_SIDE1_NIGHT : COLOR_SIDE1_DAY;
+    const targetSide2 = isNight ? COLOR_SIDE2_NIGHT : COLOR_SIDE2_DAY;
+    const targetPond = isNight ? COLOR_POND_NIGHT : COLOR_POND_DAY;
 
     if (topMatRef.current) {
       topMatRef.current.color.lerp(targetTop, lerpSpeed);
@@ -38,21 +55,21 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
 
     if (pondMatRef.current) {
       pondMatRef.current.color.lerp(targetPond, lerpSpeed);
-      pondMatRef.current.emissive.lerp(isNight ? new THREE.Color('#0284c7') : new THREE.Color('#000000'), lerpSpeed);
+      pondMatRef.current.emissive.lerp(isNight ? COLOR_POND_NIGHT : COLOR_BLACK, lerpSpeed);
       pondMatRef.current.emissiveIntensity = THREE.MathUtils.lerp(pondMatRef.current.emissiveIntensity, isNight ? 1.5 : 0.2, lerpSpeed);
     }
 
     ringMatsRef.current.forEach(mat => {
       if (mat) {
-        mat.color.lerp(isNight ? new THREE.Color('#38bdf8') : new THREE.Color('#72d686'), lerpSpeed);
+        mat.color.lerp(isNight ? COLOR_RING_NIGHT : COLOR_RING_DAY, lerpSpeed);
         mat.opacity = THREE.MathUtils.lerp(mat.opacity, isNight ? 0.15 : 0.22, lerpSpeed);
       }
     });
 
     coneMatsRef.current.forEach((mat, i) => {
       if (mat) {
-        const targetColor = isNight ? (i % 2 === 0 ? new THREE.Color('#38bdf8') : new THREE.Color('#e879f9')) : new THREE.Color('#358a47');
-        const targetEmissive = isNight ? (i % 2 === 0 ? new THREE.Color('#0284c7') : new THREE.Color('#c026d3')) : new THREE.Color('#000000');
+        const targetColor = isNight ? (i % 2 === 0 ? COLOR_CYAN : COLOR_PURPLE) : COLOR_GRASS;
+        const targetEmissive = isNight ? (i % 2 === 0 ? COLOR_EMISSIVE_CYAN : COLOR_EMISSIVE_PURPLE) : COLOR_BLACK;
         mat.color.lerp(targetColor, lerpSpeed);
         mat.emissive.lerp(targetEmissive, lerpSpeed);
         mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, isNight ? 4.0 : 0.1, lerpSpeed);
@@ -65,7 +82,7 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
 
   return (
     <group>
-      {/* Top Grass Ground Cylinder */}
+      {/* Top Grass Ground Cylinder - 32 segments is optimal and light */}
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -76,13 +93,13 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
           }
         }}
       >
-        <cylinderGeometry args={[radius, radius, 0.4, 64]} />
+        <cylinderGeometry args={[radius, radius, 0.4, 32]} />
         <meshStandardMaterial ref={topMatRef} color={isNightInit ? '#131826' : '#49a85c'} roughness={isNightInit ? 0.9 : 0.8} metalness={isNightInit ? 0.15 : 0.05} />
       </mesh>
 
       {/* Crystal clear glowing center pond / pool */}
       <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <circleGeometry args={[2.4, 32]} />
+        <circleGeometry args={[2.4, 24]} />
         <meshStandardMaterial
           ref={pondMatRef}
           color={isNightInit ? '#0284c7' : '#38bdf8'}
@@ -98,7 +115,7 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
       {/* Concentric Glowing Energy Rings */}
       {[3.8, 6.5, 9.2].map((r, idx) => (
         <mesh key={idx} position={[0, 0.01 + idx * 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[r - 0.04, r + 0.04, 64]} />
+          <ringGeometry args={[r - 0.04, r + 0.04, 32]} />
           <meshBasicMaterial ref={el => ringMatsRef.current[idx] = el} color={isNightInit ? '#38bdf8' : '#72d686'} transparent opacity={isNightInit ? 0.15 : 0.22} />
         </mesh>
       ))}
@@ -115,9 +132,9 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
       })}
 
       {/* Rock Cliffs Layer 1 */}
-      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 64]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.8} metalness={0.15} /></mesh>
+      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 32]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.8} metalness={0.15} /></mesh>
       {/* Rock Cliffs Layer 2 (Tapered Bottom) */}
-      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 64]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.85} metalness={0.2} /></mesh>
+      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 32]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.85} metalness={0.2} /></mesh>
     </group>
   );
 }

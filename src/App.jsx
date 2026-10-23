@@ -43,6 +43,7 @@ export default function App() {
     webglLost,
     showTutorial, setShowTutorial,
     performanceTier,
+    togglePerformanceTier,
     handleFpsUpdate: sandboxHandleFpsUpdate,
     sceneRef, canvasContainerRef,
     inventory,
@@ -57,7 +58,7 @@ export default function App() {
   const [fps, setFps] = useState(60);
 
   const handleFpsUpdate = (newFps) => {
-    setFps(newFps);
+    setFps(prev => (Math.abs(prev - newFps) >= 2 ? newFps : prev));
     sandboxHandleFpsUpdate(newFps);
   };
 
@@ -74,6 +75,7 @@ export default function App() {
       <TelemetryBadge
         fps={fps}
         performanceTier={performanceTier}
+        togglePerformanceTier={togglePerformanceTier}
         objectCount={placedObjects.length}
         isNight={isNight}
       />

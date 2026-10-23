@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { SoundEngine } from '../../utils/SoundEngine';
+import { ModelStorage } from '../../utils/modelStorage';
 
 const SHAPE_PRESETS = [
   { id: 'cube', label: 'Kubus Cyber', icon: '🧊', desc: 'Kubus presisi futuristik' },
@@ -21,6 +22,7 @@ const COLOR_SWATCHES = [
 ];
 
 const MATERIAL_PRESETS = [
+  { id: 'original', label: '🎨 Tekstur Asli Model', desc: 'Menampilkan tekstur & warna asli bawaan file 3D' },
   { id: 'holographic', label: '✨ Holographic Aura', desc: 'Berkilau dengan cincin aura wireframe' },
   { id: 'metallic', label: '🪞 Chrome Mirror', desc: 'Pantulan logam reflektif padat' },
   { id: 'glass', label: '💎 Crystal Glass', desc: 'Transparan kristal tembus pandang' },
@@ -34,28 +36,56 @@ export function CentralObjectModal({
   centralObjectColor, setCentralObjectColor,
   centralObjectMaterial, setCentralObjectMaterial,
   centralObjectScale, setCentralObjectScale,
-  centralObjectUrl, setCentralObjectUrl,
+  setCentralObjectUrl,
   centralObjectName, setCentralObjectName
 }) {
   const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   if (!centralModalOpen) return null;
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
+  const processFile = async (file) => {
     if (!file) return;
 
-    // Peringatan jika ukuran file lebih dari 15MB (Non-blocking)
-    const maxSize = 15 * 1024 * 1024; // 15MB
-    if (file.size > maxSize) {
-      alert(`⚠️ Peringatan Performa:\n\nFile 3D Anda berukuran ${(file.size / 1024 / 1024).toFixed(2)} MB (Cukup Besar).\nFile tetap akan dimuat, namun mungkin akan menyebabkan browser terasa lambat atau patah-patah saat dirender.\n\nDisarankan untuk menggunakan file di bawah 15 MB jika memungkinkan.`);
+    const lower = file.name.toLowerCase();
+    if (!lower.endsWith('.glb') && !lower.endsWith('.gltf')) {
+      alert('⚠️ Format tidak didukung:\n\nMohon gunakan file berformat .GLB atau .GLTF.\nFormat ini membungkus 3D model, tekstur, dan material secara mandiri sehingga dapat dirender dengan sempurna di browser.');
+      return;
     }
 
-    const url = URL.createObjectURL(file);
-    setCentralObjectUrl(url);
-    setCentralObjectName(file.name);
-    setCentralObjectType('custom');
-    SoundEngine.playPop();
+    const maxSize = 25 * 1024 * 1024; // 25MB
+    if (file.size > maxSize) {
+      alert(`⚠️ File Cukup Besar (${(file.size / 1024 / 1024).toFixed(1)} MB):\nModel tetap dimuat, namun disarankan di bawah 25MB untuk performa maksimal.`);
+    }
+
+    try {
+      setIsUploading(true);
+      // Simpan permanen ke IndexedDB browser
+      const { blobUrl, fileName } = await ModelStorage.saveHeroModel(file);
+      setCentralObjectUrl(blobUrl);
+      setCentralObjectName(fileName);
+      setCentralObjectType('custom');
+      setCentralObjectMaterial('original'); // Otomatis aktifkan tekstur asli
+      SoundEngine.playPop();
+    } catch (err) {
+      alert(`Gagal menyimpan file 3D: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    processFile(file);
+  };
+
+  const handleRemoveCustomModel = async () => {
+    await ModelStorage.deleteHeroModel();
+    setCentralObjectUrl(null);
+    setCentralObjectName(null);
+    setCentralObjectType('cube');
+    setCentralObjectMaterial('holographic');
+    SoundEngine.playDelete();
   };
 
   return (
@@ -143,11 +173,31 @@ export function CentralObjectModal({
 
         {/* 2. Upload Model 3D Kustom */}
         <div>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: isNight ? '#e879f9' : '#c026d3', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>
-            2. Atau Upload Model 3D Milik Anda
-          </label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: isNight ? '#e879f9' : '#c026d3', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+              2. Atau Upload Model 3D Milik Anda (.GLB / .GLTF)
+            </label>
+            {centralObjectType === 'custom' && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleRemoveCustomModel(); }}
+                style={{
+                  background: 'none', border: 'none', color: '#ef4444', fontSize: 11, fontWeight: 700, cursor: 'pointer'
+                }}
+              >
+                🗑️ Hapus Model Kustom
+              </button>
+            )}
+          </div>
           <div
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                processFile(e.dataTransfer.files[0]);
+              }
+            }}
             style={{
               padding: '16px 20px', borderRadius: 18,
               background: centralObjectType === 'custom' ? (isNight ? 'rgba(232, 121, 249, 0.2)' : 'rgba(192, 38, 211, 0.12)') : (isNight ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)'),
@@ -157,23 +207,23 @@ export function CentralObjectModal({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ fontSize: 26 }}>📤</span>
+              <span style={{ fontSize: 26 }}>{isUploading ? '⏳' : '📤'}</span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: centralObjectType === 'custom' ? (isNight ? '#e879f9' : '#c026d3') : (isNight ? '#F5F5F7' : '#1D1D1F') }}>
-                  {centralObjectType === 'custom' && centralObjectName ? `File Terpilih: ${centralObjectName}` : 'Klik untuk Pilih File Model 3D (.glb / .gltf / .obj / .fbx)'}
+                  {isUploading ? 'Menyimpan & Memproses Model 3D...' : (centralObjectType === 'custom' && centralObjectName ? `File Aktif: ${centralObjectName}` : 'Klik atau Tarik (Drag & Drop) File .GLB / .GLTF')}
                 </div>
                 <div style={{ fontSize: 11, color: isNight ? '#94a3b8' : '#64748b' }}>
-                  Model akan otomatis disesuaikan ukurannya agar pas mengapung di atas Altar utama.
+                  Tersimpan permanen di browser (IndexedDB). Tekstur & warna asli dipertahankan secara utuh.
                 </div>
               </div>
             </div>
             <span style={{ fontSize: 12, fontWeight: 700, color: isNight ? '#e879f9' : '#c026d3', background: isNight ? 'rgba(232,121,249,0.15)' : 'rgba(192,38,211,0.1)', padding: '6px 12px', borderRadius: 12 }}>
-              Pilih File
+              {isUploading ? 'Menyimpan...' : 'Pilih File'}
             </span>
             <input
               ref={fileInputRef}
               type="file"
-              accept=".glb,.gltf,.obj,.fbx"
+              accept=".glb,.gltf"
               onChange={handleFileUpload}
               style={{ display: 'none' }}
             />

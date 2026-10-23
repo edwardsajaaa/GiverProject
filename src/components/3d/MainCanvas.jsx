@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
+import React, { useEffect } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { RealTimeAnalytics } from '../ui/TelemetryBadge';
@@ -8,7 +8,7 @@ import { FloatingIsland } from './FloatingIsland';
 import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
-import { EffectComposer, Bloom, Vignette, ToneMapping, DepthOfField } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
 import { ToneMappingMode, BlendFunction } from 'postprocessing';
 
 function SceneAccess({ sceneRef }) {
@@ -21,7 +21,6 @@ function SceneAccess({ sceneRef }) {
 
 export function MainCanvas({
   performanceTier = 'high',
-  isNight = true,
   timeMode = 'night',
   handleFpsUpdate,
   sceneRef,
@@ -49,8 +48,12 @@ export function MainCanvas({
   return (
     <Canvas
       shadows={performanceTier === 'high'}
-      dpr={[1, 1.5]}
-      gl={{ powerPreference: "high-performance", antialias: false }}
+      dpr={performanceTier === 'high' ? [1, 1.25] : 1}
+      gl={{ 
+        powerPreference: "high-performance", 
+        antialias: false,
+        toneMapping: THREE.ACESFilmicToneMapping 
+      }}
       camera={{ position: [14, 8, 14], fov: 60 }}
       style={{
         background: 'transparent',
@@ -102,30 +105,23 @@ export function MainCanvas({
         onEnd={handleEnd}
       />
 
-      <EffectComposer disableNormalPass multisampling={performanceTier === 'high' ? 4 : 0}>
-        <Bloom 
-          luminanceThreshold={0.15} 
-          mipmapBlur 
-          intensity={performanceTier === 'high' ? 1.8 : 1.2} 
-        />
-        <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
-        {performanceTier === 'high' && (
-          <>
-            <DepthOfField
-              target={[0, 0, 0]}         // Fokus tepat di tengah pulau
-              focalLength={0.1}          // Jarak fokus diturunkan agar area fokus lebih luas (tidak terlalu buram)
-              bokehScale={3}             // Ukuran blur dikurangi dari 8 ke 3 untuk performa jauh lebih ringan
-              height={300}               // Resolusi direndahkan untuk performa
-            />
-            <Vignette
-              eskil={false}
-              offset={0.3}
-              darkness={0.6}
-              blendFunction={BlendFunction.NORMAL}
-            />
-          </>
-        )}
-      </EffectComposer>
+      {/* Hanya aktifkan EffectComposer jika mode GPU 'high' untuk menghemat daya GPU drastis */}
+      {performanceTier === 'high' && (
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom 
+            luminanceThreshold={0.2} 
+            mipmapBlur 
+            intensity={1.2} 
+          />
+          <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+          <Vignette
+            eskil={false}
+            offset={0.3}
+            darkness={0.5}
+            blendFunction={BlendFunction.NORMAL}
+          />
+        </EffectComposer>
+      )}
     </Canvas>
   );
 }

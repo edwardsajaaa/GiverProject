@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { SoundEngine } from '../utils/SoundEngine';
 import { StorageEngine } from '../utils/storageEngine';
+import { ModelStorage } from '../utils/modelStorage';
 
 export function useSandboxState() {
   const [timeMode, setTimeMode] = useState('night');
@@ -21,6 +22,16 @@ export function useSandboxState() {
   const [centralObjectUrl, setCentralObjectUrl] = useState(initialCentral.customUrl || null);
   const [centralObjectName, setCentralObjectName] = useState(initialCentral.customName || null);
   const [centralModalOpen, setCentralModalOpen] = useState(false);
+
+  // Otomatis pulihkan file 3D kustom dari IndexedDB saat halaman dimuat ulang
+  useEffect(() => {
+    ModelStorage.loadHeroModel().then(saved => {
+      if (saved && saved.blobUrl) {
+        setCentralObjectUrl(saved.blobUrl);
+        setCentralObjectName(saved.fileName);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     StorageEngine.saveCentralObject({
@@ -92,15 +103,51 @@ export function useSandboxState() {
   const [webglLost, setWebglLost] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !StorageEngine.isOnboarded());
 
-  // Performance Tiering
+  // Performance Tiering with user preference persistence
   const isLowEndDevice = useMemo(() => {
-    if (typeof navigator !== 'undefined' && navigator.hardwareConcurrency <= 4) return true;
+    if (typeof navigator !== 'undefined' && (navigator.hardwareConcurrency <= 4 || /Mobi|Android/i.test(navigator.userAgent))) return true;
     return false;
   }, []);
-  const [performanceTier, setPerformanceTier] = useState(isLowEndDevice ? 'low' : 'high');
 
+  const [performanceTier, setPerformanceTier] = useState(() => {
+    try {
+      const saved = localStorage.getItem('giver_sandbox_gpu_tier');
+      if (saved === 'low' || saved === 'high') return saved;
+    } catch (_ERR) {
+      void _ERR;
+    }
+    return isLowEndDevice ? 'low' : 'high';
+  });
+
+  const togglePerformanceTier = useCallback(() => {
+    setPerformanceTier(prev => {
+      const next = prev === 'high' ? 'low' : 'high';
+      try { 
+        localStorage.setItem('giver_sandbox_gpu_tier', next); 
+      } catch (_ERR) {
+        void _ERR;
+      }
+      SoundEngine.playClick();
+      return next;
+    });
+  }, []);
+
+  const lowFpsCount = useRef(0);
   const handleFpsUpdate = useCallback((newFps) => {
-    if (newFps < 42 && performanceTier === 'high') setPerformanceTier('low');
+    if (performanceTier === 'high' && newFps < 38) {
+      lowFpsCount.current++;
+      if (lowFpsCount.current >= 3) {
+        setPerformanceTier('low');
+        try { 
+          localStorage.setItem('giver_sandbox_gpu_tier', 'low'); 
+        } catch (_ERR) {
+          void _ERR;
+        }
+        lowFpsCount.current = 0;
+      }
+    } else {
+      lowFpsCount.current = 0;
+    }
   }, [performanceTier]);
 
   const sceneRef = useRef(null);
@@ -224,8 +271,28 @@ export function useSandboxState() {
     if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
   }, []);
 
-  const handleDrop = useCallback((e) => {
+  const handleDrop = useCallback(async (e) => {
     e.preventDefault();
+
+    // Dukungan drag-and-drop file .glb / .gltf langsung dari Windows Explorer / Finder
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      const lower = file.name.toLowerCase();
+      if (lower.endsWith('.glb') || lower.endsWith('.gltf')) {
+        try {
+          const { blobUrl, fileName } = await ModelStorage.saveHeroModel(file);
+          setCentralObjectUrl(blobUrl);
+          setCentralObjectName(fileName);
+          setCentralObjectType('custom');
+          setCentralObjectMaterial('original');
+          SoundEngine.playPop();
+          return;
+        } catch (err) {
+          console.error('Gagal memuat file 3D yang di-drop:', err);
+        }
+      }
+    }
+
     const itemType = e.dataTransfer ? e.dataTransfer.getData('itemType') : draggingItem;
     if (!itemType || !sceneRef.current || !canvasContainerRef.current) return;
 
@@ -286,7 +353,7 @@ export function useSandboxState() {
     resetConfirm, setResetConfirm,
     webglLost, setWebglLost,
     showTutorial, setShowTutorial,
-    performanceTier, setPerformanceTier, isLowEndDevice,
+    performanceTier, setPerformanceTier, isLowEndDevice, togglePerformanceTier,
     handleFpsUpdate,
     sceneRef, canvasContainerRef,
     inventory,

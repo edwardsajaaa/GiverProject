@@ -22,7 +22,7 @@ function createStarTexture() {
 const GALAXY_TEXTURE = createStarTexture();
 
 function createGalaxyData(isLowEnd) {
-  const count = isLowEnd ? 16000 : 42000;
+  const count = isLowEnd ? 6000 : 22000;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const arms = 2;
@@ -35,7 +35,7 @@ function createGalaxyData(isLowEnd) {
   const colorDust = new THREE.Color('#1e3a8a');
 
   for (let i = 0; i < count; i++) {
-    const isCore = i < (isLowEnd ? 4000 : 10000);
+    const isCore = i < (isLowEnd ? 1500 : 5000);
     let r, angle, y, mixedColor;
 
     if (isCore) {
@@ -199,20 +199,27 @@ function GalaxySky({ isLowEnd }) {
   );
 }
 
+function generateFireflies(isLowEnd, count = 50) {
+  const c = isLowEnd ? Math.floor(count / 2) : count;
+  const pos = new Float32Array(c * 3);
+  const phases = new Float32Array(c);
+  for (let i = 0; i < c; i++) {
+    // Deterministic golden-ratio pseudo-random distribution based on index
+    const r1 = ((i * 137.5) % 100) / 100;
+    const r2 = ((i * 269.3) % 100) / 100;
+    const r3 = ((i * 391.7) % 100) / 100;
+    const r4 = ((i * 513.1) % 100) / 100;
+    pos[i * 3] = (r1 - 0.5) * 20;
+    pos[i * 3 + 1] = r2 * 8 + 1;
+    pos[i * 3 + 2] = (r3 - 0.5) * 20;
+    phases[i] = r4 * Math.PI * 2;
+  }
+  return { pos, phases, count: c };
+}
+
 function Fireflies({ isLowEnd, count = 50 }) {
   const pointsRef = useRef();
-  const fireflyData = useMemo(() => {
-    const c = isLowEnd ? Math.floor(count / 2) : count;
-    const pos = new Float32Array(c * 3);
-    const phases = new Float32Array(c);
-    for (let i = 0; i < c; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 20; // Spread over the island
-      pos[i * 3 + 1] = Math.random() * 8 + 1;  // Height above ground
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
-      phases[i] = Math.random() * Math.PI * 2;
-    }
-    return { pos, phases, count: c };
-  }, [isLowEnd, count]);
+  const fireflyData = useMemo(() => generateFireflies(isLowEnd, count), [isLowEnd, count]);
 
   useFrame((state, delta) => {
     if (!pointsRef.current) return;

@@ -21,8 +21,7 @@ export function RealTimeAnalytics({ onFpsUpdate }) {
   return null;
 }
 
-// 2. DOM Glassmorphism Badge displayed on screen
-export function TelemetryBadge({ fps = 60, performanceTier = 'high', objectCount = 0, isNight = true }) {
+export function TelemetryBadge({ fps = 60, performanceTier = 'high', togglePerformanceTier, objectCount = 0, isNight = true }) {
   return (
     <div style={{
       position: 'absolute', top: 16, left: 24, zIndex: 30,
@@ -35,9 +34,9 @@ export function TelemetryBadge({ fps = 60, performanceTier = 'high', objectCount
       color: isNight ? '#E5E5E5' : '#171717',
       fontFamily: 'monospace', fontSize: 10, fontWeight: 600, letterSpacing: '0.5px',
       display: 'flex', alignItems: 'center', gap: 6,
-      pointerEvents: 'none'
+      pointerEvents: 'auto'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, pointerEvents: 'none' }}>
         <span style={{
           width: 8, height: 8, borderRadius: '50%',
           background: fps >= 50 ? '#30D158' : (fps >= 30 ? '#FF9F0A' : '#FF3B30'),
@@ -46,9 +45,30 @@ export function TelemetryBadge({ fps = 60, performanceTier = 'high', objectCount
         <span style={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fps} FPS</span>
       </div>
       <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
-      <span>GPU: <strong style={{ color: performanceTier === 'high' ? (isNight ? '#0A84FF' : '#007AFF') : '#FF9F0A', textTransform: 'uppercase' }}>{performanceTier}</strong></span>
+      <button
+        onClick={togglePerformanceTier}
+        title="Klik untuk beralih mode performa (⚡ ECO / 🚀 HIGH)"
+        style={{
+          background: performanceTier === 'high' ? 'rgba(10, 132, 255, 0.18)' : 'rgba(255, 159, 10, 0.18)',
+          border: performanceTier === 'high' ? '1px solid rgba(10, 132, 255, 0.35)' : '1px solid rgba(255, 159, 10, 0.35)',
+          borderRadius: 8,
+          padding: '2px 6px',
+          color: performanceTier === 'high' ? (isNight ? '#38bdf8' : '#007AFF') : '#FF9F0A',
+          fontFamily: 'inherit',
+          fontSize: 10,
+          fontWeight: 700,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 3,
+          transition: 'all 0.2s ease'
+        }}
+      >
+        <span>{performanceTier === 'high' ? '🚀' : '⚡'}</span>
+        <span>GPU: {performanceTier === 'high' ? 'HIGH' : 'ECO'}</span>
+      </button>
       <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
-      <span>🏝️ <strong>{objectCount}</strong> Objek</span>
+      <span style={{ pointerEvents: 'none' }}>🏝️ <strong>{objectCount}</strong> Objek</span>
     </div>
   );
 }
