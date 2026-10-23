@@ -123,13 +123,13 @@ export function CentralHeroObject({
   centralObjectScale = 1.0,
   centralObjectUrl = null,
   centralObjectName = null,
-  setCentralModalOpen
+  setCentralModalOpen,
+  artStyle = 'lowpoly'
 }) {
   const heroRef = useRef();
   const auraRef = useRef();
   const [hovered, setHovered] = useState(false);
 
-  // Animasi rotasi halus dan bobbing naik-turun (mengapung di tengah Altar)
   useFrame((state, delta) => {
     if (heroRef.current) {
       heroRef.current.rotation.y += delta * (hovered ? 0.8 : 0.4);
@@ -142,27 +142,31 @@ export function CentralHeroObject({
     }
   });
 
-  // Pemilihan Geometri untuk Preset
+  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
+
   const renderPresetGeometry = () => {
+    if (artStyle === 'retro_8bit') {
+      return <boxGeometry args={[1.05, 1.05, 1.05]} />;
+    }
     switch (centralObjectType) {
       case 'sphere':
-        return <sphereGeometry args={[0.7, 32, 32]} />;
+        return <sphereGeometry args={[0.7, isFlat ? 8 : 32, isFlat ? 6 : 32]} />;
       case 'torus':
-        return <torusGeometry args={[0.55, 0.22, 32, 64]} />;
+        return <torusGeometry args={[0.55, 0.22, isFlat ? 8 : 32, isFlat ? 12 : 64]} />;
       case 'pyramid':
         return <coneGeometry args={[0.75, 1.3, 4]} />;
       case 'dodecahedron':
         return <dodecahedronGeometry args={[0.75, 0]} />;
       case 'cylinder':
-        return <cylinderGeometry args={[0.5, 0.5, 1.2, 32]} />;
+        return <cylinderGeometry args={[0.5, 0.5, 1.2, isFlat ? 6 : 32]} />;
       case 'cube':
       default:
         return <boxGeometry args={[1.05, 1.05, 1.05]} />;
     }
   };
 
-  // Pemilihan Material untuk Preset
   const renderPresetMaterial = () => {
+    const emissiveMult = artStyle === 'synthwave' ? 1.8 : 1.0;
     switch (centralObjectMaterial) {
       case 'metallic':
         return (
@@ -170,8 +174,9 @@ export function CentralHeroObject({
             color={centralObjectColor}
             metalness={0.92}
             roughness={0.12}
+            flatShading={isFlat}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 2.5 : 1.0}
+            emissiveIntensity={(hovered ? 2.5 : 1.0) * emissiveMult}
           />
         );
       case 'glass':
@@ -182,8 +187,9 @@ export function CentralHeroObject({
             roughness={0.08}
             transparent
             opacity={0.72}
+            flatShading={isFlat}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 3.0 : 1.5}
+            emissiveIntensity={(hovered ? 3.0 : 1.5) * emissiveMult}
           />
         );
       case 'wireframe':
@@ -192,7 +198,7 @@ export function CentralHeroObject({
             color={centralObjectColor}
             wireframe
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 4.0 : 2.5}
+            emissiveIntensity={(hovered ? 4.0 : 2.5) * emissiveMult}
           />
         );
       case 'holographic':
@@ -204,8 +210,9 @@ export function CentralHeroObject({
             roughness={0.25}
             transparent
             opacity={0.92}
+            flatShading={isFlat}
             emissive={centralObjectColor}
-            emissiveIntensity={hovered ? 3.5 : 1.8}
+            emissiveIntensity={(hovered ? 3.5 : 1.8) * emissiveMult}
           />
         );
     }
