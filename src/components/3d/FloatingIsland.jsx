@@ -2,15 +2,6 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export function Box() {
-  return (
-    <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#4f8cff" roughness={0.3} metalness={0.1} />
-    </mesh>
-  );
-}
-
 const COLOR_TOP_NIGHT = new THREE.Color('#131826');
 const COLOR_TOP_DAY = new THREE.Color('#49a85c');
 const COLOR_SIDE1_NIGHT = new THREE.Color('#0c0f18');
@@ -82,7 +73,6 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
 
   return (
     <group>
-      {/* Top Grass Ground Cylinder - 32 segments is optimal and light */}
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -97,7 +87,6 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         <meshStandardMaterial ref={topMatRef} color={isNightInit ? '#131826' : '#49a85c'} roughness={isNightInit ? 0.9 : 0.8} metalness={isNightInit ? 0.15 : 0.05} />
       </mesh>
 
-      {/* Crystal clear glowing center pond / pool */}
       <mesh position={[0, 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <circleGeometry args={[2.4, 24]} />
         <meshStandardMaterial
@@ -112,7 +101,6 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         />
       </mesh>
 
-      {/* Concentric Glowing Energy Rings */}
       {[3.8, 6.5, 9.2].map((r, idx) => (
         <mesh key={idx} position={[0, 0.01 + idx * 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[r - 0.04, r + 0.04, 32]} />
@@ -120,7 +108,6 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         </mesh>
       ))}
 
-      {/* 16 Border Crystals / Grass Cones */}
       {Array.from({ length: 16 }).map((_, i) => {
         const angle = (i / 16) * Math.PI * 2;
         return (
@@ -131,13 +118,17 @@ export function FloatingIsland({ timeMode = 'night', onGroundTap }) {
         );
       })}
 
-      {/* Rock Cliffs Layer 1 */}
-      <mesh position={[0, -1.7, 0]} receiveShadow><cylinderGeometry args={[radius, 8.8, 2.6, 32]} /><meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.8} metalness={0.15} /></mesh>
-      {/* Rock Cliffs Layer 2 (Tapered Bottom) */}
-      <mesh position={[0, -4.0, 0]} receiveShadow><cylinderGeometry args={[8.8, 3.8, 2.0, 32]} /><meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.85} metalness={0.2} /></mesh>
+      <mesh position={[0, -1.7, 0]} receiveShadow>
+        <cylinderGeometry args={[radius, 8.8, 2.6, 32]} />
+        <meshStandardMaterial ref={sideMat1Ref} color={isNightInit ? '#0c0f18' : '#6b5344'} roughness={0.8} metalness={0.15} />
+      </mesh>
+
+      <mesh position={[0, -4.0, 0]} receiveShadow>
+        <cylinderGeometry args={[8.8, 3.8, 2.0, 32]} />
+        <meshStandardMaterial ref={sideMat2Ref} color={isNightInit ? '#06070b' : '#4a382e'} roughness={0.85} metalness={0.2} />
+      </mesh>
     </group>
   );
 }
 
-// Alias for backward compatibility if needed
 export const OutdoorGround = FloatingIsland;
