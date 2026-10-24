@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // --- Miniature Tokyo Tower (東京タワー) ---
-function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNight, artStyle }) {
+export function TokyoTowerMiniature({ position = [0, 0, 0], scale = 0.52, isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const redOrange = isNight ? '#e11d48' : '#dc2626';
   const whiteLattice = '#f8fafc';
@@ -30,7 +30,7 @@ function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNigh
         <meshStandardMaterial color={redOrange} roughness={0.5} flatShading={flat} />
       </mesh>
 
-      {/* Main Observatory Deck (2-tiered observation floor) */}
+      {/* Main Observatory Deck */}
       <mesh position={[0, 4.4, 0]} castShadow>
         <boxGeometry args={[2.4, 0.8, 2.4]} />
         <meshStandardMaterial
@@ -41,7 +41,6 @@ function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNigh
           flatShading={flat}
         />
       </mesh>
-      {/* Observation window glow strip */}
       <mesh position={[0, 4.4, 0]}>
         <boxGeometry args={[2.45, 0.35, 2.45]} />
         <meshStandardMaterial
@@ -52,7 +51,7 @@ function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNigh
         />
       </mesh>
 
-      {/* Mid Lattice Section (Alternating White and Red bands) */}
+      {/* Mid Lattice Section */}
       <mesh position={[0, 6.2, 0]}>
         <cylinderGeometry args={[0.7, 1.1, 2.8, flat ? 4 : 8]} />
         <meshStandardMaterial color={whiteLattice} roughness={0.6} flatShading={flat} />
@@ -73,13 +72,13 @@ function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNigh
         />
       </mesh>
 
-      {/* Slender Top Antenna Spire */}
+      {/* Antenna Spire */}
       <mesh position={[0, 11.4, 0]}>
         <cylinderGeometry args={[0.08, 0.2, 3.4, 6]} />
         <meshStandardMaterial color={whiteLattice} roughness={0.4} />
       </mesh>
 
-      {/* Pulsing Aircraft Warning Beacon Light on tip */}
+      {/* Beacon Light */}
       <mesh position={[0, 13.1, 0]}>
         <sphereGeometry args={[0.22, 8, 8]} />
         <meshStandardMaterial
@@ -102,19 +101,16 @@ function TokyoTowerMiniature({ position = [-24, -2.6, -26], scale = 0.55, isNigh
 }
 
 // --- Miniature Tokyo Skytree (東京スカイツリー) ---
-function TokyoSkytreeMiniature({ position = [-16, -2.6, -38], scale = 0.5, isNight, artStyle }) {
+export function TokyoSkytreeMiniature({ position = [0, 0, 0], scale = 0.46, isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const latticeColor = isNight ? '#cbd5e1' : '#e2e8f0';
 
   return (
     <group position={position} scale={scale}>
-      {/* Tripod Lattice Footing */}
       <mesh position={[0, 2.0, 0]}>
         <cylinderGeometry args={[1.0, 2.2, 4.0, 3]} />
         <meshStandardMaterial color={latticeColor} roughness={0.4} flatShading={flat} />
       </mesh>
-
-      {/* Main Slender Lattice Shaft */}
       <mesh position={[0, 7.5, 0]}>
         <cylinderGeometry args={[0.6, 1.0, 7.0, flat ? 6 : 12]} />
         <meshStandardMaterial
@@ -125,8 +121,6 @@ function TokyoSkytreeMiniature({ position = [-16, -2.6, -38], scale = 0.5, isNig
           flatShading={flat}
         />
       </mesh>
-
-      {/* First Observatory Pod (Tembo Deck) */}
       <mesh position={[0, 11.2, 0]}>
         <cylinderGeometry args={[1.5, 1.2, 1.1, flat ? 8 : 16]} />
         <meshStandardMaterial
@@ -136,14 +130,10 @@ function TokyoSkytreeMiniature({ position = [-16, -2.6, -38], scale = 0.5, isNig
           roughness={0.25}
         />
       </mesh>
-
-      {/* Upper Shaft */}
       <mesh position={[0, 13.2, 0]}>
         <cylinderGeometry args={[0.4, 0.55, 3.0, flat ? 6 : 12]} />
         <meshStandardMaterial color={latticeColor} roughness={0.4} />
       </mesh>
-
-      {/* Second Observatory Pod (Tembo Galleria) */}
       <mesh position={[0, 15.0, 0]}>
         <cylinderGeometry args={[0.9, 0.75, 0.8, flat ? 8 : 14]} />
         <meshStandardMaterial
@@ -153,13 +143,10 @@ function TokyoSkytreeMiniature({ position = [-16, -2.6, -38], scale = 0.5, isNig
           roughness={0.25}
         />
       </mesh>
-
-      {/* Needle Antenna Spire */}
       <mesh position={[0, 17.6, 0]}>
         <cylinderGeometry args={[0.06, 0.22, 4.4, 6]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.2} />
       </mesh>
-      {/* Top Cyan Beacon */}
       <mesh position={[0, 19.8, 0]}>
         <sphereGeometry args={[0.18, 6, 6]} />
         <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={2.0} />
@@ -168,73 +155,78 @@ function TokyoSkytreeMiniature({ position = [-16, -2.6, -38], scale = 0.5, isNig
   );
 }
 
-// --- Miniature Shinkansen Bullet Train on Elevated Rail (新幹線) ---
-function MiniatureShinkansen({ isNight, artStyle }) {
+// --- Animated Shinkansen Bullet Train Ring Circuit ---
+export function MiniatureShinkansenRing({
+  center = [-48, 0, -48],
+  radius = 35.5,
+  isNight,
+  artStyle
+}) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const trainRef = useRef();
 
   useFrame((state) => {
     if (trainRef.current) {
-      const t = state.clock.getElapsedTime() * 0.45;
-      // Loop smoothly along curved railway path
+      const t = state.clock.getElapsedTime() * 0.18;
       const angle = (t % 1) * Math.PI * 2;
-      const radiusX = 18;
-      const radiusZ = 9;
-      const cx = -27;
-      const cz = -23;
-
-      trainRef.current.position.x = cx + Math.cos(angle) * radiusX;
-      trainRef.current.position.z = cz + Math.sin(angle) * radiusZ;
-      // Rotate facing travel direction tangent
+      trainRef.current.position.x = center[0] + Math.cos(angle) * radius;
+      trainRef.current.position.z = center[2] + Math.sin(angle) * radius;
       trainRef.current.rotation.y = -angle + Math.PI / 2;
     }
   });
 
+  const piers = useMemo(() => {
+    const list = [];
+    const count = 28;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2;
+      list.push({
+        x: center[0] + Math.cos(a) * radius,
+        z: center[2] + Math.sin(a) * radius,
+        rot: -a
+      });
+    }
+    return list;
+  }, [center, radius]);
+
   return (
-    <group position={[0, -2.5, 0]}>
-      {/* Elevated Concrete Rail Viaduct Piers & Tracks */}
-      {[-40, -34, -28, -22, -16, -10].map((x, i) => (
-        <group key={i} position={[x, 0, -23 + Math.sin(i * 0.8) * 3]}>
-          {/* Concrete Pier Pillar */}
+    <group position={[0, -2.6, 0]}>
+      {/* Viaduct Piers */}
+      {piers.map((p, i) => (
+        <group key={i} position={[p.x, 0, p.z]} rotation={[0, p.rot, 0]}>
           <mesh position={[0, 0.65, 0]}>
             <boxGeometry args={[0.45, 1.3, 0.45]} />
             <meshStandardMaterial color="#64748b" roughness={0.8} flatShading={flat} />
           </mesh>
-          {/* Horizontal Track Beam */}
           <mesh position={[0, 1.35, 0]}>
-            <boxGeometry args={[4.2, 0.2, 0.9]} />
+            <boxGeometry args={[0.9, 0.2, 5.0]} />
             <meshStandardMaterial color="#475569" roughness={0.7} />
           </mesh>
-          {/* Dual Rail Tracks */}
-          <mesh position={[0, 1.48, -0.22]}>
-            <boxGeometry args={[4.2, 0.06, 0.08]} />
+          <mesh position={[-0.22, 1.48, 0]}>
+            <boxGeometry args={[0.08, 0.06, 5.0]} />
             <meshStandardMaterial color="#94a3b8" metalness={0.7} roughness={0.3} />
           </mesh>
-          <mesh position={[0, 1.48, 0.22]}>
-            <boxGeometry args={[4.2, 0.06, 0.08]} />
+          <mesh position={[0.22, 1.48, 0]}>
+            <boxGeometry args={[0.08, 0.06, 5.0]} />
             <meshStandardMaterial color="#94a3b8" metalness={0.7} roughness={0.3} />
           </mesh>
         </group>
       ))}
 
-      {/* The Sleek Animated Shinkansen Train Carriages */}
-      <group ref={trainRef} position={[-25, 1.55, -23]}>
-        {/* Lead Car with Aerodynamic Bullet Nose */}
+      {/* Animated Bullet Train */}
+      <group ref={trainRef} position={[center[0] + radius, 1.55, center[2]]}>
         <mesh position={[1.4, 0.16, 0]}>
           <boxGeometry args={[1.5, 0.32, 0.38]} />
           <meshStandardMaterial color="#ffffff" roughness={0.3} />
         </mesh>
-        {/* Shinkansen Iconic Blue Stripe */}
         <mesh position={[1.4, 0.1, 0]}>
           <boxGeometry args={[1.52, 0.07, 0.39]} />
           <meshStandardMaterial color="#0284c7" roughness={0.4} />
         </mesh>
-        {/* Nose Taper Cone */}
         <mesh position={[2.25, 0.13, 0]} rotation={[0, 0, -Math.PI / 2]}>
           <coneGeometry args={[0.18, 0.45, 6]} />
           <meshStandardMaterial color="#ffffff" roughness={0.3} />
         </mesh>
-        {/* Front Headlights */}
         <mesh position={[2.42, 0.12, 0]}>
           <sphereGeometry args={[0.06, 6, 6]} />
           <meshStandardMaterial
@@ -243,8 +235,6 @@ function MiniatureShinkansen({ isNight, artStyle }) {
             emissiveIntensity={isNight ? 1.5 : 0.4}
           />
         </mesh>
-
-        {/* Passenger Car 2 */}
         <mesh position={[0, 0.16, 0]}>
           <boxGeometry args={[1.2, 0.32, 0.38]} />
           <meshStandardMaterial color="#ffffff" roughness={0.3} />
@@ -253,8 +243,6 @@ function MiniatureShinkansen({ isNight, artStyle }) {
           <boxGeometry args={[1.22, 0.07, 0.39]} />
           <meshStandardMaterial color="#0284c7" roughness={0.4} />
         </mesh>
-
-        {/* Passenger Car 3 */}
         <mesh position={[-1.3, 0.16, 0]}>
           <boxGeometry args={[1.2, 0.32, 0.38]} />
           <meshStandardMaterial color="#ffffff" roughness={0.3} />
@@ -268,131 +256,42 @@ function MiniatureShinkansen({ isNight, artStyle }) {
   );
 }
 
-// --- Miniature Rainbow Bridge & Tokyo Bay Waterway ---
-function MiniatureRainbowBridge({ isNight, artStyle }) {
-  const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-  const towerColor = '#f8fafc';
-
-  return (
-    <group position={[-20, 0, -18]} rotation={[0, 0.35, 0]}>
-      {/* Tokyo Bay Water Canal Plane */}
-      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[20, 12]} />
-        <meshStandardMaterial
-          color={isNight ? '#032030' : '#0284c7'}
-          roughness={0.15}
-          metalness={0.65}
-          emissive={isNight ? '#083344' : '#000000'}
-          emissiveIntensity={isNight ? 0.2 : 0}
-        />
-      </mesh>
-
-      {/* Road Deck */}
-      <mesh position={[0, 0.6, 0]}>
-        <boxGeometry args={[16, 0.12, 1.1]} />
-        <meshStandardMaterial color="#334155" roughness={0.8} />
-      </mesh>
-      {/* Golden roadway light line */}
-      <mesh position={[0, 0.68, 0]}>
-        <boxGeometry args={[15.6, 0.02, 0.06]} />
-        <meshStandardMaterial
-          color="#fef08a"
-          emissive="#fef08a"
-          emissiveIntensity={isNight ? 1.0 : 0.2}
-        />
-      </mesh>
-
-      {/* Twin Suspension Towers */}
-      {[-4.5, 4.5].map((tx, idx) => (
-        <group key={idx} position={[tx, 0, 0]}>
-          {/* Left Portal Column */}
-          <mesh position={[0, 1.8, -0.6]}>
-            <boxGeometry args={[0.3, 2.5, 0.3]} />
-            <meshStandardMaterial color={towerColor} roughness={0.5} flatShading={flat} />
-          </mesh>
-          {/* Right Portal Column */}
-          <mesh position={[0, 1.8, 0.6]}>
-            <boxGeometry args={[0.3, 2.5, 0.3]} />
-            <meshStandardMaterial color={towerColor} roughness={0.5} flatShading={flat} />
-          </mesh>
-          {/* Top Crossbar */}
-          <mesh position={[0, 3.0, 0]}>
-            <boxGeometry args={[0.35, 0.3, 1.5]} />
-            <meshStandardMaterial color={towerColor} roughness={0.5} />
-          </mesh>
-          {/* Illuminated Cable Struts at Night */}
-          {isNight && (
-            <mesh position={[0, 3.2, 0]}>
-              <sphereGeometry args={[0.1, 6, 6]} />
-              <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={1.8} />
-            </mesh>
-          )}
-        </group>
-      ))}
-
-      {/* Main Suspension Cables */}
-      <mesh position={[0, 2.0, -0.6]} rotation={[0, 0, 0]}>
-        <boxGeometry args={[9.2, 0.04, 0.04]} />
-        <meshStandardMaterial
-          color={isNight ? '#38bdf8' : '#94a3b8'}
-          emissive={isNight ? '#38bdf8' : '#000000'}
-          emissiveIntensity={isNight ? 0.7 : 0}
-        />
-      </mesh>
-      <mesh position={[0, 2.0, 0.6]} rotation={[0, 0, 0]}>
-        <boxGeometry args={[9.2, 0.04, 0.04]} />
-        <meshStandardMaterial
-          color={isNight ? '#38bdf8' : '#94a3b8'}
-          emissive={isNight ? '#38bdf8' : '#000000'}
-          emissiveIntensity={isNight ? 0.7 : 0}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// --- Procedural Miniature Skyscraper Clusters (Distrik Tokyo Miniatur) ---
-function SkyscraperDistrictMiniature({ isNight, artStyle }) {
+// --- Procedural 360-Degree Tokyo Metropolis Belt Circling Mount Fuji ---
+function TokyoMetropolisBelt({ center = [-48, 0, -48], isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
 
-  // Seeded architectural blocks representing Shinjuku, Roppongi, and Shibuya
-  const buildings = useMemo(() => [
-    // Front Row near Bridge & Waterway
-    { x: -16.5, z: -21.0, w: 1.4, d: 1.4, h: 4.8, type: 'glass_blue', neon: '#38bdf8' },
-    { x: -18.8, z: -23.5, w: 1.6, d: 1.3, h: 5.6, type: 'stepped', neon: '#ec4899' },
-    { x: -21.2, z: -21.5, w: 1.3, d: 1.5, h: 4.2, type: 'slab', neon: '#f59e0b' },
-    { x: -23.6, z: -23.0, w: 1.7, d: 1.7, h: 6.4, type: 'helipad', neon: '#10b981' },
-    { x: -26.0, z: -21.0, w: 1.5, d: 1.2, h: 4.5, type: 'glass_amber', neon: '#eab308' },
-    { x: -28.5, z: -23.2, w: 1.4, d: 1.4, h: 5.2, type: 'spire', neon: '#a855f7' },
-    { x: -31.0, z: -22.0, w: 1.8, d: 1.5, h: 3.8, type: 'low_block', neon: '#06b6d4' },
+  // Generate dense ring of 110+ skyscrapers circling Mount Fuji's skirt
+  const buildings = useMemo(() => {
+    const list = [];
+    const count = 116;
+    const ringRadii = [28.5, 31.8, 35.2, 38.6];
 
-    // Mid High-Rise Row (Shinjuku Skyline Heart)
-    { x: -17.5, z: -26.5, w: 1.8, d: 1.8, h: 6.8, type: 'twin_tower', neon: '#0284c7' },
-    { x: -20.5, z: -28.0, w: 2.0, d: 1.6, h: 7.8, type: 'helipad', neon: '#f43f5e' },
-    { x: -23.0, z: -27.5, w: 1.6, d: 1.6, h: 8.5, type: 'spire', neon: '#38bdf8' },
-    { x: -26.2, z: -28.5, w: 2.2, d: 1.8, h: 7.2, type: 'stepped', neon: '#10b981' },
-    { x: -29.2, z: -27.0, w: 1.7, d: 1.5, h: 6.0, type: 'glass_blue', neon: '#fbbf24' },
-    { x: -32.5, z: -28.0, w: 1.6, d: 1.6, h: 5.5, type: 'slab', neon: '#ec4899' },
-    { x: -35.0, z: -26.5, w: 1.5, d: 1.4, h: 4.6, type: 'low_block', neon: '#a855f7' },
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      const ringIdx = i % ringRadii.length;
+      const baseR = ringRadii[ringIdx];
+      const r = baseR + (Math.sin(i * 3.7) * 1.4);
+      const x = center[0] + Math.cos(angle) * r;
+      const z = center[2] + Math.sin(angle) * r;
 
-    // Back Row against Mount Fuji Foothills
-    { x: -14.5, z: -32.0, w: 1.5, d: 1.5, h: 4.2, type: 'glass_blue', neon: '#38bdf8' },
-    { x: -18.0, z: -33.5, w: 1.8, d: 1.8, h: 6.2, type: 'stepped', neon: '#f59e0b' },
-    { x: -21.5, z: -34.0, w: 2.0, d: 2.0, h: 6.8, type: 'slab', neon: '#06b6d4' },
-    { x: -25.5, z: -33.0, w: 1.6, d: 1.6, h: 5.8, type: 'spire', neon: '#ef4444' },
-    { x: -29.0, z: -34.5, w: 2.1, d: 1.7, h: 5.4, type: 'helipad', neon: '#eab308' },
-    { x: -33.0, z: -33.5, w: 1.8, d: 1.6, h: 4.8, type: 'glass_amber', neon: '#10b981' },
-    { x: -37.0, z: -32.0, w: 1.5, d: 1.5, h: 4.0, type: 'low_block', neon: '#38bdf8' },
+      const heightRnd = (Math.sin(i * 12.3) + 1) * 0.5;
+      const h = 3.6 + heightRnd * 5.2; // 3.6m to 8.8m
+      const w = 1.3 + ((i % 5) * 0.18);
+      const d = 1.3 + (((i + 2) % 4) * 0.2);
 
-    // Flank Clusters (Suburban / Low-rise commercial perimeter)
-    { x: -12.5, z: -25.0, w: 1.2, d: 1.2, h: 3.2, type: 'low_block', neon: '#f43f5e' },
-    { x: -11.0, z: -28.0, w: 1.3, d: 1.3, h: 3.5, type: 'slab', neon: '#fbbf24' },
-    { x: -39.0, z: -27.0, w: 1.4, d: 1.4, h: 3.6, type: 'stepped', neon: '#06b6d4' },
-    { x: -41.5, z: -24.5, w: 1.3, d: 1.3, h: 3.0, type: 'low_block', neon: '#a855f7' },
-  ], []);
+      const types = ['glass_blue', 'stepped', 'slab', 'helipad', 'spire', 'glass_amber'];
+      const type = types[i % types.length];
+
+      const neons = ['#38bdf8', '#ec4899', '#f59e0b', '#10b981', '#a855f7', '#06b6d4', '#ef4444', '#fbbf24'];
+      const neon = neons[i % neons.length];
+
+      list.push({ x, z, h, w, d, type, neon, angle });
+    }
+    return list;
+  }, [center]);
 
   return (
-    <group position={[0, 0, 0]}>
+    <group position={[0, -2.6, 0]}>
       {buildings.map((b, i) => {
         const bodyColor = isNight
           ? (b.type === 'glass_blue' ? '#0f172a' : '#1e293b')
@@ -403,9 +302,9 @@ function SkyscraperDistrictMiniature({ isNight, artStyle }) {
           : '#475569';
 
         return (
-          <group key={i} position={[b.x, 0, b.z]}>
-            {/* Main Building Tower Core */}
-            <mesh position={[0, b.h / 2, 0]} castShadow>
+          <group key={i} position={[b.x, 0, b.z]} rotation={[0, -b.angle + Math.PI / 2, 0]}>
+            {/* Building Core */}
+            <mesh position={[0, b.h / 2, 0]} castShadow={false}>
               <boxGeometry args={[b.w, b.h, b.d]} />
               <meshStandardMaterial
                 color={bodyColor}
@@ -414,7 +313,7 @@ function SkyscraperDistrictMiniature({ isNight, artStyle }) {
               />
             </mesh>
 
-            {/* Glowing Window Grid Strips (Luminous at Night) */}
+            {/* Glowing Window Grid Strips */}
             {isNight && (
               <mesh position={[0, b.h / 2, 0]}>
                 <boxGeometry args={[b.w + 0.02, b.h * 0.88, b.d + 0.02]} />
@@ -428,24 +327,24 @@ function SkyscraperDistrictMiniature({ isNight, artStyle }) {
               </mesh>
             )}
 
-            {/* Rooftop Details */}
+            {/* Helipad Accent */}
             {b.type === 'helipad' && (
               <group position={[0, b.h + 0.05, 0]}>
-                {/* Helipad Yellow Ring */}
                 <mesh rotation={[-Math.PI / 2, 0, 0]}>
-                  <ringGeometry args={[0.35, 0.45, 12]} />
+                  <ringGeometry args={[0.3, 0.42, 10]} />
                   <meshBasicMaterial color="#facc15" />
                 </mesh>
                 <mesh position={[0, 0.02, 0]}>
-                  <boxGeometry args={[0.08, 0.02, 0.4]} />
+                  <boxGeometry args={[0.07, 0.02, 0.35]} />
                   <meshBasicMaterial color="#ffffff" />
                 </mesh>
               </group>
             )}
 
+            {/* Spire Accent */}
             {b.type === 'spire' && (
               <mesh position={[0, b.h + 0.9, 0]}>
-                <cylinderGeometry args={[0.04, 0.12, 1.8, 6]} />
+                <cylinderGeometry args={[0.03, 0.1, 1.8, 5]} />
                 <meshStandardMaterial
                   color="#e2e8f0"
                   emissive={isNight ? b.neon : '#000000'}
@@ -454,116 +353,121 @@ function SkyscraperDistrictMiniature({ isNight, artStyle }) {
               </mesh>
             )}
 
-            {/* Cyberpunk / Shibuya Neon Billboard on Facade */}
-            <mesh position={[0, b.h * 0.45, b.d / 2 + 0.04]}>
-              <planeGeometry args={[b.w * 0.75, 0.45]} />
-              <meshBasicMaterial
-                color={b.neon}
-                toneMapped={false}
-              />
+            {/* Cyberpunk Neon Billboard */}
+            <mesh position={[0, b.h * 0.45, b.d / 2 + 0.03]}>
+              <planeGeometry args={[b.w * 0.75, 0.42]} />
+              <meshBasicMaterial color={b.neon} toneMapped={false} />
             </mesh>
           </group>
         );
       })}
 
-      {/* Tiny City Street Grid & Traffic Light Trails */}
-      {[-24, -28, -32].map((sz, sIdx) => (
-        <mesh key={`st-${sIdx}`} position={[-26, 0.02, sz]}>
-          <planeGeometry args={[26, 0.35]} />
+      {/* Concentric Metropolis Avenue Rings */}
+      {[30.2, 33.6, 37.0].map((rad, idx) => (
+        <mesh
+          key={`ring-road-${idx}`}
+          position={[center[0], 0.02, center[2]]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <ringGeometry args={[rad - 0.28, rad + 0.28, 64]} />
           <meshStandardMaterial color="#1e293b" roughness={0.9} />
         </mesh>
       ))}
-      {/* Golden Headlight and Crimson Taillight streaks */}
+
+      {/* Traffic Headlight / Taillight Trails circling the mountain */}
       {isNight && (
-        <group position={[0, 0.05, 0]}>
-          <mesh position={[-25, 0, -23.8]}>
-            <planeGeometry args={[22, 0.06]} />
+        <group position={[center[0], 0.05, center[2]]} rotation={[-Math.PI / 2, 0, 0]}>
+          <mesh>
+            <ringGeometry args={[30.15, 30.25, 64]} />
             <meshBasicMaterial color="#fef08a" />
           </mesh>
-          <mesh position={[-25, 0, -24.1]}>
-            <planeGeometry args={[22, 0.06]} />
+          <mesh>
+            <ringGeometry args={[33.55, 33.65, 64]} />
             <meshBasicMaterial color="#ef4444" />
           </mesh>
-          <mesh position={[-25, 0, -27.8]}>
-            <planeGeometry args={[20, 0.06]} />
+          <mesh>
+            <ringGeometry args={[36.95, 37.05, 64]} />
             <meshBasicMaterial color="#fef08a" />
-          </mesh>
-          <mesh position={[-25, 0, -28.1]}>
-            <planeGeometry args={[20, 0.06]} />
-            <meshBasicMaterial color="#ef4444" />
           </mesh>
         </group>
       )}
 
-      {/* Miniature Parks & Greenery nestled between skyscrapers */}
-      {[-15, -22, -30, -36].map((gx, gIdx) => (
-        <group key={`park-${gIdx}`} position={[gx, 0.1, -25.5 + (gIdx % 2) * 2]}>
-          <mesh position={[0, 0.25, 0]}>
-            <coneGeometry args={[0.5, 0.7, 6]} />
-            <meshStandardMaterial
-              color={isNight ? '#064e3b' : '#15803d'}
-              roughness={0.9}
-              flatShading={flat}
-            />
-          </mesh>
-          <mesh position={[0.4, 0.2, 0.3]}>
-            <coneGeometry args={[0.4, 0.55, 6]} />
-            <meshStandardMaterial
-              color={isNight ? '#064e3b' : '#16a34a'}
-              roughness={0.9}
-              flatShading={flat}
-            />
-          </mesh>
-        </group>
-      ))}
+      {/* Miniature Green Parks scattered along the metropolitan ring */}
+      {Array.from({ length: 32 }).map((_, pIdx) => {
+        const a = (pIdx / 32) * Math.PI * 2 + 0.05;
+        const r = 27.2 + ((pIdx % 3) * 0.6);
+        const px = center[0] + Math.cos(a) * r;
+        const pz = center[2] + Math.sin(a) * r;
+        return (
+          <group key={`metropark-${pIdx}`} position={[px, 0.1, pz]}>
+            <mesh position={[0, 0.25, 0]}>
+              <coneGeometry args={[0.45, 0.65, 5]} />
+              <meshStandardMaterial
+                color={isNight ? '#064e3b' : '#15803d'}
+                roughness={0.9}
+                flatShading={flat}
+              />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }
 
 // --- Main Miniature Tokyo Diorama Assembly ---
-export function MiniatureTokyo({ position = [0, -2.6, 0], rotation = [0, 0, 0], isNight = true, artStyle = 'lowpoly' }) {
+export function MiniatureTokyo({
+  center = [-48, 0, -48],
+  isNight = true,
+  artStyle = 'lowpoly'
+}) {
   return (
-    <group name="MiniatureTokyoDiorama" position={position} rotation={rotation}>
-      {/* Soft Tokyo City Glow at Night */}
+    <group name="MiniatureTokyoMetropolisRing">
+      {/* City Ambient Glow Lights along the perimeter */}
       {isNight && (
-        <pointLight
-          position={[-24, 7, -26]}
-          color="#fbbf24"
-          intensity={0.45}
-          distance={40}
-        />
+        <>
+          <pointLight position={[center[0] + 25, 7, center[2]]} color="#fbbf24" intensity={0.4} distance={45} />
+          <pointLight position={[center[0] - 25, 7, center[2]]} color="#38bdf8" intensity={0.4} distance={45} />
+          <pointLight position={[center[0], 7, center[2] + 25]} color="#ec4899" intensity={0.4} distance={45} />
+          <pointLight position={[center[0], 7, center[2] - 25]} color="#fbbf24" intensity={0.4} distance={45} />
+        </>
       )}
 
-      {/* 1. Iconic Red-White Tokyo Tower */}
+      {/* 1. Iconic Red-White Tokyo Tower (Placed on the front-right flank of Mount Fuji) */}
       <TokyoTowerMiniature
-        position={[-23, 0, -24]}
+        position={[center[0] + 16, -2.6, center[2] + 24]}
         scale={0.52}
         isNight={isNight}
         artStyle={artStyle}
       />
 
-      {/* 2. Modern Tokyo Skytree Spire */}
+      {/* 2. Modern Tokyo Skytree Spire (Placed on the front-left flank of Mount Fuji) */}
       <TokyoSkytreeMiniature
-        position={[-15, 0, -34]}
+        position={[center[0] - 22, -2.6, center[2] + 18]}
         scale={0.46}
         isNight={isNight}
         artStyle={artStyle}
       />
 
-      {/* 3. Dense Skyscraper Skyline Blocks with Glowing Windows */}
-      <SkyscraperDistrictMiniature
+      {/* 3. Secondary Tokyo Tower on opposite diagonal for full 360 panorama */}
+      <TokyoTowerMiniature
+        position={[center[0] - 18, -2.6, center[2] - 20]}
+        scale={0.42}
         isNight={isNight}
         artStyle={artStyle}
       />
 
-      {/* 4. Miniature Shinkansen (Bullet Train) on Elevated Viaduct */}
-      <MiniatureShinkansen
+      {/* 4. Complete 360-Degree Tokyo Metropolis Belt Circling Mount Fuji (110+ Skyscrapers) */}
+      <TokyoMetropolisBelt
+        center={center}
         isNight={isNight}
         artStyle={artStyle}
       />
 
-      {/* 5. Rainbow Bridge & Tokyo Bay Waterway */}
-      <MiniatureRainbowBridge
+      {/* 5. Circular Shinkansen Viaduct Loop Circling the Entire Mountain Base */}
+      <MiniatureShinkansenRing
+        center={center}
+        radius={35.5}
         isNight={isNight}
         artStyle={artStyle}
       />
