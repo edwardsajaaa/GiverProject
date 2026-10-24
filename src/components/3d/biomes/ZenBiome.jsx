@@ -12,10 +12,10 @@ function MountFujiBackground({ isNight, artStyle }) {
   const skirtColor = isNight ? '#080d1a' : '#1e293b';
 
   return (
-    <group position={[-36, -2.6, -36]}>
+    <group position={[-48, -2.6, -48]}>
       {/* Sun / Moon Disc behind Mount Fuji */}
-      <mesh position={[-4, 30, -6]}>
-        <circleGeometry args={[10, 32]} />
+      <mesh position={[-6, 38, -6]}>
+        <circleGeometry args={[13, 32]} />
         <meshBasicMaterial
           color={sunMoonColor}
           transparent
@@ -23,9 +23,9 @@ function MountFujiBackground({ isNight, artStyle }) {
         />
       </mesh>
 
-      {/* Mount Fuji Main Volcanic Slope */}
-      <mesh position={[0, 14, 0]} castShadow={false}>
-        <coneGeometry args={[26, 28, flat ? 18 : 32, 1, true]} />
+      {/* Mount Fuji Main Volcanic Slope (Majestic backdrop behind the valley) */}
+      <mesh position={[0, 18, 0]} castShadow={false}>
+        <coneGeometry args={[22, 36, flat ? 18 : 32, 1, true]} />
         <meshStandardMaterial
           color={fujiColor}
           roughness={0.9}
@@ -34,9 +34,9 @@ function MountFujiBackground({ isNight, artStyle }) {
         />
       </mesh>
 
-      {/* Volcanic Skirt & Pedestal (Tapering into ground, without invading valley) */}
-      <mesh position={[0, 2, 0]}>
-        <coneGeometry args={[30, 10, flat ? 18 : 32, 1, true]} />
+      {/* Volcanic Skirt & Pedestal (Tapering neatly into the distant horizon) */}
+      <mesh position={[0, 3, 0]}>
+        <coneGeometry args={[25, 12, flat ? 18 : 32, 1, true]} />
         <meshStandardMaterial
           color={skirtColor}
           roughness={0.95}
@@ -45,8 +45,8 @@ function MountFujiBackground({ isNight, artStyle }) {
       </mesh>
 
       {/* Mount Fuji Snow Cap (Iconic snow crown) */}
-      <mesh position={[0, 23.5, 0.05]}>
-        <coneGeometry args={[11, 8.5, flat ? 18 : 32]} />
+      <mesh position={[0, 30.5, 0.05]}>
+        <coneGeometry args={[9.5, 11, flat ? 18 : 32]} />
         <meshStandardMaterial
           color={snowColor}
           roughness={0.5}
@@ -57,13 +57,13 @@ function MountFujiBackground({ isNight, artStyle }) {
         />
       </mesh>
 
-      {/* Flanking Foothills (Positioned on the flanks and behind to keep the valley open) */}
-      <group position={[0, 2.0, -8]}>
-        {[-32, -22, -12, 18, 28].map((xPos, idx) => {
-          const height = 8 + ((idx * 3) % 5);
-          const rad = 8 + ((idx * 2) % 5);
+      {/* Flanking Foothills (Positioned strictly behind on the flanks) */}
+      <group position={[0, 2.0, -10]}>
+        {[-34, -24, -14, 18, 30].map((xPos, idx) => {
+          const height = 10 + ((idx * 3) % 6);
+          const rad = 9 + ((idx * 2) % 5);
           return (
-            <mesh key={idx} position={[xPos, height / 2 - 2, -(idx % 2) * 5]}>
+            <mesh key={idx} position={[xPos, height / 2 - 2, -(idx % 2) * 6]}>
               <coneGeometry args={[rad, height, 7]} />
               <meshStandardMaterial
                 color={isNight ? '#060a14' : '#1e293b'}
