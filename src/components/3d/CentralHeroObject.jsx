@@ -1,6 +1,8 @@
-import React, { useRef, Suspense, useMemo, useState } from 'react';
+import React, { useRef, Suspense, useMemo, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import * as THREE from 'three';
 import { SoundEngine } from '../../utils/SoundEngine';
 import { useGLTF } from '@react-three/drei';
@@ -18,7 +20,7 @@ class ModelErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error("Gagal memuat model 3D kustom:", error, errorInfo);
     setTimeout(() => {
-      alert(`⚠️ Gagal memuat file 3D.\n\nDetail Error: ${error.message || error.toString()}\n\nDisarankan untuk menggunakan file .GLB yang menggabungkan seluruh mesh dan tekstur.`);
+      alert(`⚠️ Gagal memuat file 3D.\n\nDetail Error: ${error.message || error.toString()}\n\nDisarankan untuk menggunakan file .GLB atau .FBX yang menggabungkan seluruh mesh dan material.`);
     }, 500);
   }
   render() {
@@ -34,10 +36,35 @@ class ModelErrorBoundary extends React.Component {
   }
 }
 
-// Komponen pemuat Model 3D Custom (Khusus GLB yang stabil)
-function CustomUploadedModel({ url, color, materialType, scaleVal }) {
-  // Gunakan useGLTF dari drei yang jauh lebih stabil untuk R3F
-  // Note: Hanya mendukung .glb / .gltf yang sifatnya standalone (semua tekstur ter-embed di dalam file)
+function applyCustomMaterial(object, materialType, color) {
+  if (!object) return;
+  object.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+      if (materialType === 'wireframe') {
+        child.material = new THREE.MeshStandardMaterial({
+          color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
+        });
+      } else if (materialType === 'metallic') {
+        child.material = new THREE.MeshStandardMaterial({
+          color: color, metalness: 0.9, roughness: 0.15
+        });
+      } else if (materialType === 'glass') {
+        child.material = new THREE.MeshStandardMaterial({
+          color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
+        });
+      } else if (materialType === 'holographic') {
+        child.material = new THREE.MeshStandardMaterial({
+          color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
+        });
+      }
+    }
+  });
+}
+
+// Komponen pemuat Model GLTF / GLB
+function CustomGLTFModel({ url, color, materialType, scaleVal }) {
   const { scene } = useGLTF(url, true, true, (loader) => {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
@@ -47,49 +74,20 @@ function CustomUploadedModel({ url, color, materialType, scaleVal }) {
   const wrapperScene = useMemo(() => {
     if (!scene) return null;
     const cloned = scene.clone(true);
-    
-    // Auto-scale dan auto-center
+
     const box = new THREE.Box3().setFromObject(cloned);
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
     const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
 
-    // Geser ke pusat
     cloned.position.copy(center).multiplyScalar(-1);
 
-    // Buat grup wrapper untuk handle skala agar tidak berantakan
     const wrapper = new THREE.Group();
     wrapper.scale.setScalar(scaleFactor);
     wrapper.add(cloned);
 
-    // Terapkan material: Pertahankan tekstur asli jika 'original' (default untuk uploaded models)
-    wrapper.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        
-        if (materialType === 'wireframe') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, wireframe: true, emissive: color, emissiveIntensity: 0.5
-          });
-        } else if (materialType === 'metallic') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, metalness: 0.9, roughness: 0.15
-          });
-        } else if (materialType === 'glass') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, transparent: true, opacity: 0.65, roughness: 0.1, metalness: 0.2
-          });
-        } else if (materialType === 'holographic') {
-          child.material = new THREE.MeshStandardMaterial({
-            color: color, roughness: 0.25, metalness: 0.2, emissive: color, emissiveIntensity: 0.3
-          });
-        }
-        // Jika materialType === 'original' (atau tidak di-override), pertahankan material dan tekstur asli model!
-      }
-    });
-
+    applyCustomMaterial(wrapper, materialType, color);
     return wrapper;
   }, [scene, color, materialType]);
 
@@ -98,6 +96,131 @@ function CustomUploadedModel({ url, color, materialType, scaleVal }) {
       <primitive object={wrapperScene} />
     </group>
   ) : null;
+}
+
+// Komponen pemuat Model FBX (Mendukung animasi FBX jika tersedia)
+function CustomFBXModel({ url, color, materialType, scaleVal }) {
+  const [fbxScene, setFbxScene] = useState(null);
+  const mixerRef = useRef(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loader = new FBXLoader();
+
+    loader.load(
+      url,
+      (loaded) => {
+        if (!isMounted) return;
+
+        const box = new THREE.Box3().setFromObject(loaded);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
+
+        loaded.position.copy(center).multiplyScalar(-1);
+
+        const wrapper = new THREE.Group();
+        wrapper.scale.setScalar(scaleFactor);
+        wrapper.add(loaded);
+
+        if (loaded.animations && loaded.animations.length > 0) {
+          const mixer = new THREE.AnimationMixer(loaded);
+          const action = mixer.clipAction(loaded.animations[0]);
+          action.play();
+          mixerRef.current = mixer;
+        }
+
+        setFbxScene(wrapper);
+      },
+      undefined,
+      (err) => console.error("Gagal memuat model FBX:", err)
+    );
+
+    return () => {
+      isMounted = false;
+      if (mixerRef.current) {
+        mixerRef.current.stopAllAction();
+        mixerRef.current = null;
+      }
+    };
+  }, [url]);
+
+  useFrame((_, delta) => {
+    if (mixerRef.current) mixerRef.current.update(delta);
+  });
+
+  useEffect(() => {
+    if (fbxScene) applyCustomMaterial(fbxScene, materialType, color);
+  }, [fbxScene, color, materialType]);
+
+  return fbxScene ? (
+    <group scale={[scaleVal, scaleVal, scaleVal]}>
+      <primitive object={fbxScene} />
+    </group>
+  ) : (
+    <FallbackHeroCube color={color} scaleVal={scaleVal} />
+  );
+}
+
+// Komponen pemuat Model OBJ
+function CustomOBJModel({ url, color, materialType, scaleVal }) {
+  const [objScene, setObjScene] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loader = new OBJLoader();
+
+    loader.load(
+      url,
+      (loaded) => {
+        if (!isMounted) return;
+
+        const box = new THREE.Box3().setFromObject(loaded);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scaleFactor = maxDim > 0 ? 1.3 / maxDim : 1;
+
+        loaded.position.copy(center).multiplyScalar(-1);
+
+        const wrapper = new THREE.Group();
+        wrapper.scale.setScalar(scaleFactor);
+        wrapper.add(loaded);
+
+        setObjScene(wrapper);
+      },
+      undefined,
+      (err) => console.error("Gagal memuat model OBJ:", err)
+    );
+
+    return () => { isMounted = false; };
+  }, [url]);
+
+  useEffect(() => {
+    if (objScene) applyCustomMaterial(objScene, materialType, color);
+  }, [objScene, color, materialType]);
+
+  return objScene ? (
+    <group scale={[scaleVal, scaleVal, scaleVal]}>
+      <primitive object={objScene} />
+    </group>
+  ) : (
+    <FallbackHeroCube color={color} scaleVal={scaleVal} />
+  );
+}
+
+// Komponen Dispatcher Multi-Format (GLB, GLTF, FBX, OBJ)
+function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
+  const ext = fileName ? fileName.toLowerCase().split('.').pop() : 'glb';
+
+  if (ext === 'fbx') {
+    return <CustomFBXModel url={url} color={color} materialType={materialType} scaleVal={scaleVal} />;
+  }
+  if (ext === 'obj') {
+    return <CustomOBJModel url={url} color={color} materialType={materialType} scaleVal={scaleVal} />;
+  }
+  return <CustomGLTFModel url={url} color={color} materialType={materialType} scaleVal={scaleVal} />;
 }
 
 

@@ -48,8 +48,10 @@ export function CentralObjectModal({
     if (!file) return;
 
     const lower = file.name.toLowerCase();
-    if (!lower.endsWith('.glb') && !lower.endsWith('.gltf')) {
-      alert('⚠️ Format tidak didukung:\n\nMohon gunakan file berformat .GLB atau .GLTF.\nFormat ini membungkus 3D model, tekstur, dan material secara mandiri sehingga dapat dirender dengan sempurna di browser.');
+    const validExts = ['.glb', '.gltf', '.fbx', '.obj'];
+    const isSupported = validExts.some((ext) => lower.endsWith(ext));
+    if (!isSupported) {
+      alert('⚠️ Format tidak didukung:\n\nMohon gunakan file berformat .GLB, .GLTF, .FBX, atau .OBJ.\nFormat ini dapat dimuat dan dirender di 3D viewport.');
       return;
     }
 
@@ -175,7 +177,7 @@ export function CentralObjectModal({
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <label style={{ fontSize: 11, fontWeight: 700, color: isNight ? '#e879f9' : '#c026d3', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-              2. Atau Upload Model 3D Milik Anda (.GLB / .GLTF)
+              2. Atau Upload Model 3D Milik Anda (.GLB / .GLTF / .FBX / .OBJ)
             </label>
             {centralObjectType === 'custom' && (
               <button
@@ -210,10 +212,10 @@ export function CentralObjectModal({
               <span style={{ fontSize: 26 }}>{isUploading ? '⏳' : '📤'}</span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: centralObjectType === 'custom' ? (isNight ? '#e879f9' : '#c026d3') : (isNight ? '#F5F5F7' : '#1D1D1F') }}>
-                  {isUploading ? 'Menyimpan & Memproses Model 3D...' : (centralObjectType === 'custom' && centralObjectName ? `File Aktif: ${centralObjectName}` : 'Klik atau Tarik (Drag & Drop) File .GLB / .GLTF')}
+                  {isUploading ? 'Menyimpan & Memproses Model 3D...' : (centralObjectType === 'custom' && centralObjectName ? `File Aktif: ${centralObjectName}` : 'Klik atau Tarik (Drag & Drop) File .GLB / .GLTF / .FBX / .OBJ')}
                 </div>
                 <div style={{ fontSize: 11, color: isNight ? '#94a3b8' : '#64748b' }}>
-                  Tersimpan permanen di browser (IndexedDB). Tekstur & warna asli dipertahankan secara utuh.
+                  Tersimpan permanen di browser (IndexedDB). Mendukung format .GLB, .GLTF, .FBX, dan .OBJ.
                 </div>
               </div>
             </div>
@@ -223,7 +225,7 @@ export function CentralObjectModal({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".glb,.gltf"
+              accept=".glb,.gltf,.fbx,.obj"
               onChange={handleFileUpload}
               style={{ display: 'none' }}
             />
