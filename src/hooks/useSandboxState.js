@@ -6,7 +6,7 @@ import { ModelStorage } from '../utils/modelStorage';
 import { ITEM_DEFS } from '../components/objects/ItemDefs';
 
 export function useSandboxState() {
-  const [timeMode, setTimeMode] = useState('night');
+  const [timeMode, setTimeMode] = useState('day');
   const [autoRotate, setAutoRotate] = useState(false);
   const [paused, setPaused] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(true);

@@ -21,7 +21,7 @@ function SceneAccess({ sceneRef }) {
 
 export function MainCanvas({
   performanceTier = 'high',
-  timeMode = 'night',
+  timeMode = 'day',
   handleFpsUpdate,
   sceneRef,
   handleGroundTap,
