@@ -114,9 +114,9 @@ export function MainCanvas({
       {performanceTier === 'high' && (
         <EffectComposer disableNormalPass multisampling={0}>
           <Bloom
-            intensity={0.65}
-            luminanceThreshold={0.5}
-            luminanceSmoothing={0.35}
+            intensity={0.45}
+            luminanceThreshold={0.88}
+            luminanceSmoothing={0.15}
             blendFunction={BlendFunction.SCREEN}
           />
           <Vignette eskil={false} offset={0.12} darkness={0.4} />

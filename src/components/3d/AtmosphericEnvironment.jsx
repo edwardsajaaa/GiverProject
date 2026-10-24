@@ -303,10 +303,10 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
     }
 
     if (!scene.fog) {
-      scene.fog = new THREE.Fog(nightFog.clone().lerp(dayFog, p), 40, 120);
+      scene.fog = new THREE.Fog(nightFog.clone().lerp(dayFog, p), 140, 350);
     } else {
-      scene.fog.near = 40;
-      scene.fog.far = 120;
+      scene.fog.near = 140;
+      scene.fog.far = 350;
       scene.fog.color.copy(nightFog).lerp(dayFog, p);
     }
 
