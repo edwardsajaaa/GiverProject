@@ -1,23 +1,40 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { SoundEngine } from '../../../utils/SoundEngine';
 
-// --- Miniature Tokyo Tower (東京タワー) ---
+// --- Miniature Tokyo Tower (東京タワー) with Interactive Audio & Beacon ---
 export function TokyoTowerMiniature({ position = [0, 0, 0], scale = 0.52, isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const redOrange = isNight ? '#e11d48' : '#dc2626';
   const whiteLattice = '#f8fafc';
   const beaconRef = useRef();
+  const [pulse, setPulse] = useState(0);
 
   useFrame((state) => {
     if (beaconRef.current) {
       const t = state.clock.getElapsedTime();
-      beaconRef.current.intensity = 0.6 + Math.sin(t * 5.0) * 0.4;
+      beaconRef.current.intensity = 0.6 + Math.sin(t * 5.0) * 0.4 + pulse * 1.5;
+    }
+    if (pulse > 0) {
+      setPulse((p) => Math.max(0, p - 0.03));
     }
   });
 
+  const handleClick = (e) => {
+    e.stopPropagation();
+    SoundEngine.playTokyoTowerBeacon();
+    setPulse(1.0);
+  };
+
   return (
-    <group position={position} scale={scale}>
+    <group
+      position={position}
+      scale={scale}
+      onPointerDown={handleClick}
+      onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+      onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+    >
       {/* 4-legged arched base foundation */}
       <mesh position={[0, 0.4, 0]}>
         <cylinderGeometry args={[2.0, 3.2, 0.8, flat ? 4 : 8]} />
@@ -84,7 +101,7 @@ export function TokyoTowerMiniature({ position = [0, 0, 0], scale = 0.52, isNigh
         <meshStandardMaterial
           color="#ef4444"
           emissive="#ef4444"
-          emissiveIntensity={1.5}
+          emissiveIntensity={1.5 + pulse * 2.0}
         />
       </mesh>
       {isNight && (
@@ -92,21 +109,32 @@ export function TokyoTowerMiniature({ position = [0, 0, 0], scale = 0.52, isNigh
           ref={beaconRef}
           position={[0, 13.1, 0]}
           color="#ef4444"
-          intensity={0.8}
-          distance={15}
+          intensity={0.8 + pulse * 1.5}
+          distance={18}
         />
       )}
     </group>
   );
 }
 
-// --- Miniature Tokyo Skytree (東京スカイツリー) ---
+// --- Miniature Tokyo Skytree (東京スカイツリー) with Interactive Audio ---
 export function TokyoSkytreeMiniature({ position = [0, 0, 0], scale = 0.46, isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const latticeColor = isNight ? '#cbd5e1' : '#e2e8f0';
 
+  const handleClick = (e) => {
+    e.stopPropagation();
+    SoundEngine.playSkytreeChime();
+  };
+
   return (
-    <group position={position} scale={scale}>
+    <group
+      position={position}
+      scale={scale}
+      onPointerDown={handleClick}
+      onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+      onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+    >
       <mesh position={[0, 2.0, 0]}>
         <cylinderGeometry args={[1.0, 2.2, 4.0, 3]} />
         <meshStandardMaterial color={latticeColor} roughness={0.4} flatShading={flat} />
@@ -155,7 +183,7 @@ export function TokyoSkytreeMiniature({ position = [0, 0, 0], scale = 0.46, isNi
   );
 }
 
-// --- Animated Shinkansen Bullet Train Ring Circuit ---
+// --- Animated Shinkansen Bullet Train Ring Circuit with Station Departure Melody ---
 export function MiniatureShinkansenRing({
   center = [-48, 0, -48],
   radius = 35.5,
@@ -192,6 +220,11 @@ export function MiniatureShinkansenRing({
     return list;
   }, [center, radius]);
 
+  const handleTrainClick = (e) => {
+    e.stopPropagation();
+    SoundEngine.playShinkansenDeparture();
+  };
+
   return (
     <group position={[0, -2.6, 0]}>
       {/* Viaduct Piers */}
@@ -216,8 +249,14 @@ export function MiniatureShinkansenRing({
         </group>
       ))}
 
-      {/* Animated Bullet Train */}
-      <group ref={trainRef} position={[center[0] + radius, 1.55, center[2]]}>
+      {/* Animated Bullet Train (Clickable for JR station jingle) */}
+      <group
+        ref={trainRef}
+        position={[center[0] + radius, 1.55, center[2]]}
+        onPointerDown={handleTrainClick}
+        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+      >
         <mesh position={[1.4, 0.16, 0]}>
           <boxGeometry args={[1.5, 0.32, 0.38]} />
           <meshStandardMaterial color="#ffffff" roughness={0.3} />
@@ -259,8 +298,422 @@ export function MiniatureShinkansenRing({
   );
 }
 
+// --- Animated Real-Time Metropolitan Traffic (48+ Moving Cars, Taxis & Police Patrols) ---
+function TokyoMetropolitanTraffic({ isNight }) {
+  const carsGroupRef = useRef();
+
+  const trafficData = useMemo(() => {
+    const list = [];
+    const rings = [
+      { center: [-48, -48], r: 27.5, count: 6, speed: 0.10, dir: 1 },
+      { center: [-48, -48], r: 32.5, count: 8, speed: 0.13, dir: -1 },
+      { center: [-48, -48], r: 38.0, count: 9, speed: 0.09, dir: 1 },
+      { center: [0, 0], r: 16.5, count: 7, speed: 0.11, dir: 1 },
+      { center: [0, 0], r: 23.5, count: 8, speed: 0.14, dir: -1 },
+      { center: [0, 0], r: 31.5, count: 10, speed: 0.10, dir: 1 },
+    ];
+    let cIdx = 0;
+    rings.forEach((ring) => {
+      for (let i = 0; i < ring.count; i++) {
+        cIdx++;
+        const baseOffset = i / ring.count;
+        const carTypes = ['taxi', 'sports', 'sedan', 'van', 'police'];
+        const type = carTypes[cIdx % carTypes.length];
+        const colors = {
+          taxi: '#facc15',
+          sports: '#ef4444',
+          sedan: '#38bdf8',
+          van: '#f8fafc',
+          police: '#ffffff'
+        };
+        list.push({
+          id: cIdx,
+          center: ring.center,
+          r: ring.r,
+          speed: ring.speed * ring.dir,
+          baseOffset,
+          type,
+          color: colors[type]
+        });
+      }
+    });
+    return list;
+  }, []);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (carsGroupRef.current) {
+      const children = carsGroupRef.current.children;
+      for (let i = 0; i < trafficData.length; i++) {
+        const car = trafficData[i];
+        const child = children[i];
+        if (child) {
+          const angle = (car.baseOffset + t * car.speed * 0.22) * Math.PI * 2;
+          const x = car.center[0] + Math.cos(angle) * car.r;
+          const z = car.center[1] + Math.sin(angle) * car.r;
+          child.position.x = x;
+          child.position.z = z;
+          child.rotation.y = -angle + (car.speed > 0 ? -Math.PI / 2 : Math.PI / 2);
+        }
+      }
+    }
+  });
+
+  return (
+    <group ref={carsGroupRef} position={[0, -2.55, 0]}>
+      {trafficData.map((car) => (
+        <group key={car.id}>
+          {/* Car Chassis */}
+          <mesh position={[0, 0.08, 0]}>
+            <boxGeometry args={[0.36, 0.11, 0.19]} />
+            <meshStandardMaterial color={car.color} roughness={0.4} />
+          </mesh>
+          {/* Car Cabin Roof */}
+          <mesh position={[-0.03, 0.17, 0]}>
+            <boxGeometry args={[0.18, 0.08, 0.16]} />
+            <meshStandardMaterial color="#1e293b" roughness={0.3} />
+          </mesh>
+
+          {/* Special Taxi Top Sign */}
+          {car.type === 'taxi' && (
+            <mesh position={[-0.03, 0.23, 0]}>
+              <boxGeometry args={[0.07, 0.04, 0.09]} />
+              <meshBasicMaterial color="#ffffff" />
+            </mesh>
+          )}
+
+          {/* Special Police Flashing Strobe */}
+          {car.type === 'police' && (
+            <mesh position={[-0.03, 0.23, 0]}>
+              <boxGeometry args={[0.08, 0.04, 0.12]} />
+              <meshBasicMaterial color={isNight ? '#ef4444' : '#38bdf8'} />
+            </mesh>
+          )}
+
+          {/* Headlights & Taillights at Night */}
+          {isNight && (
+            <>
+              <mesh position={[0.19, 0.08, -0.06]}>
+                <sphereGeometry args={[0.025, 4, 4]} />
+                <meshBasicMaterial color="#fef08a" />
+              </mesh>
+              <mesh position={[0.19, 0.08, 0.06]}>
+                <sphereGeometry args={[0.025, 4, 4]} />
+                <meshBasicMaterial color="#fef08a" />
+              </mesh>
+              <mesh position={[-0.19, 0.08, -0.06]}>
+                <sphereGeometry args={[0.02, 4, 4]} />
+                <meshBasicMaterial color="#ef4444" />
+              </mesh>
+              <mesh position={[-0.19, 0.08, 0.06]}>
+                <sphereGeometry args={[0.02, 4, 4]} />
+                <meshBasicMaterial color="#ef4444" />
+              </mesh>
+            </>
+          )}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// --- Animated Cruising Boats on Tokyo Bay ---
+function TokyoBayVessels({ isNight }) {
+  const ferryRef = useRef();
+  const cargoRef = useRef();
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (ferryRef.current) {
+      const p = (Math.sin(t * 0.18) + 1) * 0.5;
+      ferryRef.current.position.x = 12 + p * 16;
+      ferryRef.current.position.z = 13 + Math.sin(p * Math.PI) * 3.5;
+      ferryRef.current.rotation.y = Math.cos(t * 0.18) > 0 ? 0.3 : -Math.PI + 0.3;
+      ferryRef.current.rotation.z = Math.sin(t * 2.5) * 0.04;
+    }
+    if (cargoRef.current) {
+      const p = (Math.cos(t * 0.12) + 1) * 0.5;
+      cargoRef.current.position.x = 27 - p * 14;
+      cargoRef.current.position.z = 21 + Math.sin(p * Math.PI) * 2.2;
+      cargoRef.current.rotation.y = -Math.sin(t * 0.12) > 0 ? -0.2 : Math.PI - 0.2;
+      cargoRef.current.rotation.z = Math.cos(t * 2.0) * 0.03;
+    }
+  });
+
+  return (
+    <group position={[0, -2.55, 0]}>
+      {/* 1. Tokyo Sightseeing Water Bus / Ferry */}
+      <group ref={ferryRef}>
+        <mesh position={[0, 0.12, 0]}>
+          <boxGeometry args={[1.5, 0.22, 0.55]} />
+          <meshStandardMaterial color="#f8fafc" roughness={0.3} />
+        </mesh>
+        <mesh position={[0.1, 0.28, 0]}>
+          <boxGeometry args={[0.9, 0.14, 0.42]} />
+          <meshStandardMaterial
+            color={isNight ? '#38bdf8' : '#0284c7'}
+            emissive={isNight ? '#38bdf8' : '#000000'}
+            emissiveIntensity={isNight ? 0.6 : 0}
+            roughness={0.2}
+          />
+        </mesh>
+        {/* Water Wake Trail */}
+        <mesh position={[-0.9, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[0.8, 0.4]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.35} />
+        </mesh>
+      </group>
+
+      {/* 2. Container Cargo Vessel */}
+      <group ref={cargoRef}>
+        <mesh position={[0, 0.16, 0]}>
+          <boxGeometry args={[2.2, 0.28, 0.65]} />
+          <meshStandardMaterial color="#1e293b" roughness={0.6} />
+        </mesh>
+        {/* Colorful Container Stacks */}
+        {[-0.5, 0.0, 0.5].map((cx, i) => (
+          <mesh key={i} position={[cx, 0.42, 0]}>
+            <boxGeometry args={[0.42, 0.26, 0.52]} />
+            <meshStandardMaterial color={['#ef4444', '#0284c7', '#f59e0b'][i]} roughness={0.5} />
+          </mesh>
+        ))}
+        {/* Bridge Cabin */}
+        <mesh position={[-0.85, 0.46, 0]}>
+          <boxGeometry args={[0.3, 0.36, 0.48]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.3} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+// --- Animated Tokyo Advertising Blimp / Airship (Cruising in the High Sky) ---
+function TokyoAdvertisingBlimp({ isNight }) {
+  const blimpRef = useRef();
+  const propRef = useRef();
+  const navLightRef = useRef();
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    if (blimpRef.current) {
+      const angle = t * 0.06;
+      blimpRef.current.position.x = -24 + Math.cos(angle) * 44;
+      blimpRef.current.position.z = -24 + Math.sin(angle) * 44;
+      blimpRef.current.position.y = 18.2 + Math.sin(t * 0.6) * 0.5;
+      blimpRef.current.rotation.y = -angle + Math.PI / 2;
+      blimpRef.current.rotation.z = Math.sin(t * 1.2) * 0.03;
+    }
+    if (propRef.current) {
+      propRef.current.rotation.z = t * 24.0;
+    }
+    if (navLightRef.current) {
+      navLightRef.current.intensity = Math.sin(t * 5.0) > 0.4 ? 1.0 : 0.0;
+    }
+  });
+
+  const handleBlimpClick = (e) => {
+    e.stopPropagation();
+    SoundEngine.playAirshipHorn();
+  };
+
+  return (
+    <group
+      ref={blimpRef}
+      position={[-24, 18.5, -24]}
+      scale={0.9}
+      onPointerDown={handleBlimpClick}
+      onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+      onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+    >
+      {/* Airship Gas Envelope (Egg/Spheroid) */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <capsuleGeometry args={[1.1, 3.4, 8, 16]} />
+        <meshStandardMaterial
+          color={isNight ? '#0284c7' : '#ffffff'}
+          roughness={0.4}
+          metalness={0.1}
+        />
+      </mesh>
+
+      {/* Gondola Cabin Underneath */}
+      <mesh position={[0, -1.2, 0]}>
+        <boxGeometry args={[1.6, 0.35, 0.55]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.5} />
+      </mesh>
+
+      {/* Tail Fins (Stabilizers) */}
+      {[-1.8, 1.8].map((fx, i) => (
+        <group key={i} position={[-2.4, 0, 0]}>
+          <mesh position={[0, 0.7, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.06]} />
+            <meshStandardMaterial color="#ef4444" roughness={0.5} />
+          </mesh>
+          <mesh position={[0, -0.7, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.06]} />
+            <meshStandardMaterial color="#ef4444" roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0, 0.7]} rotation={[Math.PI / 2, 0, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.06]} />
+            <meshStandardMaterial color="#ef4444" roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0, -0.7]} rotation={[Math.PI / 2, 0, 0]}>
+            <boxGeometry args={[0.8, 0.6, 0.06]} />
+            <meshStandardMaterial color="#ef4444" roughness={0.5} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Spinning Stern Propeller */}
+      <group ref={propRef} position={[-2.9, 0, 0]}>
+        <mesh>
+          <boxGeometry args={[0.04, 0.7, 0.08]} />
+          <meshBasicMaterial color="#94a3b8" />
+        </mesh>
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <boxGeometry args={[0.04, 0.7, 0.08]} />
+          <meshBasicMaterial color="#94a3b8" />
+        </mesh>
+      </group>
+
+      {/* Glowing Tokyo Neon Billboard Sign on Airship Hull */}
+      <mesh position={[0, 0, 1.13]}>
+        <planeGeometry args={[2.8, 0.7]} />
+        <meshStandardMaterial
+          color="#ec4899"
+          emissive="#ec4899"
+          emissiveIntensity={isNight ? 1.4 : 0.8}
+          roughness={0.2}
+        />
+      </mesh>
+      <mesh position={[0, 0, -1.13]} rotation={[0, Math.PI, 0]}>
+        <planeGeometry args={[2.8, 0.7]} />
+        <meshStandardMaterial
+          color="#38bdf8"
+          emissive="#38bdf8"
+          emissiveIntensity={isNight ? 1.4 : 0.8}
+          roughness={0.2}
+        />
+      </mesh>
+
+      {/* Flashing Navigation Beacon on Gondola */}
+      <mesh position={[0, -1.45, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
+        <meshBasicMaterial color="#ef4444" />
+      </mesh>
+      {isNight && (
+        <pointLight
+          ref={navLightRef}
+          position={[0, -1.45, 0]}
+          color="#ef4444"
+          intensity={0.6}
+          distance={12}
+        />
+      )}
+    </group>
+  );
+}
+
+// --- Drifting Low-Poly Anime Clouds Orbiting Mount Fuji ---
+function DriftingAnimeClouds({ isNight }) {
+  const cloudsRef = useRef();
+
+  useFrame((state, delta) => {
+    if (cloudsRef.current) {
+      cloudsRef.current.rotation.y += delta * 0.014;
+    }
+  });
+
+  const cloudClusters = [
+    { x: -48 + 22, y: 14.5, z: -48 + 10, scale: 1.2 },
+    { x: -48 - 20, y: 16.0, z: -48 + 14, scale: 1.4 },
+    { x: -48 + 14, y: 13.5, z: -48 - 22, scale: 1.1 },
+    { x: -48 - 18, y: 15.0, z: -48 - 16, scale: 1.3 },
+    { x: -26, y: 13.0, z: -32, scale: 1.0 },
+    { x: -35, y: 14.0, z: -15, scale: 1.15 }
+  ];
+
+  const cloudColor = isNight ? '#1e293b' : '#ffffff';
+
+  return (
+    <group ref={cloudsRef}>
+      {cloudClusters.map((c, i) => (
+        <group key={i} position={[c.x, c.y, c.z]} scale={c.scale}>
+          <mesh position={[0, 0, 0]}>
+            <dodecahedronGeometry args={[1.5, 0]} />
+            <meshStandardMaterial
+              color={cloudColor}
+              roughness={0.8}
+              transparent
+              opacity={isNight ? 0.75 : 0.88}
+              flatShading={true}
+            />
+          </mesh>
+          <mesh position={[1.2, -0.2, 0.2]}>
+            <dodecahedronGeometry args={[1.1, 0]} />
+            <meshStandardMaterial
+              color={cloudColor}
+              roughness={0.8}
+              transparent
+              opacity={isNight ? 0.75 : 0.88}
+              flatShading={true}
+            />
+          </mesh>
+          <mesh position={[-1.1, -0.1, -0.3]}>
+            <dodecahedronGeometry args={[1.0, 0]} />
+            <meshStandardMaterial
+              color={cloudColor}
+              roughness={0.8}
+              transparent
+              opacity={isNight ? 0.75 : 0.88}
+              flatShading={true}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// --- Shinjuku 3D Animated Curved Giant Billboard ---
+function Shinjuku3DCornerBillboard({ isNight }) {
+  const ledRef = useRef();
+
+  useFrame((state) => {
+    if (ledRef.current) {
+      const t = state.clock.getElapsedTime();
+      const hue = (t * 0.08) % 1;
+      ledRef.current.color.setHSL(hue, 0.95, isNight ? 0.6 : 0.5);
+    }
+  });
+
+  return (
+    <group position={[-23, 3.8, -19]}>
+      {/* Curved Screen Frame */}
+      <mesh>
+        <cylinderGeometry args={[2.2, 2.2, 1.8, 12, 1, true, 0, Math.PI / 1.5]} />
+        <meshStandardMaterial
+          ref={ledRef}
+          color="#38bdf8"
+          emissive="#38bdf8"
+          emissiveIntensity={isNight ? 1.2 : 0.7}
+          roughness={0.2}
+        />
+      </mesh>
+      {/* 3D Giant Mascot Cube Hologram Hovering in Front */}
+      <mesh position={[1.4, 0.1, 1.4]} rotation={[0.2, 0.4, 0.1]}>
+        <boxGeometry args={[0.55, 0.55, 0.55]} />
+        <meshStandardMaterial
+          color="#fef08a"
+          emissive="#fef08a"
+          emissiveIntensity={isNight ? 1.0 : 0.4}
+        />
+      </mesh>
+    </group>
+  );
+}
+
 // --- Miniature Rainbow Bridge & Waterfront Port (レインボーブリッジ) ---
-function TokyoBayWaterfront({ position = [18, -2.6, 16], isNight, artStyle }) {
+function TokyoBayWaterfront({ position = [20, -2.6, 18], isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
   const bridgePylonColor = '#f8fafc';
 
@@ -268,7 +721,7 @@ function TokyoBayWaterfront({ position = [18, -2.6, 16], isNight, artStyle }) {
     <group position={position} rotation={[0, -0.45, 0]}>
       {/* Tokyo Bay Water Inlet */}
       <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[26, 16]} />
+        <planeGeometry args={[28, 18]} />
         <meshStandardMaterial
           color={isNight ? '#021827' : '#0284c7'}
           roughness={0.12}
@@ -280,17 +733,17 @@ function TokyoBayWaterfront({ position = [18, -2.6, 16], isNight, artStyle }) {
 
       {/* Main Bridge Road Deck */}
       <mesh position={[0, 1.0, 0]}>
-        <boxGeometry args={[22, 0.22, 1.4]} />
+        <boxGeometry args={[24, 0.22, 1.4]} />
         <meshStandardMaterial color="#334155" roughness={0.8} />
       </mesh>
       {/* Bridge Roadway Lane Stripes */}
       <mesh position={[0, 1.13, 0]}>
-        <boxGeometry args={[21.5, 0.02, 0.08]} />
+        <boxGeometry args={[23.5, 0.02, 0.08]} />
         <meshBasicMaterial color={isNight ? '#fef08a' : '#ffffff'} />
       </mesh>
 
       {/* Bridge Suspension Towers (Two iconic white pylons) */}
-      {[-5.5, 5.5].map((tx, idx) => (
+      {[-6.0, 6.0].map((tx, idx) => (
         <group key={`pylon-${idx}`} position={[tx, 0, 0]}>
           <mesh position={[0, 2.8, -0.65]}>
             <cylinderGeometry args={[0.2, 0.35, 5.6, flat ? 4 : 8]} />
@@ -335,7 +788,7 @@ function TokyoBayWaterfront({ position = [18, -2.6, 16], isNight, artStyle }) {
 function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
   const flat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
 
-  // Procedurally generate a dense, sprawling 700+ building metropolis blanketing the entire landscape
+  // Procedurally generate 700+ building metropolis blanketing the landscape
   const buildings = useMemo(() => {
     const list = [];
     const seedRnd = (seed) => {
@@ -345,7 +798,7 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
 
     // Helper to check if a location collides with Zen platform or Mount Fuji peak
     const isValidLocation = (x, z) => {
-      // Exclude Zen Platform (|x| < 12.2 && |z| < 12.2)
+      // Exclude Zen Platform (|x| < 12.4 && |z| < 12.4)
       if (Math.abs(x) < 12.4 && Math.abs(z) < 12.4) return false;
       // Exclude Mount Fuji central volcanic cone (radius < 24.5 from [-48, -48])
       const distFuji = Math.hypot(x - (-48), z - (-48));
@@ -387,7 +840,6 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
     }
 
     // District 2: Central Midtown Tokyo Corridor (Connecting Mount Fuji area across to Zen Platform)
-    // Spanning x: -44 to -12, z: -44 to -12
     for (let gx = -44; gx <= -12; gx += 2.8) {
       for (let gz = -44; gz <= -12; gz += 2.8) {
         idx++;
@@ -410,8 +862,7 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
       }
     }
 
-    // District 3: Metropolitan Environs Around Zen Platform (Surrounding front, right, and flanks)
-    // Radial rings around [0, 0] from r = 14.5m to 42m
+    // District 3: Metropolitan Environs Around Zen Platform
     const zenRadii = [15.0, 18.2, 21.8, 25.5, 29.5, 34.0, 39.0, 44.5];
     for (let zrIdx = 0; zrIdx < zenRadii.length; zrIdx++) {
       const r = zenRadii[zrIdx];
@@ -441,7 +892,7 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
       }
     }
 
-    // District 4: Eastern Waterfront Coastal Blocks (x: 12 to 38, z: -8 to 32)
+    // District 4: Eastern Waterfront Coastal Blocks
     for (let ex = 13; ex <= 36; ex += 3.2) {
       for (let ez = -6; ez <= 28; ez += 3.2) {
         idx++;
@@ -547,7 +998,7 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
         );
       })}
 
-      {/* 2. Metropolitan Expressway Avenues (Encircling and connecting the districts) */}
+      {/* 2. Metropolitan Expressway Avenues */}
       {avenueRings.map((sys, sIdx) =>
         sys.radii.map((rad, rIdx) => (
           <mesh
@@ -561,47 +1012,13 @@ function TokyoFullMetropolisCarpet({ isNight, artStyle }) {
         ))
       )}
 
-      {/* 3. Glowing Traffic Headlight & Taillight Arteries at Night */}
-      {isNight && (
-        <group position={[0, 0.045, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          {/* Yellow Headlights around Mount Fuji */}
-          {[27.5, 38.0].map((rf, idx) => (
-            <mesh key={`fuji-y-${idx}`} position={[-48, 48, 0]}>
-              <ringGeometry args={[rf - 0.05, rf + 0.05, 64]} />
-              <meshBasicMaterial color="#fef08a" />
-            </mesh>
-          ))}
-          {/* Red Taillights around Mount Fuji */}
-          {[32.5, 44.0].map((rf, idx) => (
-            <mesh key={`fuji-r-${idx}`} position={[-48, 48, 0]}>
-              <ringGeometry args={[rf - 0.05, rf + 0.05, 64]} />
-              <meshBasicMaterial color="#ef4444" />
-            </mesh>
-          ))}
-          {/* Traffic Loops around Zen Platform */}
-          {[16.5, 31.5].map((rz, idx) => (
-            <mesh key={`zen-y-${idx}`}>
-              <ringGeometry args={[rz - 0.05, rz + 0.05, 64]} />
-              <meshBasicMaterial color="#fef08a" />
-            </mesh>
-          ))}
-          {[23.5, 41.5].map((rz, idx) => (
-            <mesh key={`zen-r-${idx}`}>
-              <ringGeometry args={[rz - 0.05, rz + 0.05, 64]} />
-              <meshBasicMaterial color="#ef4444" />
-            </mesh>
-          ))}
-        </group>
-      )}
-
-      {/* 4. Miniature Green Urban Parks (Scattered across the city) */}
+      {/* 3. Miniature Green Urban Parks */}
       {Array.from({ length: 72 }).map((_, pIdx) => {
         const a = (pIdx / 72) * Math.PI * 2;
         const r = 20.0 + ((pIdx % 9) * 4.5);
         const px = Math.cos(a) * r + (pIdx % 2 ? -18 : 6);
         const pz = Math.sin(a) * r + (pIdx % 2 ? -18 : 6);
 
-        // Don't place on Zen platform or Fuji center
         if (Math.abs(px) < 13 && Math.abs(pz) < 13) return null;
         if (Math.hypot(px - (-48), pz - (-48)) < 24) return null;
 
@@ -647,7 +1064,7 @@ export function MiniatureTokyo({
         </>
       )}
 
-      {/* Landmark 1: Iconic Red-White Tokyo Tower (Between Zen Platform & Mount Fuji) */}
+      {/* Landmark 1: Iconic Red-White Tokyo Tower (Interactive Audio & Beacon) */}
       <TokyoTowerMiniature
         position={[-21, -2.6, -16]}
         scale={0.55}
@@ -655,7 +1072,7 @@ export function MiniatureTokyo({
         artStyle={artStyle}
       />
 
-      {/* Landmark 2: Secondary Tokyo Tower (Nestled at Mount Fuji skirt) */}
+      {/* Landmark 2: Secondary Tokyo Tower at Mount Fuji skirt */}
       <TokyoTowerMiniature
         position={[-42, -2.6, -26]}
         scale={0.46}
@@ -663,7 +1080,7 @@ export function MiniatureTokyo({
         artStyle={artStyle}
       />
 
-      {/* Landmark 3: Modern Tokyo Skytree Spire (North skyline) */}
+      {/* Landmark 3: Modern Tokyo Skytree Spire (North skyline - Interactive Audio) */}
       <TokyoSkytreeMiniature
         position={[-14, -2.6, -38]}
         scale={0.5}
@@ -705,7 +1122,22 @@ export function MiniatureTokyo({
         artStyle={artStyle}
       />
 
-      {/* Complete 700+ Building Tokyo Metropolis Carpet Covering the Entire Terrain */}
+      {/* Real-Time Tokyo Bay Cruising Watercraft (Ferry & Cargo ship) */}
+      <TokyoBayVessels isNight={isNight} />
+
+      {/* 48+ Real-Time Animated Moving Cars, Taxis & Police Patrols on Avenues */}
+      <TokyoMetropolitanTraffic isNight={isNight} />
+
+      {/* High-Altitude Tokyo Advertising Blimp / Airship with Spinning Props & Horn */}
+      <TokyoAdvertisingBlimp isNight={isNight} />
+
+      {/* Shinjuku 3D Animated Curved Giant Billboard */}
+      <Shinjuku3DCornerBillboard isNight={isNight} />
+
+      {/* Soft Low-Poly Anime Clouds Drifting around Mount Fuji */}
+      <DriftingAnimeClouds isNight={isNight} />
+
+      {/* Complete 700+ Building Tokyo Metropolis Carpet */}
       <TokyoFullMetropolisCarpet
         isNight={isNight}
         artStyle={artStyle}

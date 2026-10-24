@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { MiniatureTokyo } from './MiniatureTokyo';
+import { SoundEngine } from '../../../utils/SoundEngine';
 
 // --- Mount Fuji & Sky Horizon Silhouette ---
 function MountFujiBackground({ isNight, artStyle }) {
@@ -149,7 +150,13 @@ function ToriiGate({ position = [0, 0, 9], rotation = [0, 0, 0], isNight, artSty
   const goldColor = '#eab308';
 
   return (
-    <group position={position} rotation={rotation}>
+    <group
+      position={position}
+      rotation={rotation}
+      onPointerDown={(e) => { e.stopPropagation(); SoundEngine.playTempleGong(); }}
+      onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
+      onPointerOut={() => { document.body.style.cursor = 'auto'; }}
+    >
       {/* Stone Foundation Plinths (Kamebara) */}
       <mesh position={[-1.75, 0.16, 0]}>
         <cylinderGeometry args={[0.34, 0.38, 0.32, 12]} />
