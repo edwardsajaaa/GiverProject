@@ -760,8 +760,13 @@ export function ZenBiome({ timeMode = 'night', onGroundTap, artStyle = 'lowpoly'
       {/* 2. Distant Japanese Horizon (Mount Fuji & Deep Skirt) */}
       <MountFujiBackground isNight={isNight} artStyle={artStyle} />
 
-      {/* 3. Miniature Tokyo City Diorama (Tokyo Tower, Skytree, Shinkansen, Rainbow Bridge, Neon Skyline) */}
-      <MiniatureTokyo isNight={isNight} artStyle={artStyle} />
+      {/* 3. Miniature Tokyo City Diorama (Placed on the left side of the Zen platform) */}
+      <MiniatureTokyo
+        position={[0, -2.6, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        isNight={isNight}
+        artStyle={artStyle}
+      />
 
       {/* 4. Stone Castle Terrace Foundation (Ishigaki anchoring Zen platform) */}
       <ZenTerraceFoundation isNight={isNight} artStyle={artStyle} />

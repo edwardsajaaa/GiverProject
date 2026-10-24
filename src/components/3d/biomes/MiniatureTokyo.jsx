@@ -521,9 +521,9 @@ function SkyscraperDistrictMiniature({ isNight, artStyle }) {
 }
 
 // --- Main Miniature Tokyo Diorama Assembly ---
-export function MiniatureTokyo({ isNight = true, artStyle = 'lowpoly' }) {
+export function MiniatureTokyo({ position = [0, -2.6, 0], rotation = [0, 0, 0], isNight = true, artStyle = 'lowpoly' }) {
   return (
-    <group name="MiniatureTokyoDiorama" position={[0, -2.6, 0]}>
+    <group name="MiniatureTokyoDiorama" position={position} rotation={rotation}>
       {/* Soft Tokyo City Glow at Night */}
       {isNight && (
         <pointLight
