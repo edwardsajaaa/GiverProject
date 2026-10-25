@@ -186,6 +186,93 @@ export const SoundEngine = {
     } catch { /* ignore */ }
   },
 
+  // Romantic Café & Shop Door Chime
+  playBell() {
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [1046.5, 1318.51, 1567.98].forEach((f, i) => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, now + i * 0.08);
+        g.gain.setValueAtTime(0.12, now + i * 0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.6);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now + i * 0.08);
+        o.stop(now + i * 0.08 + 0.6);
+      });
+    } catch { /* ignore */ }
+  },
+
+  // Vintage British Red Telephone Kiosk Ring
+  playPhoneRing() {
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [0, 0.14, 0.4, 0.54].forEach((t) => {
+        [400, 450].forEach((f) => {
+          const o = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(f, now + t);
+          g.gain.setValueAtTime(0.06, now + t);
+          g.gain.exponentialRampToValueAtTime(0.001, now + t + 0.1);
+          o.connect(g);
+          g.connect(this.ctx.destination);
+          o.start(now + t);
+          o.stop(now + t + 0.1);
+        });
+      });
+    } catch { /* ignore */ }
+  },
+
+  // Gentle Water Canal Splash & Ripple
+  playWaterSplash() {
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [320, 480, 640].forEach((f, i) => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, now + i * 0.05);
+        o.frequency.exponentialRampToValueAtTime(f * 0.6, now + i * 0.05 + 0.2);
+        g.gain.setValueAtTime(0.08, now + i * 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.2);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now + i * 0.05);
+        o.stop(now + i * 0.05 + 0.2);
+      });
+    } catch { /* ignore */ }
+  },
+
+  // Romantic Love-Lock & Star Sparkle Chime
+  playHeartChime() {
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [587.33, 739.99, 880, 1174.66, 1479.98].forEach((f, i) => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(f, now + i * 0.07);
+        g.gain.setValueAtTime(0.1, now + i * 0.07);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.5);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now + i * 0.07);
+        o.stop(now + i * 0.07 + 0.5);
+      });
+    } catch { /* ignore */ }
+  },
+
   // --- Rich Calming Japanese Ambient Soundscape ---
   setAmbient(active, isNight) {
     this.init();

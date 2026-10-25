@@ -279,6 +279,7 @@ function DaySky({ isLowEnd }) {
 export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
   const ambientRef = useRef();
   const dirLightRef = useRef();
+  const fillLightRef = useRef();
   const galaxyGroupRef = useRef();
   const dayGroupRef = useRef();
   const progressRef = useRef(timeMode === 'night' ? 0 : 1);
@@ -312,20 +313,26 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
 
     if (ambientRef.current) {
       const nightAmb = new THREE.Color('#464c80');
-      const dayAmb = new THREE.Color('#fff8e7');
+      const dayAmb = new THREE.Color('#fff9ed');
       ambientRef.current.color.copy(nightAmb).lerp(dayAmb, p);
-      ambientRef.current.intensity = THREE.MathUtils.lerp(0.45, 0.65, p);
+      ambientRef.current.intensity = THREE.MathUtils.lerp(0.45, 0.95, p);
     }
     if (dirLightRef.current) {
       const nightSun = new THREE.Color('#b3d4ff');
-      const daySun = new THREE.Color('#fff6dd');
+      const daySun = new THREE.Color('#fff5dc');
       dirLightRef.current.color.copy(nightSun).lerp(daySun, p);
-      dirLightRef.current.intensity = THREE.MathUtils.lerp(0.9, 1.9, p);
+      dirLightRef.current.intensity = THREE.MathUtils.lerp(0.9, 2.0, p);
       dirLightRef.current.position.set(
-        THREE.MathUtils.lerp(10, 12, p),
-        THREE.MathUtils.lerp(15, 20, p),
-        THREE.MathUtils.lerp(10, 8, p)
+        THREE.MathUtils.lerp(10, 14, p),
+        THREE.MathUtils.lerp(15, 22, p),
+        THREE.MathUtils.lerp(10, 12, p)
       );
+    }
+    if (fillLightRef.current) {
+      const nightFill = new THREE.Color('#2a2d48');
+      const dayFill = new THREE.Color('#d4eaf7');
+      fillLightRef.current.color.copy(nightFill).lerp(dayFill, p);
+      fillLightRef.current.intensity = THREE.MathUtils.lerp(0.2, 0.65, p);
     }
 
     if (galaxyGroupRef.current) {
@@ -347,11 +354,18 @@ export function AtmosphericEnvironment({ timeMode, isLowEnd }) {
       <ambientLight ref={ambientRef} intensity={0.45} color="#464c80" />
       <directionalLight
         ref={dirLightRef}
-        position={[10, 15, 10]}
+        position={[14, 22, 12]}
         intensity={0.9}
         color="#b3d4ff"
         castShadow={!isLowEnd}
         shadow-mapSize={[1024, 1024]}
+      />
+      <directionalLight
+        ref={fillLightRef}
+        position={[-15, 18, -12]}
+        intensity={0.4}
+        color="#d4eaf7"
+        castShadow={false}
       />
 
       <group ref={galaxyGroupRef}>

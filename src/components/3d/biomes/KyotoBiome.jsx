@@ -85,7 +85,14 @@ function YasakaPagoda({ position = [-7.5, 0, -7.5], isNight }) {
   const amberGlow = '#f59e0b';
 
   return (
-    <group position={position}>
+    <group
+      position={position}
+      onClick={(e) => {
+        e.stopPropagation();
+        SoundEngine.playTempleGong();
+      }}
+      cursor="pointer"
+    >
       {/* Stone Foundation Plinth */}
       <mesh position={[0, 0.45, 0]} castShadow receiveShadow>
         <boxGeometry args={[4.8, 0.9, 4.8]} />
@@ -244,7 +251,15 @@ function KyotoMachiyaHouse({ position = [-7.6, 0, 1.2], rotationY = 0, isNight }
   const shojiEmissive = isNight ? '#fbbf24' : '#000000';
 
   return (
-    <group position={position} rotation={[0, rotationY, 0]}>
+    <group
+      position={position}
+      rotation={[0, rotationY, 0]}
+      onClick={(e) => {
+        e.stopPropagation();
+        SoundEngine.playBell();
+      }}
+      cursor="pointer"
+    >
       {/* Stone Foundation Beam */}
       <mesh position={[0, 0.18, 0]} receiveShadow>
         <boxGeometry args={[5.6, 0.36, 4.2]} />
@@ -390,7 +405,14 @@ function VermilionToriiGate({ position = [0, 0, 8.8], isNight }) {
   const goldPlaque = '#d4af37';
 
   return (
-    <group position={position}>
+    <group
+      position={position}
+      onClick={(e) => {
+        e.stopPropagation();
+        SoundEngine.playHeartChime();
+      }}
+      cursor="pointer"
+    >
       {/* Left Pillar */}
       <group position={[-2.4, 0, 0]}>
         {/* Stone Pedestal Base (Kamebara) */}
@@ -877,9 +899,9 @@ export function KyotoBiome({ timeMode = 'night', onGroundTap }) {
       {/* 1. Distant Serene Mount Fuji Horizon under Romantic Moon */}
       <RomanticFujiHorizon isNight={isNight} />
 
-      {/* 2. Kraft Mineral Pedestal Base */}
+      {/* 2. Kraft Mineral Pedestal Base (Expanded 30 x 30 Size!) */}
       <mesh position={[0, -1.2, 0]} receiveShadow>
-        <boxGeometry args={[23.6, 1.6, 23.6]} />
+        <boxGeometry args={[31.6, 1.6, 31.6]} />
         <meshStandardMaterial
           color={isNight ? '#0b0f19' : '#8c6d48'}
           roughness={0.95}
@@ -889,11 +911,11 @@ export function KyotoBiome({ timeMode = 'night', onGroundTap }) {
 
       {/* Gold Trim Foil Ribbon */}
       <mesh position={[0, -0.38, 0]}>
-        <boxGeometry args={[23.8, 0.08, 23.8]} />
+        <boxGeometry args={[31.8, 0.08, 31.8]} />
         <meshStandardMaterial color={goldTrim} metalness={0.9} roughness={0.2} />
       </mesh>
 
-      {/* 3. Main Interactive Kyoto Garden Ground Platform */}
+      {/* 3. Main Interactive Kyoto Garden Ground Platform (Expanded 30 x 30 Area!) */}
       <mesh
         position={[0, -0.2, 0]}
         receiveShadow
@@ -905,7 +927,7 @@ export function KyotoBiome({ timeMode = 'night', onGroundTap }) {
           }
         }}
       >
-        <boxGeometry args={[22.4, 0.36, 22.4]} />
+        <boxGeometry args={[30.4, 0.36, 30.4]} />
         <meshStandardMaterial
           color={groundColor}
           roughness={0.88}
@@ -925,28 +947,28 @@ export function KyotoBiome({ timeMode = 'night', onGroundTap }) {
       ))}
 
       {/* Japanese Smoked Cedar Perimeter Edges */}
-      <mesh position={[0, 0.04, 11.1]} receiveShadow>
-        <boxGeometry args={[22.6, 0.22, 0.45]} />
+      <mesh position={[0, 0.04, 15.1]} receiveShadow>
+        <boxGeometry args={[30.6, 0.22, 0.45]} />
         <meshStandardMaterial color={stoneBorder} roughness={0.75} />
       </mesh>
-      <mesh position={[0, 0.04, -11.1]} receiveShadow>
-        <boxGeometry args={[22.6, 0.22, 0.45]} />
+      <mesh position={[0, 0.04, -15.1]} receiveShadow>
+        <boxGeometry args={[30.6, 0.22, 0.45]} />
         <meshStandardMaterial color={stoneBorder} roughness={0.75} />
       </mesh>
-      <mesh position={[11.1, 0.04, 0]} receiveShadow>
-        <boxGeometry args={[0.45, 0.22, 21.8]} />
+      <mesh position={[15.1, 0.04, 0]} receiveShadow>
+        <boxGeometry args={[0.45, 0.22, 29.8]} />
         <meshStandardMaterial color={stoneBorder} roughness={0.75} />
       </mesh>
-      <mesh position={[-11.1, 0.04, 0]} receiveShadow>
-        <boxGeometry args={[0.45, 0.22, 21.8]} />
+      <mesh position={[-15.1, 0.04, 0]} receiveShadow>
+        <boxGeometry args={[0.45, 0.22, 29.8]} />
         <meshStandardMaterial color={stoneBorder} roughness={0.75} />
       </mesh>
 
       {/* 4. Yasaka Five-Story Pagoda (Majestic Kyoto Silhouette Landmark) */}
-      <YasakaPagoda position={[-7.5, 0, -7.5]} isNight={isNight} />
+      <YasakaPagoda position={[-9.2, 0, -9.2]} isNight={isNight} />
 
       {/* 5. Gion Traditional Machiya Townhouse with Glowing Shoji & Red Chochin */}
-      <KyotoMachiyaHouse position={[-7.6, 0, 1.4]} rotationY={Math.PI / 2} isNight={isNight} />
+      <KyotoMachiyaHouse position={[-9.2, 0, 2.8]} rotationY={Math.PI / 2} isNight={isNight} />
 
       {/* 6. Fushimi Inari Vermilion Torii Gate Entrance */}
       <VermilionToriiGate position={[0, 0, 8.8]} isNight={isNight} />
