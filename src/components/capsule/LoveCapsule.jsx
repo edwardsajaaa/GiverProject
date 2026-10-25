@@ -25,14 +25,18 @@ export function LoveCapsule({ children }) {
       {activeView === 'world3d' && (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           {/* Floating Back to Capsule Button (Torn Editorial Style) */}
-          <div style={{
-            position: 'absolute',
-            top: '18px',
-            left: '20px',
-            zIndex: 9000,
-          }}>
+          <div 
+            className="return-capsule-wrapper"
+            style={{
+              position: 'absolute',
+              top: '18px',
+              left: '20px',
+              zIndex: 9000,
+            }}
+          >
             <button
               onClick={() => setActiveView('journal')}
+              className="return-capsule-btn"
               style={{
                 backgroundColor: '#121212',
                 color: '#fff',
@@ -64,6 +68,20 @@ export function LoveCapsule({ children }) {
               <span>⟵ RETURN TO LOVE CAPSULE</span>
             </button>
           </div>
+
+          <style>{`
+            @media (max-width: 600px) {
+              .return-capsule-wrapper {
+                top: 8px !important;
+                left: 8px !important;
+              }
+              .return-capsule-btn {
+                padding: 5px 9px !important;
+                font-size: 9px !important;
+                letter-spacing: 1px !important;
+              }
+            }
+          `}</style>
 
           {/* Children is the 3D Sandbox app */}
           {children}
