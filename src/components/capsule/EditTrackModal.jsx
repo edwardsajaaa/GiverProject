@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SecurityEngine } from '../../utils/securityEngine';
+import { AudioStorage } from '../../utils/audioStorage';
 import { WashiTape, BlackTape } from './TornPaper';
 
 const POPULAR_PRESETS = [
@@ -73,7 +74,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
 
   if (!isOpen || !track) return null;
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -87,9 +88,16 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
       return;
     }
 
-    const blobUrl = URL.createObjectURL(file);
-    setAudioUrl(blobUrl);
-    setUploadFileName(file.name);
+    try {
+      const { blobUrl, fileName } = await AudioStorage.saveTrackAudio(track.id, file);
+      setAudioUrl(blobUrl);
+      setUploadFileName(fileName);
+    } catch (err) {
+      console.warn('Gagal menyimpan ke IndexedDB, menggunakan URL lokal sementara:', err);
+      const fallbackUrl = URL.createObjectURL(file);
+      setAudioUrl(fallbackUrl);
+      setUploadFileName(file.name);
+    }
   };
 
   const applyPreset = (preset) => {
@@ -344,6 +352,22 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
                 style={{ display: 'none' }}
               />
             </label>
+
+            <div style={{
+              fontSize: '11px',
+              backgroundColor: '#fffdf5',
+              border: '1px dashed #d4af37',
+              padding: '8px 12px',
+              marginTop: '6px',
+              lineHeight: 1.5,
+              color: '#444',
+            }}>
+              <strong style={{ color: '#85101c', display: 'block', marginBottom: '2px', fontFamily: "'Montserrat', sans-serif", fontSize: '9px', letterSpacing: '0.8px' }}>
+                ✦ CARA MENYIMPAN & MEMBAGIKAN LAGU KE GEBETAN:
+              </strong>
+              • <strong>Upload dari Perangkat:</strong> File otomatis tersimpan aman di memori browser perangkat ini (IndexedDB).<br />
+              • <strong>Agar Terdengar di HP Gebetan Saat Web Dibagikan:</strong> Masukkan file MP3 ke folder <code>public/audio/</code> (misal: <code>/audio/lagu.mp3</code>) lalu commit & push, atau tempelkan direct audio URL internet.
+            </div>
           </div>
 
           {/* Judul & Artis */}

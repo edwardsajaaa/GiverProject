@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { capsuleAudio } from '../audio/capsuleAudio';
 import { EditTrackModal } from '../EditTrackModal';
+import { AudioStorage } from '../../../utils/audioStorage';
 import {
   TornScrap,
   WashiTape,
@@ -128,6 +129,30 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
   const [editingTrack, setEditingTrack] = useState(null);
 
   const activeTrack = tracks.find((t) => t.id === loadedTrackId) || tracks[0];
+
+  // Restore any persistent local audio files from IndexedDB on mount
+  useEffect(() => {
+    let isMounted = true;
+    AudioStorage.getAllTrackAudios().then((audioMap) => {
+      if (!isMounted || !audioMap || Object.keys(audioMap).length === 0) return;
+      setTracks((prevTracks) =>
+        prevTracks.map((t) => {
+          if (audioMap[t.id]) {
+            return {
+              ...t,
+              audioUrl: audioMap[t.id].blobUrl,
+              isLocalStored: true,
+              localFileName: audioMap[t.id].fileName,
+            };
+          }
+          return t;
+        })
+      );
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Save tracks to localStorage on change
   const handleSaveTrack = (updatedTrack) => {
