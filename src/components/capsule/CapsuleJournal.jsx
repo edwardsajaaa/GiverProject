@@ -3,10 +3,12 @@ import { PhotoGalleryPage } from './pages/PhotoGalleryPage';
 import { LoveLetterPage } from './pages/LoveLetterPage';
 import { VinylPlayerPage } from './pages/VinylPlayerPage';
 import { capsuleAudio } from './audio/capsuleAudio';
+import { LoveLockModal, LoveLockManager } from './LoveLockModal';
 import { TornEdgeTop, TornEdgeBottom, WashiTape, EditorialButton, CircleArrowButton, PostageStampButton } from './TornPaper';
 
 export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
   const [page, setPage] = useState(1);
+  const [showLockModal, setShowLockModal] = useState(false);
   const totalPages = 3;
 
   const goToPage = (newPage) => {
@@ -52,17 +54,41 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           zIndex: 100,
         }}
       >
-        {/* Left: Vintage Postage Stamp Button */}
-        <div className="journal-btn-reseal">
-          <PostageStampButton
-            onClick={onBackToEnvelope}
+        {/* Left: Vintage Postage Stamp Button & Love Lock Option */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div className="journal-btn-reseal">
+            <PostageStampButton
+              onClick={onBackToEnvelope}
+              style={{
+                backgroundColor: 'rgba(250, 247, 242, 0.95)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              }}
+            >
+              <span>✉ RE-SEAL</span>
+            </PostageStampButton>
+          </div>
+
+          <button
+            onClick={() => setShowLockModal(true)}
+            title="Kelola Gembok Kapsul (PIN)"
             style={{
-              backgroundColor: 'rgba(250, 247, 242, 0.95)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              background: 'rgba(18, 18, 18, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#ffd700',
+              padding: '6px 8px',
+              cursor: 'pointer',
+              fontSize: '11px',
+              display: 'flex',
+              alignItems: 'center',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+              backdropFilter: 'blur(8px)',
+              transition: 'transform 0.2s',
             }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <span>✉ RE-SEAL</span>
-          </PostageStampButton>
+            🔒
+          </button>
         </div>
 
         {/* Center: Inception Style Minimalist Pagination (01 / 03 with Circle Arrow Buttons) */}
@@ -243,6 +269,14 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           )}
         </div>
       </div>
+
+      {/* Love Lock Management Modal */}
+      <LoveLockModal
+        isOpen={showLockModal}
+        mode="setup"
+        onClose={() => setShowLockModal(false)}
+        onUnlocked={() => setShowLockModal(false)}
+      />
 
       <style>{`
         @keyframes fadeInPage {
