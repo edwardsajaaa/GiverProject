@@ -168,26 +168,33 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
   }, []);
 
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      padding: '20px 32px',
-      boxSizing: 'border-box',
-      position: 'relative',
-      fontFamily: "'Cormorant Garamond', serif",
-      color: '#121212',
-    }}>
-      {/* Top Headline on Torn Paper Header */}
-      <div style={{
+    <div 
+      className="vinyl-player-page"
+      style={{
+        width: '100%',
+        minHeight: '100%',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        borderBottom: '1.5px solid #121212',
-        paddingBottom: '8px',
-      }}>
+        padding: '20px 32px',
+        boxSizing: 'border-box',
+        position: 'relative',
+        fontFamily: "'Cormorant Garamond', serif",
+        color: '#121212',
+      }}
+    >
+      {/* Top Headline on Torn Paper Header */}
+      <div 
+        className="vinyl-player-header"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: '1.5px solid #121212',
+          paddingBottom: '8px',
+          gap: '8px',
+        }}
+      >
         <div style={{ textAlign: 'left' }}>
           <p style={{
             margin: 0,
@@ -211,17 +218,20 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         </div>
 
         {/* Master Turntable Status Stamp */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          backgroundColor: isPlaying ? '#a61324' : '#121212',
-          color: '#fff',
-          padding: '5px 12px',
-          clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
-          boxShadow: '0 3px 10px rgba(0,0,0,0.3)',
-          transition: 'background-color 0.3s ease',
-        }}>
+        <div 
+          className="vinyl-status-stamp"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: isPlaying ? '#a61324' : '#121212',
+            color: '#fff',
+            padding: '5px 12px',
+            clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
+            boxShadow: '0 3px 10px rgba(0,0,0,0.3)',
+            transition: 'background-color 0.3s ease',
+          }}
+        >
           <span style={{
             width: '8px',
             height: '8px',
@@ -243,15 +253,19 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
       </div>
 
       {/* Main Turntable Stage (Left: Realistic Turntable, Right: Current Lyric Scrap) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1.3fr 1fr',
-        gap: '24px',
-        alignItems: 'center',
-        margin: '10px 0',
-      }}>
+      <div 
+        className="vinyl-stage-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1.3fr 1fr',
+          gap: '24px',
+          alignItems: 'center',
+          margin: '10px 0',
+        }}
+      >
         {/* The Single Dedicated Turntable Player Chassis with Drag & Drop Zone */}
         <div 
+          className="vinyl-turntable-chassis"
           onDragOver={(e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
@@ -553,7 +567,10 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         </div>
 
         {/* Right: Dynamic Lyric Clipping Card on Torn Paper Scrap */}
-        <div style={{ position: 'relative' }}>
+        <div 
+          className="vinyl-lyrics-note"
+          style={{ position: 'relative' }}
+        >
           <WashiTape top="-10px" left="20px" width="70px" rotate={-2} color="rgba(255, 235, 205, 0.85)" />
           <BlackTape top="-8px" right="20px" width="60px" rotate={3} />
 
@@ -663,12 +680,15 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           </span>
         </div>
 
-        {/* 6 Album Jackets in a row */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(6, 1fr)',
-          gap: '12px',
-        }}>
+        {/* 6 Album Jackets in a row on desktop, 3 columns on mobile */}
+        <div 
+          className="vinyl-crate-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, 1fr)',
+            gap: '12px',
+          }}
+        >
           {VINYL_COLLECTION.map((item) => {
             const isLoaded = loadedTrackId === item.id;
             const isBeingDragged = draggedTrackId === item.id;
@@ -800,18 +820,21 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
       </div>
 
       {/* Surprise Gate Banner as Torn Kraft Paper Keepsake Ticket */}
-      <div style={{
-        position: 'relative',
-        backgroundColor: '#f4ebd9',
-        border: '1px dashed #121212',
-        padding: '8px 16px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        clipPath: 'polygon(0% 4px, 2% 0px, 98% 0px, 100% 4px, 99% 96%, 100% 100%, 2% 100%, 0% 96%)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        transform: 'rotate(-0.2deg)',
-      }}>
+      <div 
+        className="vinyl-3d-banner"
+        style={{
+          position: 'relative',
+          backgroundColor: '#f4ebd9',
+          border: '1px dashed #121212',
+          padding: '8px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          clipPath: 'polygon(0% 4px, 2% 0px, 98% 0px, 100% 4px, 99% 96%, 100% 100%, 2% 100%, 0% 96%)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          transform: 'rotate(-0.2deg)',
+        }}
+      >
         <div style={{ textAlign: 'left' }}>
           <span style={{
             fontSize: '11px',
@@ -843,19 +866,22 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
       </div>
 
       {/* Footer Navigation Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderTop: '1.5px solid #121212',
-        paddingTop: '10px',
-      }}>
+      <div 
+        className="vinyl-player-footer"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderTop: '1.5px solid #121212',
+          paddingTop: '10px',
+        }}
+      >
         {/* Left: Circular Arrow Back Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <CircleArrowButton
             direction="prev"
             onClick={onPrev}
-            size={30}
+            size={28}
           />
           <span style={{
             fontFamily: "'Montserrat', sans-serif",
@@ -878,13 +904,16 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           }}>
             03 / 03
           </span>
-          <span style={{
-            fontSize: '10px',
-            color: '#666',
-            fontFamily: "'Montserrat', sans-serif",
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}>
+          <span 
+            className="vinyl-chapter-sub"
+            style={{
+              fontSize: '10px',
+              color: '#666',
+              fontFamily: "'Montserrat', sans-serif",
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+            }}
+          >
             • CHAPTER THREE
           </span>
         </div>
@@ -900,15 +929,62 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           color: isPlaying ? '#a61324' : '#666',
           letterSpacing: '1px',
         }}>
-          <span>{isPlaying ? '♫ HI-FI AUDIO PLAYING' : 'AUDIO READY'}</span>
+          <span>{isPlaying ? '♫ HI-FI PLAYING' : 'AUDIO READY'}</span>
         </div>
       </div>
 
-      {/* Vinyl Rotation Keyframes Animation */}
+      {/* Vinyl Rotation Keyframes Animation & Smartphone Media Queries */}
       <style>{`
         @keyframes spinVinylMotion {
           0% { transform: scale(1) rotate(0deg); }
           100% { transform: scale(1) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+          .vinyl-player-page {
+            padding: 14px 12px 20px 12px !important;
+          }
+          .vinyl-player-header {
+            padding-bottom: 6px !important;
+          }
+          .vinyl-status-stamp {
+            padding: 4px 8px !important;
+            font-size: 8px !important;
+          }
+          .vinyl-stage-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+            margin: 6px 0 !important;
+          }
+          .vinyl-turntable-chassis {
+            width: 100% !important;
+            max-width: 290px !important;
+            min-height: auto !important;
+            padding: 14px 10px !important;
+            margin: 0 auto !important;
+          }
+          .vinyl-lyrics-note {
+            width: 100% !important;
+            max-width: 320px !important;
+            margin: 0 auto !important;
+          }
+          .vinyl-crate-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px 6px !important;
+            justify-items: center !important;
+          }
+          .vinyl-3d-banner {
+            flex-direction: column !important;
+            text-align: center !important;
+            gap: 8px !important;
+            padding: 10px 12px !important;
+          }
+          .vinyl-chapter-sub {
+            display: none !important;
+          }
+          .vinyl-player-footer {
+            padding-top: 8px !important;
+          }
         }
       `}</style>
     </div>
