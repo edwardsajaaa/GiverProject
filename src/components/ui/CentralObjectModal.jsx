@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { SoundEngine } from '../../utils/SoundEngine';
 import { ModelStorage } from '../../utils/modelStorage';
+import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
 const SHAPE_PRESETS = [
   { id: 'cube', label: 'Kubus Cyber', icon: '🧊', desc: 'Kubus presisi futuristik' },
@@ -105,35 +106,41 @@ export function CentralObjectModal({
         }
       `}</style>
 
-      {/* Glass Panel */}
+      {/* Torn Paper Scrapbook Panel */}
       <div style={{
-        background: isNight ? 'rgba(20, 24, 34, 0.94)' : 'rgba(255, 255, 255, 0.96)',
-        backdropFilter: 'blur(40px) saturate(220%)',
-        WebkitBackdropFilter: 'blur(40px) saturate(220%)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(0, 0, 0, 0.12)',
-        borderRadius: 28, padding: '26px 30px',
-        width: 'min(540px, 92vw)', maxHeight: '88vh',
+        position: 'relative',
+        backgroundColor: isNight ? '#161616' : '#FAF7F2',
+        border: '2px solid #121212',
+        padding: '28px 30px',
+        width: 'min(560px, 92vw)', maxHeight: '88vh',
         display: 'flex', flexDirection: 'column', gap: 20,
-        boxShadow: isNight ? '0 28px 68px rgba(0,0,0,0.8)' : '0 24px 60px rgba(0,0,0,0.2)',
-        overflowY: 'auto'
+        boxShadow: '0 28px 70px rgba(0,0,0,0.85), 0 4px 12px rgba(0,0,0,0.4)',
+        overflowY: 'auto',
+        color: isNight ? '#F5F5F7' : '#121212',
+        clipPath: 'polygon(0% 4px, 1.5% 0px, 98.5% 0px, 100% 4px, 99.5% 96%, 100% 100%, 0.5% 100%, 0% 96%)',
       }}>
+        {/* Tape strips */}
+        <WashiTape top="-8px" left="28px" width="70px" rotate={-2} color="rgba(255, 235, 215, 0.85)" />
+        <BlackTape top="-6px" right="28px" width="60px" rotate={3} />
+
         {/* Header Modal */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid #121212', paddingBottom: '12px' }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: isNight ? '#F5F5F7' : '#1D1D1F', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800, fontFamily: "'Playfair Display', serif", color: isNight ? '#F5F5F7' : '#121212', display: 'flex', alignItems: 'center', gap: 8 }}>
               <span>💎 Studio Objek Utama Altar</span>
             </h2>
-            <p style={{ margin: '4px 0 0 0', fontSize: 12, color: isNight ? '#94a3b8' : '#64748b' }}>
-              Pilih bentuk centerpiece tengah pulau atau upload file 3D milik Anda (.glb / .gltf / .obj / .fbx).
+            <p style={{ margin: '4px 0 0 0', fontSize: 11, fontFamily: "'Montserrat', sans-serif", color: isNight ? '#94a3b8' : '#64748b' }}>
+              Pilih bentuk centerpiece tengah pulau cinta atau upload file 3D kustom (.glb / .gltf).
             </p>
           </div>
           <button
             onClick={() => { setCentralModalOpen(false); SoundEngine.playClick(); }}
             style={{
-              background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-              border: 'none', borderRadius: 14, width: 34, height: 34,
-              fontSize: 14, fontWeight: 700, color: isNight ? '#F5F5F7' : '#1D1D1F',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+              backgroundColor: isNight ? '#222' : '#fff',
+              border: '1.5px solid #121212', width: 32, height: 32,
+              fontSize: 13, fontWeight: 800, color: isNight ? '#F5F5F7' : '#1D1D1F',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: "'Montserrat', sans-serif"
             }}
           >
             ✕

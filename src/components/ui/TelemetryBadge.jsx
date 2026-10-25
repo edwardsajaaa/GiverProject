@@ -24,51 +24,48 @@ export function RealTimeAnalytics({ onFpsUpdate }) {
 export function TelemetryBadge({ fps = 60, performanceTier = 'high', togglePerformanceTier, objectCount = 0, isNight = true }) {
   return (
     <div style={{
-      position: 'absolute', top: 16, left: 24, zIndex: 30,
-      background: isNight ? 'rgba(20, 20, 20, 0.45)' : 'rgba(255, 255, 255, 0.45)',
-      backdropFilter: 'blur(30px) saturate(180%)',
-      WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-      border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-      boxShadow: isNight ? '0 4px 16px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 4px 16px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
-      padding: '4px 10px', borderRadius: 16,
-      color: isNight ? '#E5E5E5' : '#171717',
-      fontFamily: 'monospace', fontSize: 10, fontWeight: 600, letterSpacing: '0.5px',
+      position: 'absolute', top: 18, right: 20, zIndex: 30,
+      backgroundColor: isNight ? '#161616' : '#faf7f2',
+      border: '1.5px solid #121212',
+      boxShadow: isNight ? '0 4px 16px rgba(0,0,0,0.5)' : '0 4px 16px rgba(74, 8, 18, 0.12)',
+      padding: '4px 10px',
+      color: isNight ? '#f5f5f5' : '#121212',
+      fontFamily: "'Montserrat', monospace", fontSize: 9, fontWeight: 800, letterSpacing: '0.8px',
       display: 'flex', alignItems: 'center', gap: 6,
-      pointerEvents: 'auto'
+      pointerEvents: 'auto',
+      clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 5, pointerEvents: 'none' }}>
         <span style={{
-          width: 8, height: 8, borderRadius: '50%',
+          width: 7, height: 7, borderRadius: '50%',
           background: fps >= 50 ? '#30D158' : (fps >= 30 ? '#FF9F0A' : '#FF3B30'),
           boxShadow: `0 0 6px ${fps >= 50 ? '#30D158' : (fps >= 30 ? '#FF9F0A' : '#FF3B30')}`
         }} />
-        <span style={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fps} FPS</span>
+        <span style={{ fontVariantNumeric: 'tabular-nums' }}>{fps} FPS</span>
       </div>
-      <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
+      <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
       <button
         onClick={togglePerformanceTier}
         title="Klik untuk beralih mode performa (⚡ ECO / 🚀 HIGH)"
         style={{
-          background: performanceTier === 'high' ? 'rgba(10, 132, 255, 0.18)' : 'rgba(255, 159, 10, 0.18)',
-          border: performanceTier === 'high' ? '1px solid rgba(10, 132, 255, 0.35)' : '1px solid rgba(255, 159, 10, 0.35)',
-          borderRadius: 8,
-          padding: '2px 6px',
-          color: performanceTier === 'high' ? (isNight ? '#38bdf8' : '#007AFF') : '#FF9F0A',
+          background: performanceTier === 'high' ? '#121212' : '#a61324',
+          border: 'none',
+          padding: '2px 5px',
+          color: '#ffffff',
           fontFamily: 'inherit',
-          fontSize: 10,
-          fontWeight: 700,
+          fontSize: 9,
+          fontWeight: 800,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           gap: 3,
-          transition: 'all 0.2s ease'
+          letterSpacing: '0.5px',
         }}
       >
-        <span>{performanceTier === 'high' ? '🚀' : '⚡'}</span>
-        <span>GPU: {performanceTier === 'high' ? 'HIGH' : 'ECO'}</span>
+        <span>{performanceTier === 'high' ? 'HIGH' : 'ECO'}</span>
       </button>
-      <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
-      <span style={{ pointerEvents: 'none' }}>🏝️ <strong>{objectCount}</strong> Objek</span>
+      <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
+      <span style={{ pointerEvents: 'none' }}>✦ <strong>{objectCount}</strong> ITEMS</span>
     </div>
   );
 }

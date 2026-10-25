@@ -5,6 +5,7 @@ import {
 } from '../icons/SvgIcons';
 import { SoundEngine } from '../../utils/SoundEngine';
 import { ScreenshotHelper } from '../../utils/screenshotHelper';
+import { BlackTape, WashiTape } from '../capsule/TornPaper';
 
 export function HeaderToolbar({
   timeMode, setTimeMode,
@@ -26,14 +27,14 @@ export function HeaderToolbar({
   const isNight = timeMode === 'night';
 
   const getHeroLabel = () => {
-    if (centralObjectType === 'custom') return centralObjectName ? `Custom: ${centralObjectName.slice(0, 10)}...` : 'Model 3D Saya';
+    if (centralObjectType === 'custom') return centralObjectName ? `Custom: ${centralObjectName.slice(0, 10)}...` : 'Model 3D';
     const labels = {
-      cube: 'Kubus Cyber',
-      sphere: 'Bola Plasma',
-      torus: 'Cincin Quantum',
-      pyramid: 'Piramida Kristal',
+      cube: 'Kubus Cinta',
+      sphere: 'Kristal Kenangan',
+      torus: 'Cincin Abadi',
+      pyramid: 'Piramida Cinta',
       dodecahedron: 'Bintang Suci',
-      cylinder: 'Pilar Kapsul'
+      cylinder: 'Kapsul Waktu'
     };
     return labels[centralObjectType] || 'Altar Utama';
   };
@@ -52,6 +53,23 @@ export function HeaderToolbar({
     }
   };
 
+  const btnBaseStyle = {
+    padding: '6px 11px',
+    border: 'none',
+    borderRadius: '0px',
+    fontFamily: "'Montserrat', sans-serif",
+    fontSize: '10px',
+    fontWeight: 700,
+    letterSpacing: '1px',
+    cursor: 'pointer',
+    transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px',
+    backgroundColor: 'transparent',
+    color: isNight ? '#f5f5f5' : '#121212',
+  };
+
   return (
     <header style={{
       position: 'absolute', top: 16, left: 0, right: 0, boxSizing: 'border-box',
@@ -59,156 +77,235 @@ export function HeaderToolbar({
       padding: 0, zIndex: 25, pointerEvents: 'none',
       transition: 'all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)'
     }}>
-      {/* Central Unified Glass Panel */}
+      {/* Torn Paper Scrapbook Ruler Toolbar */}
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 6, pointerEvents: 'auto', flexWrap: 'wrap',
-        background: isNight ? 'rgba(20, 20, 20, 0.3)' : 'rgba(255, 255, 255, 0.3)',
-        backdropFilter: 'blur(30px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-        borderRadius: 24, padding: '6px',
-        boxShadow: isNight ? '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), inset 0 -1px 1px rgba(0,0,0,0.5)' : '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1), inset 0 -1px 1px rgba(0,0,0,0.05)'
+        position: 'relative',
+        display: 'flex', alignItems: 'center', gap: 4, pointerEvents: 'auto', flexWrap: 'wrap',
+        backgroundColor: isNight ? '#161616' : '#faf7f2',
+        border: '1.5px solid #121212',
+        boxShadow: isNight 
+          ? '0 12px 36px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.4)' 
+          : '0 10px 30px rgba(74, 8, 18, 0.15), 0 2px 6px rgba(0,0,0,0.08)',
+        padding: '5px 8px',
+        // Jagged ragged torn paper ends
+        clipPath: 'polygon(0% 3px, 1% 0px, 99% 0px, 100% 3px, 99.5% 97%, 100% 100%, 0.5% 100%, 0% 97%)',
       }}>
+        {/* Black Tape & Washi Tape Accents on Toolbar Edges */}
+        <BlackTape top="-9px" left="-12px" width="50px" rotate={-5} />
+        <WashiTape top="-9px" left="calc(100% - 38px)" width="50px" rotate={4} color="rgba(255, 230, 210, 0.85)" />
+
         {/* Undo / Redo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <button onClick={handleUndo} disabled={historyPast.length === 0} title="Undo (Ctrl+Z)" style={{
-            padding: '6px 12px', borderRadius: 18, border: 'none', cursor: historyPast.length === 0 ? 'not-allowed' : 'pointer',
-            background: 'transparent', color: historyPast.length === 0 ? (isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)') : (isNight ? '#E5E5E5' : '#171717'),
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.2s'
-          }}>UNDO</button>
-          <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
-          <button onClick={handleRedo} disabled={historyFuture.length === 0} title="Redo (Ctrl+Y)" style={{
-            padding: '6px 12px', borderRadius: 18, border: 'none', cursor: historyFuture.length === 0 ? 'not-allowed' : 'pointer',
-            background: 'transparent', color: historyFuture.length === 0 ? (isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)') : (isNight ? '#E5E5E5' : '#171717'),
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.2s'
-          }}>REDO</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <button 
+            onClick={handleUndo} 
+            disabled={historyPast.length === 0} 
+            title="Undo (Ctrl+Z)" 
+            style={{
+              ...btnBaseStyle,
+              opacity: historyPast.length === 0 ? 0.35 : 1,
+              cursor: historyPast.length === 0 ? 'not-allowed' : 'pointer',
+            }}
+            onMouseEnter={(e) => { if (historyPast.length > 0) e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+          >
+            UNDO
+          </button>
+          <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
+          <button 
+            onClick={handleRedo} 
+            disabled={historyFuture.length === 0} 
+            title="Redo (Ctrl+Y)" 
+            style={{
+              ...btnBaseStyle,
+              opacity: historyFuture.length === 0 ? 0.35 : 1,
+              cursor: historyFuture.length === 0 ? 'not-allowed' : 'pointer',
+            }}
+            onMouseEnter={(e) => { if (historyFuture.length > 0) e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+          >
+            REDO
+          </button>
         </div>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
         {/* Snap to Grid */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <button onClick={() => { setSnapGrid(!snapGrid); SoundEngine.playClick(); }} title="Snap Grid" style={{
-            padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
-            background: snapGrid ? (isNight ? '#E5E5E5' : '#171717') : 'transparent',
-            border: 'none', cursor: 'pointer',
-            color: snapGrid ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), 
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
-          }}>
-            <IconGrid size={14} />
+          <button 
+            onClick={() => { setSnapGrid(!snapGrid); SoundEngine.playClick(); }} 
+            title="Snap Grid" 
+            style={{
+              ...btnBaseStyle,
+              backgroundColor: snapGrid ? (isNight ? '#ffffff' : '#121212') : 'transparent',
+              color: snapGrid ? (isNight ? '#121212' : '#ffffff') : (isNight ? '#f5f5f5' : '#121212'),
+              clipPath: snapGrid ? 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)' : 'none',
+            }}
+          >
+            <IconGrid size={13} />
             <span>SNAP{snapGrid ? ': ON' : ''}</span>
           </button>
           {snapGrid && (
-            <button onClick={() => { setSnapSize(snapSize === 0.5 ? 1.0 : 0.5); SoundEngine.playClick(); }} title="Resolusi Snap" style={{
-              background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', border: 'none', borderRadius: 12, padding: '4px 8px',
-              color: isNight ? '#E5E5E5' : '#171717', fontSize: 10, fontWeight: 600, cursor: 'pointer'
-            }}>{snapSize}m</button>
+            <button 
+              onClick={() => { setSnapSize(snapSize === 0.5 ? 1.0 : 0.5); SoundEngine.playClick(); }} 
+              title="Resolusi Snap" 
+              style={{
+                ...btnBaseStyle,
+                padding: '4px 6px',
+                border: '1px dashed #121212',
+                backgroundColor: isNight ? '#262626' : '#fff',
+                fontSize: 9,
+              }}
+            >
+              {snapSize}m
+            </button>
           )}
         </div>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
-        {/* Altar */}
-        <button onClick={() => { if (setCentralModalOpen) { setCentralModalOpen(true); SoundEngine.playPop(); } }} title="Studio Altar" style={{
-          display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 18,
-          background: isNight ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)', border: 'none',
-          color: isNight ? '#FFF' : '#000', fontSize: 11, fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}>
-          {getHeroLabel().toUpperCase()}
+        {/* Altar / Centerpiece Studio */}
+        <button 
+          onClick={() => { if (setCentralModalOpen) { setCentralModalOpen(true); SoundEngine.playPop(); } }} 
+          title="Studio Centerpiece" 
+          style={{
+            ...btnBaseStyle,
+            backgroundColor: isNight ? '#262626' : '#fffdf9',
+            border: '1px solid #121212',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          ✦ {getHeroLabel().toUpperCase()}
         </button>
 
-        {/* Dunia & Gaya */}
-        <button onClick={() => { if (setWorldModalOpen) { setWorldModalOpen(true); SoundEngine.playPop(); } }} title="Kustomisasi Dunia & Gaya Seni" style={{
-          display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 18,
-          background: isNight ? 'rgba(56, 189, 248, 0.15)' : 'rgba(2, 132, 199, 0.1)', border: 'none',
-          color: isNight ? '#38bdf8' : '#0284c7', fontSize: 11, fontWeight: 700, letterSpacing: '0.5px', cursor: 'pointer',
-          transition: 'all 0.3s ease'
-        }}>
+        {/* Dunia & Gaya (Vibrant Crimson Torn Block) */}
+        <button 
+          onClick={() => { if (setWorldModalOpen) { setWorldModalOpen(true); SoundEngine.playPop(); } }} 
+          title="Kustomisasi Dunia & Gaya Seni" 
+          style={{
+            ...btnBaseStyle,
+            backgroundColor: '#a61324',
+            color: '#ffffff',
+            boxShadow: '0 3px 8px rgba(166, 19, 36, 0.4)',
+            clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#870e1c';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#a61324';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
+        >
           🌍 DUNIA & GAYA
         </button>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
         {/* Audio & Rotate */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <button onClick={() => { const next = !audioActive; setAudioActive(next); SoundEngine.setAmbient(next, isNight); SoundEngine.playClick(); }} title="Audio" style={{
-            padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
-            background: audioActive ? (isNight ? '#E5E5E5' : '#171717') : 'transparent', border: 'none', cursor: 'pointer',
-            color: audioActive ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), 
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
-          }}>
-            {audioActive ? <IconAudioOn size={14} /> : <IconAudioOff size={14} />}
+          <button 
+            onClick={() => { const next = !audioActive; setAudioActive(next); SoundEngine.setAmbient(next, isNight); SoundEngine.playClick(); }} 
+            title="Audio" 
+            style={{
+              ...btnBaseStyle,
+              backgroundColor: audioActive ? (isNight ? '#fff' : '#121212') : 'transparent',
+              color: audioActive ? (isNight ? '#121212' : '#fff') : (isNight ? '#f5f5f5' : '#121212'),
+            }}
+          >
+            {audioActive ? <IconAudioOn size={13} /> : <IconAudioOff size={13} />}
           </button>
-          <button onClick={() => { setAutoRotate(!autoRotate); SoundEngine.playClick(); }} title="Auto Rotate" style={{
-            padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
-            background: autoRotate ? (isNight ? '#E5E5E5' : '#171717') : 'transparent', border: 'none', cursor: 'pointer',
-            color: autoRotate ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#A3A3A3' : '#525252'), 
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
-          }}>
-            {autoRotate ? <IconRotateOn size={14} /> : <IconRotateOff size={14} />}
+          <button 
+            onClick={() => { setAutoRotate(!autoRotate); SoundEngine.playClick(); }} 
+            title="Auto Rotate" 
+            style={{
+              ...btnBaseStyle,
+              backgroundColor: autoRotate ? (isNight ? '#fff' : '#121212') : 'transparent',
+              color: autoRotate ? (isNight ? '#121212' : '#fff') : (isNight ? '#f5f5f5' : '#121212'),
+            }}
+          >
+            {autoRotate ? <IconRotateOn size={13} /> : <IconRotateOff size={13} />}
           </button>
         </div>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
         {/* Day / Night */}
-        <button onClick={() => {
-          const next = isNight ? 'day' : 'night';
-          setTimeMode(next);
-          SoundEngine.setAmbient(audioActive, next === 'night');
-          SoundEngine.playClick();
-        }} title="Toggle Day / Night" style={{
-          padding: '6px 14px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          color: isNight ? '#E5E5E5' : '#171717', fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
-        }}>
-          {isNight ? <IconGalaxy size={14} /> : <IconSun size={14} />}
+        <button 
+          onClick={() => {
+            const next = isNight ? 'day' : 'night';
+            setTimeMode(next);
+            SoundEngine.setAmbient(audioActive, next === 'night');
+            SoundEngine.playClick();
+          }} 
+          title="Toggle Day / Night" 
+          style={btnBaseStyle}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+        >
+          {isNight ? <IconGalaxy size={13} /> : <IconSun size={13} />}
           <span>{isNight ? 'MALAM' : 'SIANG'}</span>
         </button>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
-        {/* Camera Snapshot / Photo Mode */}
-        <button onClick={handleTakePhoto} title="Ambil Foto Sandbox" style={{
-          padding: '6px 12px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 6,
-          background: 'transparent', border: 'none', cursor: 'pointer',
-          color: isNight ? '#E5E5E5' : '#171717', fontSize: 11, fontWeight: 600, letterSpacing: '0.5px', transition: 'all 0.3s ease'
-        }}>
-          <IconCamera size={14} />
+        {/* Snapshot / Photo Mode */}
+        <button 
+          onClick={handleTakePhoto} 
+          title="Ambil Foto Polaroid Sandbox" 
+          style={btnBaseStyle}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+        >
+          <IconCamera size={13} />
           <span>FOTO</span>
         </button>
 
-        <div style={{ width: 1, height: 24, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
         {/* Ekspor & Impor JSON */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {handleExportJson && (
-            <button onClick={handleExportJson} title="Ekspor Diorama ke File JSON" style={{
-              padding: '6px 10px', borderRadius: 18, border: 'none', cursor: 'pointer',
-              background: 'transparent', color: isNight ? '#E5E5E5' : '#171717',
-              fontSize: 11, fontWeight: 600, letterSpacing: '0.5px'
-            }}>
+            <button 
+              onClick={handleExportJson} 
+              title="Ekspor Diorama ke File JSON" 
+              style={btnBaseStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
               EKSPOR
             </button>
           )}
           {handleImportJson && (
-            <button onClick={handleImportJson} title="Impor Diorama dari File JSON" style={{
-              padding: '6px 10px', borderRadius: 18, border: 'none', cursor: 'pointer',
-              background: 'transparent', color: isNight ? '#E5E5E5' : '#171717',
-              fontSize: 11, fontWeight: 600, letterSpacing: '0.5px'
-            }}>
+            <button 
+              onClick={handleImportJson} 
+              title="Impor Diorama dari File JSON" 
+              style={btnBaseStyle}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#ede7dc'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
               IMPOR
             </button>
           )}
         </div>
 
         {/* Tutorial */}
-        <button onClick={() => { setShowTutorial(true); SoundEngine.playClick(); }} title="Bantuan Tutorial" style={{
-          width: 28, height: 28, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: isNight ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)', border: 'none', cursor: 'pointer',
-          color: isNight ? '#A3A3A3' : '#525252', fontSize: 11, fontWeight: 700, marginLeft: 2
-        }}>?</button>
+        <button 
+          onClick={() => { setShowTutorial(true); SoundEngine.playClick(); }} 
+          title="Bantuan Tutorial" 
+          style={{
+            ...btnBaseStyle,
+            padding: '4px 8px',
+            border: '1px solid #121212',
+            backgroundColor: isNight ? '#222' : '#fff',
+            marginLeft: 2,
+          }}
+        >
+          ?
+        </button>
       </div>
     </header>
   );

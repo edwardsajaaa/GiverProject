@@ -1,6 +1,7 @@
 import React from 'react';
 import { StorageEngine } from '../../utils/storageEngine';
 import { SoundEngine } from '../../utils/SoundEngine';
+import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
 export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
   if (!showTutorial) return null;
@@ -9,56 +10,94 @@ export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
     <div style={{
       position: 'absolute', inset: 0, zIndex: 50,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(0, 0, 0, 0.45)', backdropFilter: 'blur(12px)',
+      background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)',
       animation: 'fadeIn 0.3s ease-out'
     }}>
+      {/* Torn Paper Scrapbook Guide Sheet */}
       <div style={{
+        position: 'relative',
         maxWidth: 540, width: '90%',
-        background: isNight ? 'rgba(28, 28, 32, 0.85)' : 'rgba(255, 255, 255, 0.88)',
-        backdropFilter: 'blur(36px) saturate(190%)', WebkitBackdropFilter: 'blur(36px) saturate(190%)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.85)',
-        borderRadius: 36, padding: '32px 36px',
-        boxShadow: isNight ? '0 24px 60px rgba(0,0,0,0.65)' : '0 20px 50px rgba(0,0,0,0.18)',
-        color: isNight ? '#F5F5F7' : '#1D1D1F', pointerEvents: 'auto'
+        backgroundColor: isNight ? '#161616' : '#FAF7F2',
+        border: '2px solid #121212',
+        padding: '32px 36px',
+        boxShadow: '0 25px 70px rgba(0,0,0,0.85), 0 4px 12px rgba(0,0,0,0.4)',
+        color: isNight ? '#F5F5F7' : '#121212', 
+        pointerEvents: 'auto',
+        fontFamily: "'Cormorant Garamond', serif",
+        clipPath: 'polygon(0% 4px, 1.5% 0px, 98.5% 0px, 100% 4px, 99.5% 96%, 100% 100%, 0.5% 100%, 0% 96%)',
       }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.4px', margin: '0 0 14px 0', color: isNight ? '#0A84FF' : '#007AFF', display: 'flex', alignItems: 'center', gap: 10 }}>
-          👋 Selamat Datang di GiverSource Sandbox v3.1
+        <WashiTape top="-8px" left="25px" width="70px" rotate={-3} color="rgba(255, 235, 215, 0.85)" />
+        <BlackTape top="-6px" right="25px" width="60px" rotate={2} />
+
+        <h2 style={{ 
+          fontSize: 22, 
+          fontWeight: 700, 
+          fontFamily: "'Playfair Display', serif",
+          margin: '0 0 8px 0', 
+          color: isNight ? '#fff' : '#121212', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 10,
+          borderBottom: '1.5px solid #121212',
+          paddingBottom: '10px',
+        }}>
+          💌 Panduan Pulau Kenangan Kita
         </h2>
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: isNight ? '#98989D' : '#636366', margin: '0 0 24px 0' }}>
-          Dunia kreatif interaktif bergaya Apple visionOS / macOS dengan fisika 3D, mode atmosfer siang/malam, material PBR berkelas, dan sintesis suara real-time.
+        <p style={{ 
+          fontSize: 12, 
+          lineHeight: 1.6, 
+          fontFamily: "'Montserrat', sans-serif",
+          color: isNight ? '#aaa' : '#555', 
+          margin: '0 0 20px 0' 
+        }}>
+          Diorama 3D ini adalah semesta rahasia kenangan Anda berdua. Anda bebas menata pulau cinta, mengubah tema dunia, dan menambahkan objek bersama.
         </p>
 
-        <div style={{ display: 'grid', gap: 16, margin: '0 0 28px 0', fontSize: 13, lineHeight: 1.5 }}>
-          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 18 }}>🖥️</span>
-            <div><strong style={{ fontWeight: 600 }}>Drag atau Tap (Mobile/Touch):</strong> Tarik item dari Apple Dock bawah, atau tap item lalu ketuk area daratan untuk menaruh objek dengan mulus.</div>
+        <div style={{ display: 'grid', gap: 14, margin: '0 0 24px 0', fontSize: 12, lineHeight: 1.5, fontFamily: "'Montserrat', sans-serif" }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 16 }}>🎨</span>
+            <div><strong style={{ fontWeight: 800 }}>Palet Objek Bawah:</strong> Tarik atau ketuk item dari palet kertas bawah, lalu klik di atas tanah pulau untuk meletakkan dekorasi kenangan.</div>
           </div>
-          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 18 }}>📐</span>
-            <div><strong style={{ fontWeight: 600 }}>Snap Grid Presisi & Photo Mode:</strong> Aktifkan "Snap Grid" di header untuk menata objek kelipatan presisi, dan ambil foto HD tanpa elemen UI dengan klik tombol "Ambil Foto".</div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 16 }}>📐</span>
+            <div><strong style={{ fontWeight: 800 }}>Snap Grid & Foto Polaroid:</strong> Aktifkan "SNAP" di menu atas untuk merapikan posisi, dan gunakan tombol "FOTO" untuk mengabadikan sudut pulau terindah.</div>
           </div>
-          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 18 }}>🔄</span>
-            <div><strong style={{ fontWeight: 600 }}>Dynamic Transform Island:</strong> Klik objek yang ditaruh untuk memutar (-/+ 45°) atau mengatur skala dari kapsul atas.</div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 16 }}>🔄</span>
+            <div><strong style={{ fontWeight: 800 }}>Transform Toolbar:</strong> Klik objek di pulau untuk memutar, menggeser, atau menduplikasi objek.</div>
           </div>
-          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 18 }}>💡</span>
-            <div><strong style={{ fontWeight: 600 }}>PBR Materials & Dynamic Lighting:</strong> Saat mode Galaxy Malam, lampu taman dan api unggun memancarkan cahaya lokal dramatis ke sekitar objek!</div>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 16 }}>🌙</span>
+            <div><strong style={{ fontWeight: 800 }}>Siang & Malam Romantis:</strong> Ubah suasana dari siang yang cerah menjadi malam bertabur bintang dengan pencahayaan hangat.</div>
           </div>
         </div>
 
-        <button onClick={() => {
-          setShowTutorial(false);
-          StorageEngine.setOnboarded(true);
-          SoundEngine.playPop();
-        }} style={{
-          width: '100%', padding: '14px', borderRadius: 24,
-          background: isNight ? '#0A84FF' : '#007AFF',
-          border: 'none', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
-          boxShadow: isNight ? '0 8px 24px rgba(10, 132, 255, 0.45)' : '0 8px 24px rgba(0, 122, 255, 0.3)',
-          transition: 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
-        }}>
-          Mulai Membangun Dunia 🚀
+        <button 
+          onClick={() => {
+            setShowTutorial(false);
+            StorageEngine.setOnboarded(true);
+            SoundEngine.playPop();
+          }} 
+          style={{
+            width: '100%', 
+            padding: '12px',
+            backgroundColor: '#121212',
+            border: 'none', 
+            color: '#fff', 
+            fontSize: 12, 
+            fontWeight: 800, 
+            fontFamily: "'Montserrat', sans-serif",
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            boxShadow: '0 6px 18px rgba(0,0,0,0.4)',
+            clipPath: 'polygon(0% 2px, 2% 0%, 98% 0%, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
+            transition: 'background-color 0.2s',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
+        >
+          ✦ MULAI JELAJAHI PULAU KITA ✦
         </button>
       </div>
     </div>

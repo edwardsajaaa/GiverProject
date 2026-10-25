@@ -10,6 +10,7 @@ import { WorldStyleModal } from './components/ui/WorldStyleModal';
 import { GreetingModal } from './components/ui/GreetingModal';
 import { CanvasErrorBoundary } from './components/common/CanvasErrorBoundary';
 import { Loader } from '@react-three/drei';
+import { LoveCapsule } from './components/capsule/LoveCapsule';
 
 // Lazy load MainCanvas agar bundle awal (UI HTML) sangat ringan dan cepat dimuat
 const MainCanvas = React.lazy(() => import('./components/3d/MainCanvas').then(m => ({ default: m.MainCanvas })));
@@ -71,7 +72,8 @@ export default function App() {
   };
 
   return (
-    <div style={{
+    <LoveCapsule>
+      <div style={{
       width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Outfit", system-ui, sans-serif',
       background: isNight ? '#0A0A0A' : '#FAFAFA',
@@ -255,6 +257,7 @@ export default function App() {
         barStyles={{ height: '8px', background: '#38bdf8' }}
         dataStyles={{ color: isNight ? '#F5F5F7' : '#1D1D1F', fontSize: '14px', fontWeight: 700 }}
       />
-    </div>
+      </div>
+    </LoveCapsule>
   );
 }

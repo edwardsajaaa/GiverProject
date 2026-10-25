@@ -1,5 +1,6 @@
 import React from 'react';
 import { ITEM_DEFS } from '../objects/ItemDefs';
+import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
 export function TransformToolbar({
   isNight,
@@ -14,52 +15,61 @@ export function TransformToolbar({
   activePlacementType,
   setActivePlacementType
 }) {
+  const btnStyle = (active) => ({
+    padding: '4px 10px',
+    border: active ? '1px solid #121212' : 'none',
+    backgroundColor: active ? (isNight ? '#ffffff' : '#121212') : 'transparent',
+    color: active ? (isNight ? '#121212' : '#ffffff') : (isNight ? '#f5f5f5' : '#121212'),
+    cursor: 'pointer',
+    fontWeight: 800,
+    fontSize: '10px',
+    letterSpacing: '1px',
+    fontFamily: "'Montserrat', sans-serif",
+    transition: 'all 0.2s',
+    clipPath: active ? 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)' : 'none',
+  });
+
   return (
     <>
-      {/* 1. Apple Dynamic Island Transform Toolbar when an object is selected */}
+      {/* 1. Torn Paper Transform Toolbar when an object is selected */}
       {selectedId && (
         <div style={{
-          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px', borderRadius: 32,
-          background: isNight ? 'rgba(20, 20, 20, 0.45)' : 'rgba(255, 255, 255, 0.45)',
-          backdropFilter: 'blur(30px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-          boxShadow: isNight ? '0 10px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 10px 40px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
-          transition: 'all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)', pointerEvents: 'auto'
+          position: 'absolute', top: 78, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 6, padding: '6px 16px',
+          backgroundColor: isNight ? '#161616' : '#faf7f2',
+          border: '1.5px solid #121212',
+          clipPath: 'polygon(0% 2px, 2% 0px, 98% 0px, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
+          boxShadow: isNight ? '0 10px 30px rgba(0,0,0,0.6)' : '0 8px 24px rgba(74, 8, 18, 0.15)',
+          transition: 'all 0.4s ease', pointerEvents: 'auto'
         }}>
-          <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.5px', color: isNight ? '#A3A3A3' : '#525252' }}>SELECTED:</span>
+          <WashiTape top="-8px" left="20px" width="50px" rotate={-3} color="rgba(255, 235, 215, 0.85)" />
+
+          <span style={{ 
+            fontSize: 10, 
+            fontWeight: 800, 
+            letterSpacing: '1px', 
+            fontFamily: "'Montserrat', sans-serif",
+            color: '#a61324' 
+          }}>
+            ✦ SELECTED:
+          </span>
+
           <button 
             onClick={() => setTransformMode('translate')} 
             title="Geser (T)" 
-            style={{
-              padding: '4px 12px', borderRadius: 16, border: 'none', 
-              background: transformMode === 'translate' ? (isNight ? '#E5E5E5' : '#171717') : 'transparent', 
-              color: transformMode === 'translate' ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#E5E5E5' : '#171717'), 
-              cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
-            }}>
+            style={btnStyle(transformMode === 'translate')}>
             GESER
           </button>
           <button 
             onClick={() => setTransformMode('rotate')} 
             title="Putar (R)" 
-            style={{
-              padding: '4px 12px', borderRadius: 16, border: 'none', 
-              background: transformMode === 'rotate' ? (isNight ? '#E5E5E5' : '#171717') : 'transparent', 
-              color: transformMode === 'rotate' ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#E5E5E5' : '#171717'), 
-              cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
-            }}>
+            style={btnStyle(transformMode === 'rotate')}>
             PUTAR
           </button>
           <button 
             onClick={() => setTransformMode('scale')} 
             title="Skala (S)" 
-            style={{
-              padding: '4px 12px', borderRadius: 16, border: 'none', 
-              background: transformMode === 'scale' ? (isNight ? '#E5E5E5' : '#171717') : 'transparent', 
-              color: transformMode === 'scale' ? (isNight ? '#0A0A0A' : '#FAFAFA') : (isNight ? '#E5E5E5' : '#171717'), 
-              cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
-            }}>
+            style={btnStyle(transformMode === 'scale')}>
             SKALA
           </button>
 
@@ -67,10 +77,11 @@ export function TransformToolbar({
             onClick={handleDuplicateSelected} 
             title="Duplikasi Objek (D)" 
             style={{
-              padding: '4px 12px', borderRadius: 16, border: 'none', 
-              background: 'transparent', 
-              color: isNight ? '#38bdf8' : '#0284c7', 
-              cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
+              padding: '4px 10px', border: '1px dashed #121212',
+              backgroundColor: isNight ? '#262626' : '#fff',
+              color: isNight ? '#f5f5f5' : '#121212',
+              cursor: 'pointer', fontWeight: 800, fontSize: 10, letterSpacing: '1px',
+              fontFamily: "'Montserrat', sans-serif",
             }}>
             DUPLIKAT
           </button>
@@ -80,10 +91,11 @@ export function TransformToolbar({
             onChange={(e) => handleUpdateSelectedStyle && handleUpdateSelectedStyle(e.target.value)}
             title="Gaya Visual Objek"
             style={{
-              padding: '4px 8px', borderRadius: 12, border: 'none',
-              background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-              color: isNight ? '#E5E5E5' : '#171717',
-              cursor: 'pointer', fontWeight: 600, fontSize: 10, letterSpacing: '0.5px', outline: 'none'
+              padding: '4px 8px', border: '1px solid #121212',
+              backgroundColor: isNight ? '#262626' : '#fff',
+              color: isNight ? '#f5f5f5' : '#121212',
+              cursor: 'pointer', fontWeight: 700, fontSize: 9, letterSpacing: '0.5px', outline: 'none',
+              fontFamily: "'Montserrat', sans-serif",
             }}
           >
             <option value="auto" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>STYLE: AUTO</option>
@@ -94,49 +106,65 @@ export function TransformToolbar({
             <option value="pbr" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>REALISTIC PBR</option>
           </select>
           
-          <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', margin: '0 4px' }} />
+          <div style={{ width: 1, height: 16, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
           
-          <button onClick={handleDeleteSelected} title="Hapus Objek (Del)" style={{
-            padding: '4px 12px', borderRadius: 16, border: '1px solid rgba(239, 68, 68, 0.5)', background: 'transparent', color: '#ef4444', cursor: 'pointer', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px', transition: 'all 0.2s'
-          }}>DELETE</button>
+          <button 
+            onClick={handleDeleteSelected} 
+            title="Hapus Objek (Del)" 
+            style={{
+              padding: '4px 10px', border: '1.5px solid #121212',
+              backgroundColor: '#c8102e', color: '#fff',
+              cursor: 'pointer', fontWeight: 800, fontSize: 10, letterSpacing: '1px',
+              fontFamily: "'Montserrat', sans-serif",
+              clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+            }}
+          >
+            DELETE
+          </button>
         </div>
       )}
 
-      {/* 2. Dragging Drop Hint Banner */}
+      {/* 2. Dragging Drop Hint Banner (Torn Note) */}
       {draggingItem && (
         <div style={{
-          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 12, padding: '8px 20px', borderRadius: 12,
-          background: isNight ? 'rgba(20, 20, 20, 0.45)' : 'rgba(255, 255, 255, 0.45)',
-          color: isNight ? '#FFF' : '#171717', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px',
-          backdropFilter: 'blur(30px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-          boxShadow: isNight ? '0 10px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 10px 40px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
-          transition: 'all 0.4s ease'
+          position: 'absolute', top: 78, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 10, padding: '7px 18px',
+          backgroundColor: '#FAF7F2',
+          border: '1.5px solid #121212',
+          color: '#121212', fontWeight: 800, fontSize: 10, letterSpacing: '1px',
+          fontFamily: "'Montserrat', sans-serif",
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+          clipPath: 'polygon(0% 2px, 2% 0px, 98% 0px, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
         }}>
-          <span>RELEASE <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ON GROUND TO PLACE</span>
+          <BlackTape top="-8px" left="25px" width="50px" rotate={-3} />
+          <span>RELEASE <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ON ISLAND TO PLACE</span>
         </div>
       )}
 
-      {/* 3. Touch Tap-to-Place Banner */}
+      {/* 3. Touch Tap-to-Place Banner (Torn Note) */}
       {activePlacementType && !draggingItem && (
         <div style={{
-          position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
-          display: 'flex', alignItems: 'center', gap: 12, padding: '8px 20px', borderRadius: 12,
-          background: isNight ? 'rgba(20, 20, 20, 0.45)' : 'rgba(255, 255, 255, 0.45)',
-          color: isNight ? '#FFF' : '#171717', fontWeight: 600, fontSize: 11, letterSpacing: '0.5px',
-          backdropFilter: 'blur(30px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-          border: isNight ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-          boxShadow: isNight ? '0 10px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)' : '0 10px 40px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,1)',
-          transition: 'all 0.4s ease'
+          position: 'absolute', top: 78, left: '50%', transform: 'translateX(-50%)', zIndex: 20,
+          display: 'flex', alignItems: 'center', gap: 10, padding: '7px 18px',
+          backgroundColor: '#FAF7F2',
+          border: '1.5px solid #121212',
+          color: '#121212', fontWeight: 800, fontSize: 10, letterSpacing: '1px',
+          fontFamily: "'Montserrat', sans-serif",
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+          clipPath: 'polygon(0% 2px, 2% 0px, 98% 0px, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
         }}>
-          <span>TAP GROUND TO PLACE <strong>{ITEM_DEFS[activePlacementType]?.label}</strong></span>
-          <button onClick={() => setActivePlacementType(null)} style={{
-            background: 'rgba(255, 255, 255, 0.1)', border: 'none', borderRadius: 4,
-            color: '#fff', cursor: 'pointer', padding: '2px 8px', fontSize: 10, fontWeight: 600, letterSpacing: '0.5px'
-          }}>CANCEL</button>
+          <WashiTape top="-8px" left="25px" width="50px" rotate={2} color="rgba(255, 235, 215, 0.85)" />
+          <span>TAP ISLAND TO PLACE <strong>{ITEM_DEFS[activePlacementType]?.label}</strong></span>
+          <button 
+            onClick={() => setActivePlacementType(null)} 
+            style={{
+              background: '#121212', border: 'none',
+              color: '#fff', cursor: 'pointer', padding: '3px 8px', fontSize: 9, fontWeight: 800, letterSpacing: '1px',
+              fontFamily: "'Montserrat', sans-serif",
+            }}
+          >
+            CANCEL
+          </button>
         </div>
       )}
     </>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SoundEngine } from '../../utils/SoundEngine';
+import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
 export function GreetingModal({ isNight, pendingGreeting, setPendingGreeting, setPlacedObjects }) {
   const [senderName, setSenderName] = useState('');
@@ -33,79 +34,127 @@ export function GreetingModal({ isNight, pendingGreeting, setPendingGreeting, se
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 120,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(0, 0, 0, 0.4)', backdropFilter: 'blur(8px)',
+      background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)',
       animation: 'modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
     }}>
+      {/* Torn Paper Greeting Card Sheet */}
       <div style={{
-        background: isNight ? 'rgba(20, 24, 34, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        border: isNight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid rgba(0, 0, 0, 0.1)',
-        borderRadius: 24, padding: '24px', width: 'min(400px, 90vw)',
-        boxShadow: '0 24px 48px rgba(0,0,0,0.3)',
-        color: isNight ? '#F5F5F7' : '#1D1D1F'
+        position: 'relative',
+        backgroundColor: isNight ? '#161616' : '#FAF7F2',
+        border: '2px solid #121212',
+        padding: '28px 24px 24px 24px', width: 'min(420px, 90vw)',
+        boxShadow: '0 25px 60px rgba(0,0,0,0.8), 0 4px 10px rgba(0,0,0,0.4)',
+        color: isNight ? '#F5F5F7' : '#121212',
+        clipPath: 'polygon(0% 4px, 1.5% 0px, 98.5% 0px, 100% 4px, 99.5% 96%, 100% 100%, 0.5% 100%, 0% 96%)',
+        fontFamily: "'Cormorant Garamond', serif",
       }}>
-        <h2 style={{ marginTop: 0, fontSize: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <WashiTape top="-8px" left="25px" width="60px" rotate={-2} color="rgba(255, 235, 215, 0.85)" />
+        <BlackTape top="-6px" right="25px" width="55px" rotate={3} />
+
+        <h2 style={{ 
+          marginTop: 0, 
+          fontSize: 20, 
+          fontFamily: "'Playfair Display', serif",
+          fontWeight: 700, 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 8,
+          borderBottom: '1.5px solid #121212',
+          paddingBottom: '8px',
+        }}>
           <span>💌</span> Tulis Pesan untuk Kado
         </h2>
-        <p style={{ fontSize: 12, color: isNight ? '#94a3b8' : '#64748b', marginBottom: 20 }}>
-          Siapapun yang meng-klik barang ini nanti akan bisa melihat pesan manismu.
+        <p style={{ 
+          fontSize: 11, 
+          fontFamily: "'Montserrat', sans-serif",
+          color: isNight ? '#94a3b8' : '#64748b', 
+          marginBottom: 16 
+        }}>
+          Pesan manis ini akan tersimpan di dalam objek dan bisa dibaca saat diklik.
         </p>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, marginBottom: 6, color: isNight ? '#38bdf8' : '#007AFF' }}>NAMA PENGIRIM</label>
+            <label style={{ 
+              display: 'block', 
+              fontSize: 10, 
+              fontWeight: 800, 
+              fontFamily: "'Montserrat', sans-serif",
+              marginBottom: 4, 
+              letterSpacing: '1px',
+              color: '#a61324' 
+            }}>
+              NAMA PENGIRIM
+            </label>
             <input 
               autoFocus
               value={senderName}
               onChange={e => setSenderName(e.target.value)}
-              placeholder="Cth: Budi"
+              placeholder="Contoh: Dari Sayangku..."
               style={{
-                width: '100%', padding: '12px 14px', borderRadius: 12,
-                background: isNight ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                border: isNight ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
-                color: isNight ? '#FFF' : '#000', outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, marginBottom: 6, color: isNight ? '#38bdf8' : '#007AFF' }}>PESAN SINGKAT</label>
-            <textarea 
-              value={message}
-              onChange={e => setMessage(e.target.value)}
-              placeholder="Tulis ucapan selamat atau pesan manismu di sini..."
-              rows={3}
-              style={{
-                width: '100%', padding: '12px 14px', borderRadius: 12,
-                background: isNight ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                border: isNight ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
-                color: isNight ? '#FFF' : '#000', outline: 'none', resize: 'none',
-                boxSizing: 'border-box', fontFamily: 'inherit'
+                width: '100%', boxSizing: 'border-box', padding: '9px 12px',
+                border: '1.5px solid #121212',
+                backgroundColor: isNight ? '#222' : '#fff',
+                color: isNight ? '#fff' : '#000',
+                fontFamily: "'Montserrat', sans-serif", fontSize: 12, outline: 'none'
               }}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <div>
+            <label style={{ 
+              display: 'block', 
+              fontSize: 10, 
+              fontWeight: 800, 
+              fontFamily: "'Montserrat', sans-serif",
+              marginBottom: 4, 
+              letterSpacing: '1px',
+              color: '#a61324' 
+            }}>
+              ISI PESAN ROMANTIS
+            </label>
+            <textarea 
+              rows={3}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Tuliskan ucapan atau kenangan indah kalian di sini..."
+              style={{
+                width: '100%', boxSizing: 'border-box', padding: '9px 12px',
+                border: '1.5px solid #121212',
+                backgroundColor: isNight ? '#222' : '#fff',
+                color: isNight ? '#fff' : '#000',
+                fontFamily: "'Cormorant Garamond', serif", fontSize: 15, lineHeight: 1.4, outline: 'none',
+                resize: 'none'
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 4 }}>
             <button
               type="button"
               onClick={handleCancel}
               style={{
-                flex: 1, padding: '12px', borderRadius: 14, border: 'none',
-                background: isNight ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-                color: isNight ? '#FFF' : '#000', fontWeight: 700, cursor: 'pointer'
+                padding: '8px 14px', border: '1px solid #121212',
+                background: 'transparent',
+                color: isNight ? '#aaa' : '#555',
+                cursor: 'pointer', fontSize: 10, fontWeight: 800, letterSpacing: '1px',
+                fontFamily: "'Montserrat', sans-serif",
               }}
             >
-              Batal
+              BATAL
             </button>
             <button
               type="submit"
               style={{
-                flex: 2, padding: '12px', borderRadius: 14, border: 'none',
-                background: isNight ? '#38bdf8' : '#007AFF', color: '#FFF', 
-                fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(56,189,248,0.3)'
+                padding: '8px 16px', border: 'none',
+                backgroundColor: '#121212', color: '#fff',
+                cursor: 'pointer', fontSize: 10, fontWeight: 800, letterSpacing: '1px',
+                fontFamily: "'Montserrat', sans-serif",
+                clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+                boxShadow: '0 3px 8px rgba(0,0,0,0.3)',
               }}
             >
-              Kirim Kado 🎁
+              SIMPAN KADO ➔
             </button>
           </div>
         </form>
