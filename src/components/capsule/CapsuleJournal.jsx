@@ -238,14 +238,18 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           zIndex: 6,
         }} />
 
-        {/* Content depending on current page */}
-        <div style={{
-          width: '100%',
-          height: '100%',
-          animation: 'fadeInPage 0.35s ease-out forwards',
-          position: 'relative',
-          zIndex: 7,
-        }}>
+        {/* Content depending on current page with smooth 3D Book Paper Flip Animation */}
+        <div 
+          key={page}
+          style={{
+            width: '100%',
+            height: '100%',
+            animation: 'paperPageFlip 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            position: 'relative',
+            zIndex: 7,
+            transformOrigin: 'left center',
+          }}
+        >
           {page === 1 && (
             <PhotoGalleryPage
               onNext={() => goToPage(2)}
@@ -279,14 +283,19 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
       />
 
       <style>{`
-        @keyframes fadeInPage {
-          from {
+        @keyframes paperPageFlip {
+          0% {
             opacity: 0;
-            transform: scale(0.98) translateY(6px);
+            transform: perspective(1000px) rotateY(-5deg) translateX(12px) scale(0.985);
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.2));
           }
-          to {
+          65% {
+            transform: perspective(1000px) rotateY(1deg) translateX(-2px) scale(1.002);
+          }
+          100% {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: perspective(1000px) rotateY(0deg) translateX(0) scale(1);
+            filter: none;
           }
         }
 
