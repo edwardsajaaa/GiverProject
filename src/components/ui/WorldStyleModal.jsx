@@ -5,37 +5,31 @@ import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
 // Curated SVG Vector Emblems for Biomes & Art Styles (No Emojis)
 const BiomeIcons = {
-  floating_island: (
+  paris_romantique: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 13c3-1 6-1 9 1 3 2 6 2 9 0" />
-      <path d="M4 14l2 6h12l2-6" />
-      <path d="M12 3v5M10 6l2-2 2 2" />
+      <path d="M12 2v4M10 6h4M9 10h6M7 16h10M6 22l4-12M18 22l-4-12M9 22a3 3 0 0 1 6 0" />
+      <path d="M12 3c-1.5-1.5-3.5 0-2 2 1.5 2 2 2 2 2s.5 0 2-2c1.5-2-.5-3.5-2-2z" fill="#e11d48" stroke="none" />
     </svg>
   ),
-  cyber_city: (
+  kyoto_blossom: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="10" width="6" height="11" />
-      <rect x="9" y="4" width="7" height="17" />
-      <rect x="16" y="8" width="5" height="13" />
-      <line x1="12" y1="7" x2="13" y2="7" />
-      <line x1="12" y1="10" x2="13" y2="10" />
-    </svg>
-  ),
-  mountain_summit: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="3 20 10 7 14 13 17 9 22 20 3 20" />
-      <polyline points="7.5 13 10 13 11.5 15" />
-    </svg>
-  ),
-  fantasy_realm: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="12 2 17 8 12 22 7 8 12 2" />
-      <line x1="7" y1="8" x2="17" y2="8" />
-    </svg>
-  ),
-  zen_garden: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
       <path d="M3 6h18M5 6v14M19 6v14M2 10h20M9 6v14M15 6v14" />
+      <circle cx="12" cy="14" r="2.5" fill="#f472b6" stroke="none" />
+    </svg>
+  ),
+  london_romance: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="7" y="10" width="10" height="12" />
+      <path d="M12 2l4 8H8l4-8z" />
+      <circle cx="12" cy="15" r="2.5" />
+      <polyline points="12 13.5 12 15 13.5 15" />
+    </svg>
+  ),
+  venice_serenade: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 17c3-2 6-2 9 0s6 2 9 0" />
+      <path d="M3 15c4 2 14 2 18-2-2 4-10 5-18 2z" fill="currentColor" opacity="0.3" />
+      <path d="M18 10l-4 6M19 8c1 0 2 1 2 2" />
     </svg>
   )
 };

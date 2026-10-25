@@ -1,27 +1,25 @@
 import React from 'react';
-import { FloatingIsland } from '../FloatingIsland';
-import { CyberCityBiome } from './CyberCityBiome';
-import { MountainBiome } from './MountainBiome';
-import { FantasyBiome } from './FantasyBiome';
-import { ZenBiome } from './ZenBiome';
+import { ParisBiome } from './ParisBiome';
+import { KyotoBiome } from './KyotoBiome';
+import { LondonBiome } from './LondonBiome';
+import { VeniceBiome } from './VeniceBiome';
 
 export function WorldEnvironment({
-  biome = 'floating_island',
+  biome = 'paris_romantique',
   artStyle = 'lowpoly',
   timeMode = 'night',
   onGroundTap
 }) {
   switch (biome) {
-    case 'cyber_city':
-      return <CyberCityBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
-    case 'mountain_summit':
-      return <MountainBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
-    case 'fantasy_realm':
-      return <FantasyBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
+    case 'kyoto_blossom':
     case 'zen_garden':
-      return <ZenBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
-    case 'floating_island':
+      return <KyotoBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
+    case 'london_romance':
+      return <LondonBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
+    case 'venice_serenade':
+      return <VeniceBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
+    case 'paris_romantique':
     default:
-      return <FloatingIsland timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
+      return <ParisBiome timeMode={timeMode} onGroundTap={onGroundTap} artStyle={artStyle} />;
   }
 }

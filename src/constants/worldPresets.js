@@ -1,38 +1,31 @@
 export const BIOMES = [
   {
-    id: 'floating_island',
-    name: 'Pulau Melayang',
-    badge: 'Cosmic Sky',
-    icon: 'island',
-    desc: 'Pulau bebatuan melayang di angkasa kosmik dengan danau kristal di puncaknya.'
+    id: 'paris_romantique',
+    name: 'Paris Romantique',
+    badge: 'City of Love',
+    icon: 'paris',
+    desc: 'Pesona malam romantis Paris dengan siluet Menara Eiffel, dermaga Sungai Seine, jembatan Pont des Arts, dan kafe trotoar mawar.'
   },
   {
-    id: 'cyber_city',
-    name: 'Kota Cyberpunk',
-    badge: 'High-Tech Rooftop',
-    icon: 'city',
-    desc: 'Plaza atap masa depan berpagar neon dengan panorama gedung pencakar langit berlampu.'
+    id: 'kyoto_blossom',
+    name: 'Kyoto Sakura',
+    badge: 'Spring in Japan',
+    icon: 'kyoto',
+    desc: 'Lanskap romantis Jepang berlatar Gunung Fuji, kelopak sakura berguguran, jembatan lengkung Taiko-bashi, dan lentera kertas terapung.'
   },
   {
-    id: 'mountain_summit',
-    name: 'Puncak Gunung',
-    badge: 'Alpine Snow Ridge',
-    icon: 'mountain',
-    desc: 'Puncak bebatuan bersalju sejuk yang berdiri gagah di atas hamparan lautan awan.'
+    id: 'london_romance',
+    name: 'London Autumn',
+    badge: 'Westminster Love',
+    icon: 'london',
+    desc: 'Senja romantis London berlatar Big Ben, pagar Sungai Thames berlampu gas antik, kotak telepon merah, dan pohon maple emas berguguran.'
   },
   {
-    id: 'fantasy_realm',
-    name: 'Alam Fantasi',
-    badge: 'Mystic Crystals',
-    icon: 'fantasy',
-    desc: 'Dunia mistis bertabur kristal mengorbit, rune sihir menyala, dan kolam violet bercahaya.'
-  },
-  {
-    id: 'zen_garden',
-    name: 'Taman Zen',
-    badge: 'Japanese Garden',
-    icon: 'zen',
-    desc: 'Taman batu & pasir bergelombang yang tenang dengan pembatas kayu jati dan lentera batu.'
+    id: 'venice_serenade',
+    name: 'Venezia Serenade',
+    badge: 'Italian Romance',
+    icon: 'venice',
+    desc: 'Kanal romantis Venesia dengan perahu gondola kayu, jembatan marmer klasik bergaya Rialto, dan pantulan cahaya lentera di atas air.'
   }
 ];
 

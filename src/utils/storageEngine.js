@@ -9,9 +9,9 @@ export const StorageEngine = {
   loadWorldConfig() {
     try {
       const saved = localStorage.getItem(WORLD_CONFIG_KEY);
-      return saved ? JSON.parse(saved) : { biome: 'floating_island', artStyle: 'lowpoly' };
+      return saved ? JSON.parse(saved) : { biome: 'paris_romantique', artStyle: 'lowpoly' };
     } catch {
-      return { biome: 'floating_island', artStyle: 'lowpoly' };
+      return { biome: 'paris_romantique', artStyle: 'lowpoly' };
     }
   },
 

@@ -26,7 +26,13 @@ export function useSandboxState() {
 
   // World Biome & Art Style Customization State
   const [initialWorld] = useState(() => StorageEngine.loadWorldConfig());
-  const [biome, setBiome] = useState(initialWorld.biome || 'floating_island');
+  const [biome, setBiome] = useState(() => {
+    const validBiomes = ['paris_romantique', 'kyoto_blossom', 'london_romance', 'venice_serenade'];
+    if (initialWorld && validBiomes.includes(initialWorld.biome)) {
+      return initialWorld.biome;
+    }
+    return 'paris_romantique';
+  });
   const [artStyle, setArtStyle] = useState(initialWorld.artStyle || 'lowpoly');
   const [worldModalOpen, setWorldModalOpen] = useState(false);
 

@@ -43,7 +43,7 @@ export function MainCanvas({
   centralObjectUrl = null,
   centralObjectName = null,
   setCentralModalOpen,
-  biome = 'floating_island',
+  biome = 'paris_romantique',
   artStyle = 'lowpoly'
 }) {
   return (
