@@ -57,16 +57,6 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
           <span>TRUE LOVE</span>
         </TornScrap>
 
-        <span style={{
-          textTransform: 'none',
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: '16px',
-          fontStyle: 'italic',
-          letterSpacing: '0.5px',
-        }}>
-          words that stay forever
-        </span>
-
         <TornScrap rotate={1} style={{ padding: '3px 10px', backgroundColor: '#fffdfa' }}>
           <span>OUR MEMORIES</span>
         </TornScrap>

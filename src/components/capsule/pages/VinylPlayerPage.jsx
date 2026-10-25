@@ -249,40 +249,6 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             Songs that remind me of you...
           </span>
         </div>
-
-        {/* Master Turntable Status Stamp */}
-        <div 
-          className="vinyl-status-stamp"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: isPlaying ? '#a61324' : '#121212',
-            color: '#fff',
-            padding: '5px 12px',
-            clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
-            boxShadow: '0 3px 10px rgba(0,0,0,0.3)',
-            transition: 'background-color 0.3s ease',
-          }}
-        >
-          <span style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: isPlaying ? '#4ade80' : '#888',
-            display: 'inline-block',
-            boxShadow: isPlaying ? '0 0 8px #4ade80' : 'none',
-          }} />
-          <span style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '10px',
-            fontWeight: 700,
-            letterSpacing: '1.5px',
-            textTransform: 'uppercase',
-          }}>
-            {isPlaying ? `NOW SPINNING: ${activeTrack.title}` : 'TURNTABLE IDLE'}
-          </span>
-        </div>
       </div>
 
       {/* Main Turntable Stage (Left: Realistic Turntable, Right: Current Lyric Scrap) */}
@@ -770,13 +736,6 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           }}>
             ✦ YOUR VINYL CRATE (6 EXCLUSIVE ALBUMS — DRAG & DROP OR CLICK)
           </span>
-          <span style={{
-            fontSize: '10px',
-            fontFamily: "'Montserrat', sans-serif",
-            color: '#666',
-          }}>
-            Drag any vinyl onto the turntable or click to play ♫
-          </span>
         </div>
 
         {/* 6 Album Jackets in a row on desktop, 3 columns on mobile */}
@@ -925,51 +884,6 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         </div>
       </div>
 
-      {/* Surprise Gate Banner as Torn Kraft Paper Keepsake Ticket */}
-      <div 
-        className="vinyl-3d-banner"
-        style={{
-          position: 'relative',
-          backgroundColor: '#f4ebd9',
-          border: '1px dashed #121212',
-          padding: '8px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          clipPath: 'polygon(0% 4px, 2% 0px, 98% 0px, 100% 4px, 99% 96%, 100% 100%, 2% 100%, 0% 96%)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          transform: 'rotate(-0.2deg)',
-        }}
-      >
-        <div style={{ textAlign: 'left' }}>
-          <span style={{
-            fontSize: '11px',
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 800,
-            color: '#121212',
-            letterSpacing: '1px',
-            display: 'block',
-          }}>
-            ✦ A SURPRISE AWAITS IN OUR SHARED UNIVERSE ✦
-          </span>
-          <span style={{
-            fontSize: '13px',
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: 'italic',
-            color: '#444',
-          }}>
-            Enter our private 3D floating island with our memories and secret diorama.
-          </span>
-        </div>
-
-        <EditorialButton
-          variant="black"
-          onClick={onEnter3DWorld}
-          arrow
-        >
-          ENTER 3D WORLD
-        </EditorialButton>
-      </div>
 
       {/* Footer Navigation Bar */}
       <div 
@@ -1024,18 +938,19 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           </span>
         </div>
 
-        {/* Right: Sound FX status */}
+        {/* Right: Enter 3D World */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          fontSize: '10px',
-          fontFamily: "'Montserrat', sans-serif",
-          fontWeight: 700,
-          color: isPlaying ? '#a61324' : '#666',
-          letterSpacing: '1px',
+          gap: '8px',
         }}>
-          <span>{isPlaying ? '♫ HI-FI PLAYING' : 'AUDIO READY'}</span>
+          <EditorialButton
+            variant="black"
+            onClick={onEnter3DWorld}
+            style={{ padding: '5px 12px', fontSize: '10px' }}
+          >
+            ENTER 3D WORLD →
+          </EditorialButton>
         </div>
       </div>
 
