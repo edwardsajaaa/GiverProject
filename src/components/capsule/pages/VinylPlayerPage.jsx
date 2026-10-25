@@ -108,6 +108,8 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInserting, setIsInserting] = useState(false);
   const [isEjecting, setIsEjecting] = useState(false);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [draggedTrackId, setDraggedTrackId] = useState(null);
 
   const activeTrack = VINYL_COLLECTION.find((t) => t.id === loadedTrackId) || VINYL_COLLECTION[0];
 
@@ -248,21 +250,45 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         alignItems: 'center',
         margin: '10px 0',
       }}>
-        {/* The Single Dedicated Turntable Player Chassis */}
-        <div style={{
-          position: 'relative',
-          backgroundColor: '#1c1c1e',
-          borderRadius: '4px',
-          padding: '18px 22px',
-          boxShadow: '0 16px 36px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2)',
-          border: '1.5px solid #2a2a2c',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '220px',
-          justifyContent: 'center',
-          backgroundImage: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%)',
-        }}>
+        {/* The Single Dedicated Turntable Player Chassis with Drag & Drop Zone */}
+        <div 
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            if (!isDraggingOver) setIsDraggingOver(true);
+          }}
+          onDragLeave={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+              setIsDraggingOver(false);
+            }
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDraggingOver(false);
+            const data = e.dataTransfer.getData('text/plain');
+            const trackId = parseInt(data, 10) || draggedTrackId;
+            if (trackId) {
+              handlePlugTrack(trackId);
+            }
+          }}
+          style={{
+            position: 'relative',
+            backgroundColor: '#1c1c1e',
+            borderRadius: '4px',
+            padding: '18px 22px',
+            boxShadow: isDraggingOver
+              ? '0 0 35px rgba(200, 16, 46, 0.6), 0 16px 36px rgba(0,0,0,0.5)'
+              : '0 16px 36px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2)',
+            border: isDraggingOver ? '2px dashed #a61324' : '1.5px solid #2a2a2c',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            minHeight: '220px',
+            justifyContent: 'center',
+            backgroundImage: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.06) 0%, transparent 60%)',
+            transition: 'border 0.25s ease, box-shadow 0.25s ease',
+          }}
+        >
           {/* Wood Veneer Trim Edge on Bottom */}
           <div style={{
             position: 'absolute',
@@ -298,6 +324,31 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
               boxShadow: '0 0 4px #fff',
               zIndex: 15,
             }} />
+
+            {/* Drop Zone Glow Indicator when dragging a vinyl over turntable */}
+            {isDraggingOver && (
+              <div style={{
+                position: 'absolute',
+                inset: -4,
+                borderRadius: '50%',
+                backgroundColor: 'rgba(166, 19, 36, 0.88)',
+                border: '2px dashed #ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 35,
+                color: '#fff',
+                boxShadow: '0 0 28px #c8102e',
+                animation: 'pulse 0.8s infinite alternate',
+                pointerEvents: 'none',
+              }}>
+                <span style={{ fontSize: '24px', lineHeight: 1 }}>⬇</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, fontFamily: "'Montserrat', sans-serif", letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>
+                  DROP VINYL HERE
+                </span>
+              </div>
+            )}
 
             {/* The Vinyl Disc on the Platter with Motion Animations */}
             <div
@@ -601,14 +652,14 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             textTransform: 'uppercase',
             color: '#121212',
           }}>
-            ✦ YOUR VINYL CRATE (6 EXCLUSIVE ALBUMS — CLICK TO PLUG IN)
+            ✦ YOUR VINYL CRATE (6 EXCLUSIVE ALBUMS — DRAG & DROP OR CLICK)
           </span>
           <span style={{
             fontSize: '10px',
             fontFamily: "'Montserrat', sans-serif",
             color: '#666',
           }}>
-            Click an album to drop vinyl into player ♫
+            Drag any vinyl onto the turntable or click to play ♫
           </span>
         </div>
 
@@ -620,25 +671,38 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         }}>
           {VINYL_COLLECTION.map((item) => {
             const isLoaded = loadedTrackId === item.id;
+            const isBeingDragged = draggedTrackId === item.id;
 
             return (
               <div
                 key={item.id}
+                draggable={true}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData('text/plain', item.id.toString());
+                  e.dataTransfer.effectAllowed = 'copy';
+                  setDraggedTrackId(item.id);
+                }}
+                onDragEnd={() => {
+                  setDraggedTrackId(null);
+                  setIsDraggingOver(false);
+                }}
                 onClick={() => handlePlugTrack(item.id)}
                 style={{
                   position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  cursor: 'pointer',
+                  cursor: 'grab',
+                  opacity: isBeingDragged ? 0.45 : 1,
                   transform: isLoaded ? 'scale(1.04) translateY(-3px)' : 'scale(1)',
                   transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  userSelect: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  if (!isLoaded) e.currentTarget.style.transform = 'translateY(-4px) scale(1.03)';
+                  if (!isLoaded && !isBeingDragged) e.currentTarget.style.transform = 'translateY(-4px) scale(1.03)';
                 }}
                 onMouseLeave={(e) => {
-                  if (!isLoaded) e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  if (!isLoaded && !isBeingDragged) e.currentTarget.style.transform = 'translateY(0) scale(1)';
                 }}
               >
                 {/* Album Cover Sleeve with Sliding Vinyl Peak Effect */}
