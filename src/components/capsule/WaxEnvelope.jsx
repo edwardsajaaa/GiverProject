@@ -110,26 +110,12 @@ export function WaxEnvelope({ onOpen }) {
           boxSizing: 'border-box',
         }}
       >
-        {/* Dynamic Island Notch Accent (Desktop Preview only) */}
-        <div 
-          className="envelope-dynamic-island"
-          style={{
-            position: 'absolute',
-            top: '14px',
-            width: '90px',
-            height: '22px',
-            backgroundColor: '#000',
-            borderRadius: '20px',
-            zIndex: 10,
-          }} 
-        />
-
         {/* Intro Top Title */}
         <div 
           className="envelope-title-section"
           style={{
             textAlign: 'center',
-            marginTop: '36px',
+            marginTop: '16px',
             marginBottom: 'auto',
             zIndex: 5,
             padding: '0 10px',
@@ -498,11 +484,8 @@ export function WaxEnvelope({ onOpen }) {
             padding: 20px 16px !important;
             box-shadow: none !important;
           }
-          .envelope-dynamic-island {
-            display: none !important;
-          }
           .envelope-title-section {
-            margin-top: 18px !important;
+            margin-top: 14px !important;
           }
           .wax-envelope-body {
             transform: scale(0.95);
