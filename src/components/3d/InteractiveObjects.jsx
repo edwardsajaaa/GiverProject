@@ -3,524 +3,378 @@ import { useFrame } from '@react-three/fiber';
 import { TransformControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 
+// ============================================================================
+// 1. FLOWER 3D - Handcrafted Origami Blossom with Gold Stamen
+// ============================================================================
 export function Flower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const groupRef = useRef();
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.5 + position[0]) * 0.05;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.6 + position[0]) * 0.05;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.8 + position[2]) * 0.08;
     }
   });
 
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.4, 0]} castShadow>
-          <boxGeometry args={[0.08, 0.8, 0.08]} />
-          <meshStandardMaterial color="#22c55e" flatShading />
-        </mesh>
-        <mesh position={[0.12, 0.35, 0]} castShadow>
-          <boxGeometry args={[0.16, 0.08, 0.08]} />
-          <meshStandardMaterial color="#16a34a" flatShading />
-        </mesh>
-        <mesh position={[0, 0.85, 0]} castShadow>
-          <boxGeometry args={[0.2, 0.2, 0.2]} />
-          <meshStandardMaterial color="#facc15" flatShading />
-        </mesh>
-        <mesh position={[0.2, 0.85, 0]} castShadow>
-          <boxGeometry args={[0.16, 0.16, 0.16]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-        <mesh position={[-0.2, 0.85, 0]} castShadow>
-          <boxGeometry args={[0.16, 0.16, 0.16]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-        <mesh position={[0, 1.05, 0]} castShadow>
-          <boxGeometry args={[0.16, 0.16, 0.16]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-        <mesh position={[0, 0.65, 0]} castShadow>
-          <boxGeometry args={[0.16, 0.16, 0.16]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.45, 0]}>
-          <cylinderGeometry args={[0.03, 0.05, 0.9, 8]} />
-          <meshStandardMaterial color="#0f172a" metalness={0.9} roughness={0.2} />
-        </mesh>
-        <mesh position={[0, 0.95, 0]}>
-          <octahedronGeometry args={[0.18, 0]} />
-          <meshStandardMaterial color="#f43f5e" emissive="#f43f5e" emissiveIntensity={2.5} />
-        </mesh>
-        {Array.from({ length: 6 }).map((_, i) => {
-          const a = (i / 6) * Math.PI * 2;
-          return (
-            <mesh key={i} position={[Math.cos(a) * 0.24, 0.95, Math.sin(a) * 0.24]} rotation={[0.4, -a, 0.2]}>
-              <coneGeometry args={[0.12, 0.35, 4]} />
-              <meshStandardMaterial color="#00f0ff" wireframe emissive="#00f0ff" emissiveIntensity={1.8} />
-            </mesh>
-          );
-        })}
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.45, 0]} castShadow>
-          <cylinderGeometry args={[0.04, 0.06, 0.9, 16]} />
-          <meshStandardMaterial color="#4ade80" roughness={0.3} />
-        </mesh>
-        <group position={[0, 0.95, 0]}>
-          <mesh castShadow>
-            <sphereGeometry args={[0.2, 16, 16]} />
-            <meshStandardMaterial color="#fef08a" roughness={0.2} emissive="#facc15" emissiveIntensity={0.4} />
-          </mesh>
-          {Array.from({ length: 5 }).map((_, i) => {
-            const a = (i / 5) * Math.PI * 2;
-            return (
-              <mesh key={i} position={[Math.cos(a) * 0.25, 0, Math.sin(a) * 0.25]} rotation={[0.2, -a, 0]}>
-                <sphereGeometry args={[0.18, 14, 14]} />
-                <meshStandardMaterial color="#f472b6" roughness={0.3} emissive="#db2777" emissiveIntensity={0.2} />
-              </mesh>
-            );
-          })}
-        </group>
-      </group>
-    );
-  }
-
   return (
     <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <cylinderGeometry args={[0.04, 0.06, 1, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#2d8a4e" roughness={0.7} flatShading={isFlat} />
+      {/* Kraft Paper Stem */}
+      <mesh position={[0, 0.45, 0]} castShadow>
+        <cylinderGeometry args={[0.035, 0.05, 0.9, 6]} />
+        <meshStandardMaterial color="#2d6a4f" roughness={0.7} flatShading />
       </mesh>
-      <group position={[0, 1.05, 0]}>
+
+      {/* Folded Paper Leaf Wings */}
+      <mesh position={[0.1, 0.35, 0]} rotation={[0, 0, -0.6]} castShadow>
+        <coneGeometry args={[0.1, 0.28, 3]} />
+        <meshStandardMaterial color="#40916c" roughness={0.6} flatShading />
+      </mesh>
+      <mesh position={[-0.1, 0.48, 0]} rotation={[0, 0, 0.6]} castShadow>
+        <coneGeometry args={[0.09, 0.25, 3]} />
+        <meshStandardMaterial color="#52b788" roughness={0.6} flatShading />
+      </mesh>
+
+      {/* Origami Blossom Head (Multi-Tier Petal Rose) */}
+      <group position={[0, 0.92, 0]}>
+        {/* Core Gilded Stamen */}
         <mesh castShadow>
-          <sphereGeometry args={[0.18, isFlat ? 8 : 16, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#ffd700" roughness={0.4} flatShading={isFlat} />
+          <sphereGeometry args={[0.12, 8, 8]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
         </mesh>
-        {Array.from({ length: 6 }).map((_, idx) => {
-          const angle = (idx / 6) * Math.PI * 2;
-          const px = Math.cos(angle) * 0.22;
-          const pz = Math.sin(angle) * 0.22;
+
+        {/* Inner Petal Tier */}
+        {Array.from({ length: 5 }).map((_, i) => {
+          const a = (i / 5) * Math.PI * 2;
           return (
-            <mesh key={idx} position={[px, -0.02, pz]} rotation={[0.2 * Math.cos(angle), -angle, 0.2 * Math.sin(angle)]} castShadow>
-              <sphereGeometry args={[0.15, isFlat ? 6 : 14, isFlat ? 6 : 14]} />
-              <meshStandardMaterial color="#ff6b9d" roughness={0.5} flatShading={isFlat} />
+            <mesh
+              key={`in-${i}`}
+              position={[Math.cos(a) * 0.14, 0.02, Math.sin(a) * 0.14]}
+              rotation={[0.3, -a, 0]}
+              castShadow
+            >
+              <coneGeometry args={[0.12, 0.26, 3]} />
+              <meshStandardMaterial color="#f472b6" roughness={0.4} flatShading />
             </mesh>
           );
         })}
+
+        {/* Outer Flared Petal Tier */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const a = (i / 6) * Math.PI * 2 + 0.3;
+          return (
+            <mesh
+              key={`out-${i}`}
+              position={[Math.cos(a) * 0.24, -0.04, Math.sin(a) * 0.24]}
+              rotation={[0.6, -a, 0]}
+              castShadow
+            >
+              <coneGeometry args={[0.15, 0.32, 3]} />
+              <meshStandardMaterial color="#fda4af" roughness={0.45} flatShading />
+            </mesh>
+          );
+        })}
+
+        {/* Delicate Gold Rim Highlight */}
+        <mesh position={[0, -0.06, 0]}>
+          <ringGeometry args={[0.26, 0.29, 12]} rotation={[Math.PI / 2, 0, 0]} />
+          <meshBasicMaterial color="#d4af37" side={THREE.DoubleSide} />
+        </mesh>
       </group>
     </group>
   );
 }
 
+// ============================================================================
+// 2. TREE 3D - Handcrafted Papercraft Bonsai with Gold Leaf Contours
+// ============================================================================
 export function Tree3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const groupRef = useRef();
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.8 + position[0]) * 0.025;
+      groupRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.9 + position[0]) * 0.02;
     }
   });
 
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.6, 0]} castShadow>
-          <boxGeometry args={[0.28, 1.2, 0.28]} />
-          <meshStandardMaterial color="#78350f" flatShading />
-        </mesh>
-        <mesh position={[0, 1.3, 0]} castShadow>
-          <boxGeometry args={[1.3, 0.45, 1.3]} />
-          <meshStandardMaterial color="#15803d" flatShading />
-        </mesh>
-        <mesh position={[0, 1.7, 0]} castShadow>
-          <boxGeometry args={[0.95, 0.45, 0.95]} />
-          <meshStandardMaterial color="#16a34a" flatShading />
-        </mesh>
-        <mesh position={[0, 2.1, 0]} castShadow>
-          <boxGeometry args={[0.6, 0.45, 0.6]} />
-          <meshStandardMaterial color="#22c55e" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.6, 0]} castShadow>
-          <cylinderGeometry args={[0.08, 0.16, 1.2, 6]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.2} />
-        </mesh>
-        <mesh position={[0, 1.3, 0]} castShadow>
-          <coneGeometry args={[0.9, 0.9, 6]} />
-          <meshStandardMaterial color="#bd00ff" wireframe emissive="#bd00ff" emissiveIntensity={1.5} />
-        </mesh>
-        <mesh position={[0, 1.75, 0]} castShadow>
-          <coneGeometry args={[0.7, 0.8, 6]} />
-          <meshStandardMaterial color="#00f0ff" wireframe emissive="#00f0ff" emissiveIntensity={1.8} />
-        </mesh>
-        <mesh position={[0, 2.15, 0]} castShadow>
-          <coneGeometry args={[0.5, 0.7, 6]} />
-          <meshStandardMaterial color="#ff007f" wireframe emissive="#ff007f" emissiveIntensity={2.0} />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.65, 0]} rotation={[0.08, 0, -0.05]} castShadow>
-          <cylinderGeometry args={[0.12, 0.22, 1.3, 16]} />
-          <meshStandardMaterial color="#92400e" roughness={0.6} />
-        </mesh>
-        <group position={[0, 1.6, 0]}>
-          <mesh position={[0, 0.2, 0]} castShadow>
-            <sphereGeometry args={[0.75, 16, 16]} />
-            <meshStandardMaterial color="#f472b6" roughness={0.3} emissive="#db2777" emissiveIntensity={0.2} />
-          </mesh>
-          <mesh position={[0.4, 0.5, 0.2]} castShadow>
-            <sphereGeometry args={[0.55, 14, 14]} />
-            <meshStandardMaterial color="#fbcfe8" roughness={0.3} />
-          </mesh>
-          <mesh position={[-0.35, 0.45, -0.2]} castShadow>
-            <sphereGeometry args={[0.5, 14, 14]} />
-            <meshStandardMaterial color="#f472b6" roughness={0.3} />
-          </mesh>
-          <mesh position={[0, 0.85, 0]} castShadow>
-            <sphereGeometry args={[0.48, 14, 14]} />
-            <meshStandardMaterial color="#fda4af" roughness={0.3} />
-          </mesh>
-        </group>
-      </group>
-    );
-  }
-
   return (
     <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.6, 0]} castShadow>
-        <cylinderGeometry args={[0.12, 0.2, 1.2, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#8B5E3C" roughness={0.8} flatShading={isFlat} />
+      {/* Carved Natural Cedar Trunk with Branch Knots */}
+      <mesh position={[0, 0.65, 0]} rotation={[0.06, 0, -0.04]} castShadow>
+        <cylinderGeometry args={[0.13, 0.24, 1.3, 7]} />
+        <meshStandardMaterial color="#4a2e18" roughness={0.85} flatShading />
       </mesh>
-      <group position={[0, 1.6, 0]}>
-        <mesh position={[0, 0.8, 0]} castShadow>
-          <coneGeometry args={[0.65, 1.1, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#4caf50" roughness={0.6} flatShading={isFlat} />
+      {/* Branch Left */}
+      <mesh position={[-0.25, 1.25, 0.1]} rotation={[0.4, 0, 0.6]} castShadow>
+        <cylinderGeometry args={[0.08, 0.12, 0.7, 5]} />
+        <meshStandardMaterial color="#4a2e18" roughness={0.85} flatShading />
+      </mesh>
+      {/* Branch Right */}
+      <mesh position={[0.3, 1.3, -0.1]} rotation={[-0.3, 0.2, -0.65]} castShadow>
+        <cylinderGeometry args={[0.08, 0.12, 0.75, 5]} />
+        <meshStandardMaterial color="#4a2e18" roughness={0.85} flatShading />
+      </mesh>
+
+      {/* Layered Papercraft Canopy Clouds */}
+      <group position={[0, 1.65, 0]}>
+        {/* Main Central Crown */}
+        <mesh position={[0, 0.45, 0]} castShadow>
+          <dodecahedronGeometry args={[0.75, 1]} />
+          <meshStandardMaterial color="#2d6a4f" roughness={0.65} flatShading />
         </mesh>
-        <mesh position={[0, 0.35, 0]} castShadow>
-          <coneGeometry args={[0.9, 1.2, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#388e3c" roughness={0.6} flatShading={isFlat} />
+        {/* Left Foliage Tier */}
+        <mesh position={[-0.6, 0.2, 0.15]} castShadow>
+          <dodecahedronGeometry args={[0.55, 1]} />
+          <meshStandardMaterial color="#40916c" roughness={0.65} flatShading />
         </mesh>
-        <mesh position={[0, -0.15, 0]} castShadow>
-          <coneGeometry args={[1.15, 1.3, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#2e7d32" roughness={0.6} flatShading={isFlat} />
+        {/* Right Foliage Tier */}
+        <mesh position={[0.65, 0.25, -0.1]} castShadow>
+          <dodecahedronGeometry args={[0.58, 1]} />
+          <meshStandardMaterial color="#52b788" roughness={0.65} flatShading />
+        </mesh>
+        {/* Top Canopy Peak with Gold Leaf Accent */}
+        <mesh position={[0, 1.05, 0]} castShadow>
+          <dodecahedronGeometry args={[0.42, 1]} />
+          <meshStandardMaterial color="#74c69d" roughness={0.6} flatShading />
+        </mesh>
+        {/* Subtle Gold Dust Contour on Tree Crown */}
+        <mesh position={[0, 1.35, 0]}>
+          <octahedronGeometry args={[0.14, 0]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
         </mesh>
       </group>
+
+      {/* Base Moss Pad */}
+      <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.65, 10]} />
+        <meshStandardMaterial color="#1b4332" roughness={0.9} />
+      </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// 3. ROCK 3D - Japanese Kintsugi Garden Stone with Gold Veins
+// ============================================================================
 export function Rock3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.25, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.7, 0.5, 0.7]} />
-          <meshStandardMaterial color="#64748b" flatShading />
-        </mesh>
-        <mesh position={[-0.2, 0.55, 0.1]} castShadow receiveShadow>
-          <boxGeometry args={[0.45, 0.35, 0.45]} />
-          <meshStandardMaterial color="#94a3b8" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.32, 0]} rotation={[0.2, 0.4, 0.1]} castShadow receiveShadow>
-          <dodecahedronGeometry args={[0.5, 0]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.2} emissive="#00f0ff" emissiveIntensity={0.6} />
-        </mesh>
-        <mesh position={[0, 0.32, 0]} rotation={[0.2, 0.4, 0.1]} scale={1.03}>
-          <dodecahedronGeometry args={[0.5, 0]} />
-          <meshStandardMaterial color="#00f0ff" wireframe />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.3, 0]} rotation={[0, 0.3, 0]} castShadow receiveShadow>
-          <sphereGeometry args={[0.5, 16, 14]} />
-          <meshStandardMaterial color="#78909c" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 0.45, 0]} rotation={[-0.2, 0.3, 0]}>
-          <sphereGeometry args={[0.42, 14, 12, 0, Math.PI * 2, 0, Math.PI / 2.5]} />
-          <meshStandardMaterial color="#4ade80" roughness={0.7} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.28, 0]} rotation={[0.2, 0.5, 0.1]} castShadow receiveShadow>
-        <icosahedronGeometry args={[0.45, isFlat ? 0 : 1]} />
-        <meshStandardMaterial color="#78909c" roughness={0.9} metalness={0.1} flatShading={isFlat} />
+      {/* Primary River Stone */}
+      <mesh position={[0, 0.32, 0]} rotation={[0.2, 0.5, 0.1]} castShadow receiveShadow>
+        <dodecahedronGeometry args={[0.52, 1]} />
+        <meshStandardMaterial color="#475569" roughness={0.88} flatShading />
       </mesh>
-      <mesh position={[-0.3, 0.18, 0.1]} rotation={[0.5, 1.2, 0]} castShadow receiveShadow>
-        <icosahedronGeometry args={[0.3, isFlat ? 0 : 1]} />
-        <meshStandardMaterial color="#90a4ae" roughness={0.9} metalness={0.1} flatShading={isFlat} />
+
+      {/* Real Kintsugi Gold Vein Seams */}
+      <mesh position={[0, 0.32, 0]} rotation={[0.22, 0.52, 0.12]} scale={1.015}>
+        <dodecahedronGeometry args={[0.52, 0]} />
+        <meshStandardMaterial
+          color="#d4af37"
+          wireframe
+          metalness={0.95}
+          roughness={0.2}
+        />
+      </mesh>
+
+      {/* Flanking Companion Pebble */}
+      <mesh position={[-0.38, 0.2, 0.15]} rotation={[0.4, 1.1, -0.2]} castShadow receiveShadow>
+        <dodecahedronGeometry args={[0.34, 1]} />
+        <meshStandardMaterial color="#64748b" roughness={0.88} flatShading />
+      </mesh>
+
+      {/* Base Moss Cushion */}
+      <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.75, 12]} />
+        <meshStandardMaterial color="#15803d" roughness={0.95} />
       </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// 4. LAMP 3D - Handcrafted Japanese Toro / Andon Lantern with Candle Light
+// ============================================================================
 export function Lamp3D({ position = [0, 0, 0], timeMode = 'night', artStyle = 'lowpoly' }) {
   const isNight = timeMode === 'night';
-  const bulbIntensity = isNight ? (artStyle === 'synthwave' ? 4.5 : 3.0) : 0.8;
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <boxGeometry args={[0.14, 1.8, 0.14]} />
-          <meshStandardMaterial color="#334155" flatShading />
-        </mesh>
-        <mesh position={[0, 1.85, 0]} castShadow>
-          <boxGeometry args={[0.35, 0.35, 0.35]} />
-          <meshStandardMaterial color="#fef08a" emissive="#facc15" emissiveIntensity={bulbIntensity} flatShading />
-        </mesh>
-        <pointLight position={[0, 1.85, 0]} color="#fde047" intensity={isNight ? 2.5 : 0.6} distance={8} decay={2} />
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 1.0, 0]} castShadow>
-          <cylinderGeometry args={[0.06, 0.09, 2.0, 8]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 2.05, 0]}>
-          <cylinderGeometry args={[0.22, 0.22, 0.4, 8]} />
-          <meshStandardMaterial color="#00f0ff" wireframe emissive="#00f0ff" emissiveIntensity={2.5} />
-        </mesh>
-        <mesh position={[0, 2.05, 0]}>
-          <sphereGeometry args={[0.12, 16, 16]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={bulbIntensity} />
-        </mesh>
-        <pointLight position={[0, 2.05, 0]} color="#00f0ff" intensity={isNight ? 3.0 : 0.8} distance={10} decay={2} />
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.2, 0]} castShadow>
-          <boxGeometry args={[0.45, 0.3, 0.45]} />
-          <meshStandardMaterial color="#475569" roughness={0.8} />
-        </mesh>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <cylinderGeometry args={[0.12, 0.14, 1.2, 12]} />
-          <meshStandardMaterial color="#64748b" roughness={0.8} />
-        </mesh>
-        <mesh position={[0, 1.6, 0]} castShadow>
-          <boxGeometry args={[0.45, 0.4, 0.45]} />
-          <meshStandardMaterial color="#fffbeb" emissive="#fbbf24" emissiveIntensity={bulbIntensity} />
-        </mesh>
-        <mesh position={[0, 1.85, 0]} castShadow>
-          <coneGeometry args={[0.42, 0.25, 4]} />
-          <meshStandardMaterial color="#334155" roughness={0.6} />
-        </mesh>
-        <pointLight position={[0, 1.6, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={10} decay={2} />
-      </group>
-    );
-  }
+  const bulbIntensity = isNight ? 2.6 : 0.8;
 
   return (
     <group position={position}>
-      <mesh position={[0, 1, 0]} castShadow>
-        <cylinderGeometry args={[0.04, 0.06, 2, 12]} />
-        <meshStandardMaterial color={isNight ? '#2d3342' : '#555555'} metalness={0.6} roughness={0.4} />
+      {/* Cedar Post Stand */}
+      <mesh position={[0, 0.8, 0]} castShadow>
+        <cylinderGeometry args={[0.06, 0.08, 1.6, 6]} />
+        <meshStandardMaterial color="#382315" roughness={0.8} flatShading />
       </mesh>
-      <mesh position={[0, 2.1, 0]} castShadow>
-        <cylinderGeometry args={[0.2, 0.08, 0.25, 12]} />
-        <meshStandardMaterial color={isNight ? '#1e222d' : '#444444'} metalness={0.6} roughness={0.3} />
+
+      {/* Stone / Cedar Base Plinth */}
+      <mesh position={[0, 0.08, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.28, 0.34, 0.16, 6]} />
+        <meshStandardMaterial color="#271b12" roughness={0.85} flatShading />
       </mesh>
-      <mesh position={[0, 1.95, 0]}>
-        <sphereGeometry args={[0.08, 12, 10]} />
-        <meshStandardMaterial color="#fff8e1" emissive={isNight ? '#ffbe3b' : '#ffd54f'} emissiveIntensity={bulbIntensity} />
+
+      {/* Lantern Lamp Housing (Translucent Washi Screen) */}
+      <mesh position={[0, 1.7, 0]} castShadow>
+        <cylinderGeometry args={[0.24, 0.24, 0.42, 6]} />
+        <meshStandardMaterial
+          color="#fffbeb"
+          emissive={isNight ? '#f59e0b' : '#fbbf24'}
+          emissiveIntensity={bulbIntensity}
+          roughness={0.3}
+        />
       </mesh>
-      <pointLight position={[0, 1.9, 0]} color="#ffcf48" intensity={isNight ? 2.8 : 0.6} distance={10} decay={2} />
+
+      {/* Wood Lattice Window Grille */}
+      <mesh position={[0, 1.7, 0]} scale={1.03}>
+        <cylinderGeometry args={[0.24, 0.24, 0.42, 6]} />
+        <meshStandardMaterial color="#1c1917" wireframe />
+      </mesh>
+
+      {/* Swept Hexagonal Wooden Roof with Gold Peak */}
+      <mesh position={[0, 2.02, 0]} castShadow>
+        <coneGeometry args={[0.45, 0.26, 6]} />
+        <meshStandardMaterial color="#1f2937" roughness={0.7} flatShading />
+      </mesh>
+      <mesh position={[0, 2.18, 0]}>
+        <sphereGeometry args={[0.07, 8, 8]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+      </mesh>
+
+      {/* Warm Ambient Candle Point Light */}
+      <pointLight
+        position={[0, 1.7, 0]}
+        color="#ffb703"
+        intensity={bulbIntensity}
+        distance={7.5}
+        decay={2}
+      />
     </group>
   );
 }
 
+// ============================================================================
+// 5. CRYSTAL 3D - Levitating Faceted Gemstone with Orbiting Shards
+// ============================================================================
 export function Crystal3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const groupRef = useRef();
+  const shardsRef = useRef();
+
   useFrame((state) => {
+    const t = state.clock.elapsedTime;
     if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2 + position[0]) * 0.12;
-      groupRef.current.rotation.y += 0.015;
+      groupRef.current.position.y = position[1] + 0.8 + Math.sin(t * 2 + position[0]) * 0.12;
+      groupRef.current.rotation.y = t * 0.4;
+      groupRef.current.rotation.z = Math.sin(t * 1.2) * 0.08;
+    }
+    if (shardsRef.current) {
+      shardsRef.current.rotation.y = -t * 0.8;
     }
   });
 
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.8, 0]} rotation={[0, Math.PI / 4, 0]} castShadow>
-          <boxGeometry args={[0.45, 0.9, 0.45]} />
-          <meshStandardMaterial color="#10b981" emissive="#059669" emissiveIntensity={0.8} flatShading />
-        </mesh>
-        <mesh position={[0.3, 0.5, 0.2]} rotation={[0, Math.PI / 4, 0]} castShadow>
-          <boxGeometry args={[0.3, 0.6, 0.3]} />
-          <meshStandardMaterial color="#34d399" emissive="#059669" emissiveIntensity={0.6} flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <octahedronGeometry args={[0.55, 0]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={2.0} roughness={0.1} metalness={0.9} />
-        </mesh>
-        <mesh position={[0, 0.9, 0]} scale={1.2}>
-          <ringGeometry args={[0.65, 0.72, 32]} />
-          <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group ref={groupRef} position={position}>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <octahedronGeometry args={[0.52, 0]} />
-          <meshStandardMaterial color="#e879f9" roughness={0.1} emissive="#a855f7" emissiveIntensity={1.2} />
-        </mesh>
-        <mesh position={[0.35, 0.6, 0.2]} rotation={[0.4, 0.2, -0.3]} castShadow>
-          <octahedronGeometry args={[0.32, 0]} />
-          <meshStandardMaterial color="#38bdf8" roughness={0.1} emissive="#0284c7" emissiveIntensity={1.0} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
-    <group ref={groupRef} position={position}>
-      <mesh position={[0, 0.9, 0]} castShadow>
-        <octahedronGeometry args={[0.5, 0]} />
-        <meshStandardMaterial color="#c084fc" roughness={0.2} metalness={0.8} emissive="#6b21a8" emissiveIntensity={0.6} flatShading={isFlat} />
+    <group position={position}>
+      {/* Stone Pedestal Base */}
+      <mesh position={[0, 0.12, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.42, 0.48, 0.24, 6]} />
+        <meshStandardMaterial color="#334155" roughness={0.8} flatShading />
       </mesh>
-      <mesh position={[0.35, 0.6, 0.2]} rotation={[0.4, 0.2, -0.3]} castShadow>
-        <octahedronGeometry args={[0.32, 0]} />
-        <meshStandardMaterial color="#e879f9" roughness={0.2} metalness={0.8} emissive="#86198f" emissiveIntensity={0.5} flatShading={isFlat} />
+      <mesh position={[0, 0.25, 0]}>
+        <ringGeometry args={[0.36, 0.41, 6]} rotation={[Math.PI / 2, 0, 0]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
       </mesh>
-      <mesh position={[-0.32, 0.5, -0.15]} rotation={[-0.3, 0.5, 0.4]} castShadow>
-        <octahedronGeometry args={[0.28, 0]} />
-        <meshStandardMaterial color="#38bdf8" roughness={0.2} metalness={0.8} emissive="#0369a1" emissiveIntensity={0.5} flatShading={isFlat} />
-      </mesh>
+
+      {/* Levitating Crystal Group */}
+      <group ref={groupRef}>
+        {/* Central Faceted Prism (Rose Quartz / Amethyst) */}
+        <mesh castShadow>
+          <octahedronGeometry args={[0.48, 0]} />
+          <meshStandardMaterial
+            color="#c084fc"
+            roughness={0.15}
+            metalness={0.7}
+            emissive="#7e22ce"
+            emissiveIntensity={0.85}
+            flatShading
+          />
+        </mesh>
+        {/* Internal Gold Leaf Filament Core */}
+        <mesh scale={0.4}>
+          <octahedronGeometry args={[0.48, 0]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.95} roughness={0.1} />
+        </mesh>
+
+        {/* Orbiting Satellite Shards */}
+        <group ref={shardsRef}>
+          {[-0.65, 0.65].map((sx, i) => (
+            <mesh key={i} position={[sx, Math.sin(i) * 0.2, 0]} scale={0.35}>
+              <octahedronGeometry args={[0.3, 0]} />
+              <meshStandardMaterial
+                color="#e879f9"
+                roughness={0.2}
+                emissive="#a855f7"
+                emissiveIntensity={1.2}
+                flatShading
+              />
+            </mesh>
+          ))}
+        </group>
+      </group>
     </group>
   );
 }
 
+// ============================================================================
+// 6. MUSHROOM 3D - Handcrafted Papercraft Forest Mushroom
+// ============================================================================
 export function Mushroom3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const capRef = useRef();
   useFrame((state) => {
     if (capRef.current) {
-      capRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.5 + position[2]) * 0.04;
+      capRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.8 + position[2]) * 0.05;
     }
   });
 
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.35, 0]} castShadow>
-          <boxGeometry args={[0.3, 0.7, 0.3]} />
-          <meshStandardMaterial color="#f1f5f9" flatShading />
-        </mesh>
-        <mesh position={[0, 0.85, 0]} castShadow>
-          <boxGeometry args={[0.8, 0.45, 0.8]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-        <mesh position={[0.25, 0.9, 0.25]}>
-          <boxGeometry args={[0.2, 0.2, 0.2]} />
-          <meshStandardMaterial color="#ffffff" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.45, 0]} castShadow>
-          <cylinderGeometry args={[0.07, 0.12, 0.9, 8]} />
-          <meshStandardMaterial color="#030712" metalness={0.8} roughness={0.2} />
-        </mesh>
-        <mesh position={[0, 1.0, 0]} castShadow>
-          <coneGeometry args={[0.55, 0.5, 8]} />
-          <meshStandardMaterial color="#00f0ff" wireframe emissive="#00f0ff" emissiveIntensity={2.0} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.45, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.14, 0.9, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#f8fafc" roughness={0.7} flatShading={isFlat} />
+      {/* Textured Papercraft Stem */}
+      <mesh position={[0, 0.42, 0]} castShadow>
+        <cylinderGeometry args={[0.09, 0.16, 0.85, 7]} />
+        <meshStandardMaterial color="#f8fafc" roughness={0.75} flatShading />
       </mesh>
-      <group ref={capRef} position={[0, 0.9, 0]}>
-        <mesh position={[0, 0.2, 0]} castShadow>
-          <sphereGeometry args={[0.55, isFlat ? 8 : 16, isFlat ? 6 : 12, 0, Math.PI * 2, 0, Math.PI / 1.7]} />
-          <meshStandardMaterial color="#f472b6" roughness={0.4} emissive="#be185d" emissiveIntensity={0.35} side={THREE.DoubleSide} flatShading={isFlat} />
+
+      {/* Scalloped Papercraft Cap */}
+      <group ref={capRef} position={[0, 0.85, 0]}>
+        <mesh position={[0, 0.18, 0]} castShadow>
+          <coneGeometry args={[0.54, 0.42, 7]} />
+          <meshStandardMaterial
+            color="#f472b6"
+            roughness={0.4}
+            emissive="#be185d"
+            emissiveIntensity={0.4}
+            flatShading
+          />
         </mesh>
-        <mesh position={[0.2, 0.38, 0.15]}>
-          <sphereGeometry args={[0.08, 8, 8]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-        <mesh position={[-0.22, 0.32, -0.1]}>
-          <sphereGeometry args={[0.07, 8, 8]} />
-          <meshBasicMaterial color="#ffffff" />
+        {/* Gold Polka Dots */}
+        {[
+          [0.2, 0.25, 0.15],
+          [-0.22, 0.18, -0.1],
+          [0.05, 0.32, -0.22],
+          [-0.15, 0.26, 0.2]
+        ].map((pt, i) => (
+          <mesh key={i} position={pt} scale={0.6}>
+            <sphereGeometry args={[0.08, 6, 6]} />
+            <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+          </mesh>
+        ))}
+        {/* Scalloped Underside Gills Ring */}
+        <mesh position={[0, -0.02, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.1, 0.52, 7]} />
+          <meshStandardMaterial color="#fff1f2" roughness={0.7} flatShading />
         </mesh>
       </group>
     </group>
   );
 }
 
+// ============================================================================
+// 7. PYRAMID 3D - Tiered Origami Obelisk with Hovering Apex
+// ============================================================================
 export function Pyramid3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const topRef = useRef();
   useFrame((state) => {
@@ -530,411 +384,310 @@ export function Pyramid3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
     }
   });
 
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.4, 0.35, 1.4]} />
-          <meshStandardMaterial color="#d97706" flatShading />
-        </mesh>
-        <mesh position={[0, 0.55, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.0, 0.35, 1.0]} />
-          <meshStandardMaterial color="#f59e0b" flatShading />
-        </mesh>
-        <mesh position={[0, 0.9, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 0.35, 0.6]} />
-          <meshStandardMaterial color="#fbbf24" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.55, 0]} rotation={[0, Math.PI / 4, 0]} castShadow receiveShadow>
-          <coneGeometry args={[0.85, 1.1, 4]} />
-          <meshStandardMaterial color="#bd00ff" wireframe emissive="#bd00ff" emissiveIntensity={2.0} />
-        </mesh>
-        <mesh ref={topRef} position={[0, 1.35, 0]} rotation={[0, Math.PI / 4, 0]}>
-          <octahedronGeometry args={[0.25, 0]} />
-          <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={3.0} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.55, 0]} rotation={[0, Math.PI / 4, 0]} castShadow receiveShadow>
-        <coneGeometry args={[0.85, 1.1, 4]} />
-        <meshStandardMaterial color="#fbbf24" roughness={0.6} metalness={0.3} flatShading />
+      {/* Tier 1 Step (Base) */}
+      <mesh position={[0, 0.18, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1.4, 0.35, 1.4]} />
+        <meshStandardMaterial color="#8c6d48" roughness={0.8} flatShading />
       </mesh>
+      <mesh position={[0, 0.36, 0]}>
+        <ringGeometry args={[0.9, 1.0, 4]} rotation={[Math.PI / 2, 0, Math.PI / 4]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+      </mesh>
+
+      {/* Tier 2 Step */}
+      <mesh position={[0, 0.52, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1.0, 0.34, 1.0]} />
+        <meshStandardMaterial color="#a78b60" roughness={0.75} flatShading />
+      </mesh>
+
+      {/* Tier 3 Step */}
+      <mesh position={[0, 0.85, 0]} castShadow receiveShadow>
+        <coneGeometry args={[0.62, 0.7, 4]} rotation={[0, Math.PI / 4, 0]} />
+        <meshStandardMaterial color="#c5a059" roughness={0.7} flatShading />
+      </mesh>
+
+      {/* Floating Gilded Crystal Apex */}
       <mesh ref={topRef} position={[0, 1.35, 0]} rotation={[0, Math.PI / 4, 0]} castShadow>
-        <octahedronGeometry args={[0.25, 0]} />
-        <meshStandardMaterial color="#fef08a" roughness={0.1} metalness={0.9} emissive="#d97706" emissiveIntensity={0.8} flatShading />
+        <octahedronGeometry args={[0.26, 0]} />
+        <meshStandardMaterial
+          color="#fef08a"
+          roughness={0.15}
+          metalness={0.9}
+          emissive="#d4af37"
+          emissiveIntensity={1.2}
+          flatShading
+        />
       </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// 8. FOUNTAIN 3D - Handcrafted Tiered Stone Basin with Rippling Water
+// ============================================================================
 export function Fountain3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const waterRef = useRef();
   useFrame((state) => {
     if (waterRef.current) {
-      waterRef.current.position.y = 0.85 + Math.sin(state.clock.elapsedTime * 4) * 0.08;
+      waterRef.current.position.y = 0.88 + Math.sin(state.clock.elapsedTime * 3.5) * 0.05;
+      waterRef.current.rotation.y += 0.01;
     }
   });
 
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.25, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.3, 0.45, 1.3]} />
-          <meshStandardMaterial color="#64748b" flatShading />
-        </mesh>
-        <mesh position={[0, 0.5, 0]}>
-          <boxGeometry args={[1.0, 0.1, 1.0]} />
-          <meshStandardMaterial color="#38bdf8" emissive="#0284c7" emissiveIntensity={0.5} flatShading />
-        </mesh>
-        <mesh ref={waterRef} position={[0, 0.8, 0]}>
-          <boxGeometry args={[0.3, 0.5, 0.3]} />
-          <meshStandardMaterial color="#7dd3fc" emissive="#0ea5e9" emissiveIntensity={0.8} flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.8, 0.9, 0.4, 8]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 0.42, 0]}>
-          <cylinderGeometry args={[0.72, 0.72, 0.05, 8]} />
-          <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={2.0} />
-        </mesh>
-        <mesh ref={waterRef} position={[0, 0.85, 0]}>
-          <octahedronGeometry args={[0.25, 0]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={3.0} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.8, 0.9, 0.4, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#94a3b8" roughness={0.8} flatShading={isFlat} />
+      {/* Stone Basin Bottom */}
+      <mesh position={[0, 0.22, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.85, 0.95, 0.44, 8]} />
+        <meshStandardMaterial color="#64748b" roughness={0.8} flatShading />
       </mesh>
-      <mesh position={[0, 0.39, 0]}>
-        <cylinderGeometry args={[0.68, 0.68, 0.04, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#38bdf8" roughness={0.1} metalness={0.2} transparent opacity={0.8} />
+      {/* Water Pool in Lower Basin */}
+      <mesh position={[0, 0.42, 0]}>
+        <cylinderGeometry args={[0.74, 0.74, 0.04, 8]} />
+        <meshStandardMaterial color="#38bdf8" roughness={0.2} metalness={0.3} transparent opacity={0.85} />
       </mesh>
-      <mesh position={[0, 0.6, 0]} castShadow>
-        <cylinderGeometry args={[0.15, 0.2, 0.8, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#cbd5e1" roughness={0.7} flatShading={isFlat} />
+
+      {/* Center Fluted Pedestal */}
+      <mesh position={[0, 0.65, 0]} castShadow>
+        <cylinderGeometry args={[0.18, 0.24, 0.75, 8]} />
+        <meshStandardMaterial color="#94a3b8" roughness={0.75} flatShading />
       </mesh>
-      <mesh ref={waterRef} position={[0, 0.85, 0]}>
-        <sphereGeometry args={[0.22, 14, 12]} />
-        <meshStandardMaterial color="#7dd3fc" roughness={0.1} transparent opacity={0.85} emissive="#0284c7" emissiveIntensity={0.4} />
+
+      {/* Upper Pedestal Bowl */}
+      <mesh position={[0, 0.95, 0]} castShadow>
+        <cylinderGeometry args={[0.42, 0.22, 0.18, 8]} />
+        <meshStandardMaterial color="#64748b" roughness={0.8} flatShading />
+      </mesh>
+
+      {/* Water Spout Gem / Ripple */}
+      <mesh ref={waterRef} position={[0, 1.1, 0]}>
+        <octahedronGeometry args={[0.18, 0]} />
+        <meshStandardMaterial
+          color="#7dd3fc"
+          roughness={0.1}
+          metalness={0.4}
+          emissive="#0284c7"
+          emissiveIntensity={0.6}
+        />
       </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// 9. TOWER 3D - Handcrafted Papercraft Pagoda with Swept Eaves
+// ============================================================================
 export function Tower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.9, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.8, 1.8, 0.8]} />
-          <meshStandardMaterial color="#64748b" flatShading />
-        </mesh>
-        <mesh position={[0, 1.9, 0]} castShadow>
-          <boxGeometry args={[1.0, 0.3, 1.0]} />
-          <meshStandardMaterial color="#475569" flatShading />
-        </mesh>
-        <mesh position={[0, 2.3, 0]} castShadow>
-          <boxGeometry args={[0.6, 0.6, 0.6]} />
-          <meshStandardMaterial color="#ef4444" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 1.0, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.35, 0.5, 2.0, 6]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 1.0, 0]} scale={1.02}>
-          <cylinderGeometry args={[0.35, 0.5, 2.0, 6]} />
-          <meshStandardMaterial color="#00f0ff" wireframe />
-        </mesh>
-        <mesh position={[0, 2.2, 0]}>
-          <sphereGeometry args={[0.15, 12, 12]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={3.5} />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.6, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.4, 0.5, 1.2, 16]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 1.25, 0]} castShadow>
-          <coneGeometry args={[0.7, 0.35, 4]} />
-          <meshStandardMaterial color="#1e293b" roughness={0.4} />
-        </mesh>
-        <mesh position={[0, 1.6, 0]} castShadow>
-          <cylinderGeometry args={[0.3, 0.35, 0.7, 16]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 2.05, 0]} castShadow>
-          <coneGeometry args={[0.55, 0.35, 4]} />
-          <meshStandardMaterial color="#1e293b" roughness={0.4} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.9, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[0.45, 0.55, 1.8, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#94a3b8" roughness={0.85} flatShading={isFlat} />
+      {/* Base Foundation */}
+      <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1.2, 0.4, 1.2]} />
+        <meshStandardMaterial color="#334155" roughness={0.85} flatShading />
       </mesh>
-      <mesh position={[0, 2.1, 0]} castShadow>
-        <coneGeometry args={[0.55, 0.7, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#ef4444" roughness={0.6} flatShading={isFlat} />
+
+      {/* Tier 1 Pavilion Level */}
+      <mesh position={[0, 0.75, 0]} castShadow>
+        <boxGeometry args={[0.82, 0.7, 0.82]} />
+        <meshStandardMaterial color="#dc2626" roughness={0.65} flatShading />
       </mesh>
-      <mesh position={[0, 1.82, 0]} castShadow>
-        <cylinderGeometry args={[0.5, 0.5, 0.15, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#64748b" roughness={0.8} flatShading={isFlat} />
+      {/* Tier 1 Swept Pagoda Eaves */}
+      <mesh position={[0, 1.15, 0]} castShadow>
+        <coneGeometry args={[0.95, 0.28, 4]} rotation={[0, Math.PI / 4, 0]} />
+        <meshStandardMaterial color="#1f2937" roughness={0.7} flatShading />
+      </mesh>
+
+      {/* Tier 2 Pavilion Level */}
+      <mesh position={[0, 1.55, 0]} castShadow>
+        <boxGeometry args={[0.62, 0.55, 0.62]} />
+        <meshStandardMaterial color="#dc2626" roughness={0.65} flatShading />
+      </mesh>
+      {/* Tier 2 Swept Pagoda Eaves */}
+      <mesh position={[0, 1.88, 0]} castShadow>
+        <coneGeometry args={[0.75, 0.25, 4]} rotation={[0, Math.PI / 4, 0]} />
+        <meshStandardMaterial color="#1f2937" roughness={0.7} flatShading />
+      </mesh>
+
+      {/* Gilded Roof Finial Needle (Sorin) */}
+      <mesh position={[0, 2.2, 0]}>
+        <cylinderGeometry args={[0.03, 0.05, 0.45, 6]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+      </mesh>
+      <mesh position={[0, 2.45, 0]}>
+        <sphereGeometry args={[0.07, 6, 6]} />
+        <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
       </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// 10. CACTUS 3D - Folded Origami Desert Succulent with Blossom
+// ============================================================================
 export function Cactus3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
-  const isFlat = artStyle === 'lowpoly' || artStyle === 'retro_8bit';
-
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.75, 0]} castShadow>
-          <boxGeometry args={[0.3, 1.5, 0.3]} />
-          <meshStandardMaterial color="#22c55e" flatShading />
-        </mesh>
-        <mesh position={[0.25, 0.7, 0]} castShadow>
-          <boxGeometry args={[0.3, 0.2, 0.2]} />
-          <meshStandardMaterial color="#16a34a" flatShading />
-        </mesh>
-        <mesh position={[0.35, 0.95, 0]} castShadow>
-          <boxGeometry args={[0.2, 0.4, 0.2]} />
-          <meshStandardMaterial color="#16a34a" flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.7, 0]} castShadow>
-          <cylinderGeometry args={[0.16, 0.18, 1.4, 6]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.2} />
-        </mesh>
-        <mesh position={[0, 0.7, 0]} scale={1.03}>
-          <cylinderGeometry args={[0.16, 0.18, 1.4, 6]} />
-          <meshStandardMaterial color="#39ff14" wireframe emissive="#39ff14" emissiveIntensity={1.5} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.7, 0]} castShadow>
-        <cylinderGeometry args={[0.16, 0.18, 1.4, isFlat ? 6 : 16]} />
-        <meshStandardMaterial color="#22c55e" roughness={0.8} flatShading={isFlat} />
+      {/* Terracotta Pot */}
+      <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.34, 0.26, 0.4, 8]} />
+        <meshStandardMaterial color="#b45309" roughness={0.8} flatShading />
       </mesh>
-      <group position={[0.25, 0.65, 0]}>
-        <mesh position={[0, 0, 0]} rotation={[0, 0, -1.2]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.4, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#16a34a" roughness={0.8} flatShading={isFlat} />
-        </mesh>
-        <mesh position={[0.15, 0.2, 0]} castShadow>
-          <cylinderGeometry args={[0.1, 0.1, 0.4, isFlat ? 6 : 16]} />
-          <meshStandardMaterial color="#16a34a" roughness={0.8} flatShading={isFlat} />
+
+      {/* Main Origami Stem */}
+      <mesh position={[0, 0.8, 0]} castShadow>
+        <cylinderGeometry args={[0.16, 0.18, 0.85, 6]} />
+        <meshStandardMaterial color="#15803d" roughness={0.75} flatShading />
+      </mesh>
+
+      {/* Left Branch Arm */}
+      <group position={[-0.2, 0.72, 0]} rotation={[0, 0, 0.5]}>
+        <mesh position={[0, 0.15, 0]} castShadow>
+          <cylinderGeometry args={[0.08, 0.08, 0.35, 6]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.75} flatShading />
         </mesh>
       </group>
-      <mesh position={[0, 1.45, 0]}>
-        <sphereGeometry args={[0.12, 12, 10]} />
-        <meshStandardMaterial color="#facc15" roughness={0.4} />
-      </mesh>
+
+      {/* Right Branch Arm */}
+      <group position={[0.22, 0.82, 0]} rotation={[0, 0, -0.5]}>
+        <mesh position={[0, 0.16, 0]} castShadow>
+          <cylinderGeometry args={[0.08, 0.08, 0.38, 6]} />
+          <meshStandardMaterial color="#16a34a" roughness={0.75} flatShading />
+        </mesh>
+      </group>
+
+      {/* Pink Origami Blossom at Crown */}
+      <group position={[0, 1.26, 0]}>
+        <mesh>
+          <octahedronGeometry args={[0.16, 0]} />
+          <meshStandardMaterial color="#f472b6" roughness={0.4} flatShading />
+        </mesh>
+        <mesh scale={0.5}>
+          <sphereGeometry args={[0.1, 6, 6]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
+// ============================================================================
+// 11. CAMPFIRE 3D - Miniature Hearth with Kintsugi Pebbles & Origami Flames
+// ============================================================================
 export function Campfire3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
   const flameRef = useRef();
   useFrame((state) => {
     if (flameRef.current) {
-      flameRef.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 8) * 0.25;
-      flameRef.current.scale.x = 1 + Math.cos(state.clock.elapsedTime * 6) * 0.15;
+      flameRef.current.scale.y = 1 + Math.sin(state.clock.elapsedTime * 9) * 0.22;
+      flameRef.current.scale.x = 1 + Math.cos(state.clock.elapsedTime * 7) * 0.15;
     }
   });
 
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.1, 0]} castShadow>
-          <boxGeometry args={[0.7, 0.18, 0.7]} />
-          <meshStandardMaterial color="#78350f" flatShading />
-        </mesh>
-        <mesh ref={flameRef} position={[0, 0.4, 0]}>
-          <boxGeometry args={[0.3, 0.5, 0.3]} />
-          <meshStandardMaterial color="#f97316" emissive="#ea580c" emissiveIntensity={2.0} flatShading />
-        </mesh>
-        <pointLight position={[0, 0.5, 0]} color="#f97316" intensity={2.2} distance={6} decay={2} />
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.1, 0]}>
-          <torusGeometry args={[0.35, 0.08, 8, 16]} />
-          <meshStandardMaterial color="#00f0ff" emissive="#00f0ff" emissiveIntensity={2.0} />
-        </mesh>
-        <mesh ref={flameRef} position={[0, 0.4, 0]}>
-          <octahedronGeometry args={[0.26, 0]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={3.5} />
-        </mesh>
-        <pointLight position={[0, 0.5, 0]} color="#ff007f" intensity={2.8} distance={8} decay={2} />
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
+      {/* River Pebble Ring Base */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i / 8) * Math.PI * 2;
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.42, 0.08, Math.sin(a) * 0.42]} castShadow>
+            <dodecahedronGeometry args={[0.12, 0]} />
+            <meshStandardMaterial color="#64748b" roughness={0.85} flatShading />
+          </mesh>
+        );
+      })}
+
+      {/* Criss-Crossed Cedar Firewood Twigs */}
       <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, 0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.08, 0.7, 8]} />
-        <meshStandardMaterial color="#78350f" roughness={0.9} />
+        <cylinderGeometry args={[0.05, 0.06, 0.65, 6]} />
+        <meshStandardMaterial color="#452a1b" roughness={0.9} flatShading />
       </mesh>
       <mesh position={[0, 0.12, 0]} rotation={[Math.PI / 2, -0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.08, 0.08, 0.7, 8]} />
-        <meshStandardMaterial color="#78350f" roughness={0.9} />
+        <cylinderGeometry args={[0.05, 0.06, 0.65, 6]} />
+        <meshStandardMaterial color="#452a1b" roughness={0.9} flatShading />
       </mesh>
-      <mesh ref={flameRef} position={[0, 0.4, 0]}>
-        <coneGeometry args={[0.25, 0.6, 8]} />
-        <meshStandardMaterial color="#f97316" roughness={0.2} emissive="#ea580c" emissiveIntensity={1.2} transparent opacity={0.9} />
-      </mesh>
-      <pointLight position={[0, 0.5, 0]} color="#f97316" intensity={2.2} distance={6} decay={2} />
+
+      {/* Layered Origami Amber Flame Crystals */}
+      <group ref={flameRef} position={[0, 0.38, 0]}>
+        <mesh>
+          <coneGeometry args={[0.22, 0.55, 6]} />
+          <meshStandardMaterial
+            color="#f97316"
+            emissive="#ea580c"
+            emissiveIntensity={1.8}
+            roughness={0.2}
+            flatShading
+          />
+        </mesh>
+        {/* Inner Gold Flame Tongue */}
+        <mesh position={[0, 0.05, 0]} scale={0.65}>
+          <coneGeometry args={[0.16, 0.45, 5]} />
+          <meshStandardMaterial
+            color="#fbbf24"
+            emissive="#f59e0b"
+            emissiveIntensity={2.5}
+            roughness={0.1}
+            flatShading
+          />
+        </mesh>
+      </group>
+
+      {/* Warm Ambient Firelight */}
+      <pointLight position={[0, 0.45, 0]} color="#f97316" intensity={2.4} distance={6.5} decay={2} />
     </group>
   );
 }
 
+// ============================================================================
+// 12. MONUMENT 3D - Miniature Romantic Torii / Love Archway
+// ============================================================================
 export function Monument3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
-  if (artStyle === 'retro_8bit') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.9, 0.4, 0.9]} />
-          <meshStandardMaterial color="#475569" flatShading />
-        </mesh>
-        <mesh position={[0, 1.1, 0]} castShadow>
-          <boxGeometry args={[0.4, 1.6, 0.4]} />
-          <meshStandardMaterial color="#e2e8f0" flatShading />
-        </mesh>
-        <mesh position={[0, 2.05, 0]} castShadow>
-          <boxGeometry args={[0.3, 0.3, 0.3]} />
-          <meshStandardMaterial color="#facc15" emissive="#d97706" emissiveIntensity={0.8} flatShading />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'synthwave') {
-    return (
-      <group position={position}>
-        <mesh position={[0, 1.1, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.35, 2.0, 0.15]} />
-          <meshStandardMaterial color="#030712" metalness={0.9} roughness={0.1} />
-        </mesh>
-        <mesh position={[0, 1.1, 0]} scale={1.03}>
-          <boxGeometry args={[0.35, 2.0, 0.15]} />
-          <meshStandardMaterial color="#00f0ff" wireframe emissive="#00f0ff" emissiveIntensity={1.8} />
-        </mesh>
-        <mesh position={[0, 2.2, 0]}>
-          <octahedronGeometry args={[0.18, 0]} />
-          <meshStandardMaterial color="#ff007f" emissive="#ff007f" emissiveIntensity={3.0} />
-        </mesh>
-      </group>
-    );
-  }
-
-  if (artStyle === 'anime') {
-    return (
-      <group position={position}>
-        <mesh position={[-0.45, 0.9, 0]} castShadow>
-          <cylinderGeometry args={[0.07, 0.08, 1.8, 16]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.5} />
-        </mesh>
-        <mesh position={[0.45, 0.9, 0]} castShadow>
-          <cylinderGeometry args={[0.07, 0.08, 1.8, 16]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 1.8, 0]} castShadow>
-          <boxGeometry args={[1.3, 0.14, 0.2]} />
-          <meshStandardMaterial color="#1e293b" roughness={0.4} />
-        </mesh>
-        <mesh position={[0, 1.55, 0]} castShadow>
-          <boxGeometry args={[1.1, 0.1, 0.15]} />
-          <meshStandardMaterial color="#dc2626" roughness={0.5} />
-        </mesh>
-      </group>
-    );
-  }
-
   return (
     <group position={position}>
-      <mesh position={[0, 0.15, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.8, 0.3, 0.8]} />
-        <meshStandardMaterial color="#64748b" roughness={0.7} />
+      {/* Stone Base Plinth */}
+      <mesh position={[0, 0.12, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1.4, 0.24, 0.6]} />
+        <meshStandardMaterial color="#475569" roughness={0.85} flatShading />
       </mesh>
-      <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.6, 0.15, 0.6]} />
-        <meshStandardMaterial color="#94a3b8" roughness={0.7} />
+
+      {/* Dual Vermilion Columns */}
+      {[-0.48, 0.48].map((cx, i) => (
+        <mesh key={i} position={[cx, 0.95, 0]} castShadow>
+          <cylinderGeometry args={[0.06, 0.08, 1.5, 6]} />
+          <meshStandardMaterial color="#dc2626" roughness={0.65} flatShading />
+        </mesh>
+      ))}
+
+      {/* Sweeping Lintel Arch with Gold Leaf Tips */}
+      <mesh position={[0, 1.74, 0]} castShadow>
+        <boxGeometry args={[1.4, 0.15, 0.18]} />
+        <meshStandardMaterial color="#dc2626" roughness={0.65} flatShading />
       </mesh>
-      <mesh position={[0, 1.25, 0]} castShadow>
-        <cylinderGeometry args={[0.15, 0.24, 1.6, 8]} />
-        <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
-      </mesh>
-      <mesh position={[0, 2.15, 0]} castShadow>
-        <sphereGeometry args={[0.16, 14, 12]} />
-        <meshStandardMaterial color="#fbbf24" roughness={0.2} metalness={0.8} emissive="#d97706" emissiveIntensity={0.5} />
+      {[-0.7, 0.7].map((gx, idx) => (
+        <mesh key={idx} position={[gx, 1.74, 0]}>
+          <boxGeometry args={[0.06, 0.17, 0.2]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.9} roughness={0.2} />
+        </mesh>
+      ))}
+
+      {/* Hanging Golden Heart Charm */}
+      <mesh position={[0, 1.48, 0]} rotation={[0, 0, Math.PI / 4]}>
+        <boxGeometry args={[0.16, 0.16, 0.05]} />
+        <meshStandardMaterial
+          color="#d4af37"
+          metalness={0.95}
+          roughness={0.2}
+          emissive="#b45309"
+          emissiveIntensity={0.4}
+        />
       </mesh>
     </group>
   );
 }
 
+// ============================================================================
+// COMPONENT MAP
+// ============================================================================
 const OBJECT_COMPONENTS = {
   flower: Flower3D,
   tree: Tree3D,
@@ -950,6 +703,9 @@ const OBJECT_COMPONENTS = {
   monument: Monument3D,
 };
 
+// ============================================================================
+// PLACED OBJECT WRAPPER (Interactive Transform & Love Note Preview)
+// ============================================================================
 export function PlacedObjectWrapper({
   obj,
   artStyle: globalArtStyle = 'lowpoly',
@@ -970,7 +726,7 @@ export function PlacedObjectWrapper({
   const [ox, , oz] = obj.position;
   const rotY = obj.rotationY || 0;
   const scaleVal = obj.scale || 1;
-  const ringColor = deleteMode ? '#ff4444' : selected ? '#4fc3f7' : timeMode === 'night' ? '#8ab4f8' : '#ffffff';
+  const ringColor = deleteMode ? '#ef4444' : selected ? '#d4af37' : timeMode === 'night' ? '#c084fc' : '#d4af37';
   const showRing = hovered || selected;
 
   const handleTransformChange = () => {
@@ -1013,7 +769,7 @@ export function PlacedObjectWrapper({
         {showRing && (
           <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.65, 0.82, 32]} />
-            <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.65} />
+            <meshBasicMaterial color={ringColor} transparent opacity={hovered && deleteMode ? 0.9 : 0.75} />
           </mesh>
         )}
         
@@ -1021,27 +777,33 @@ export function PlacedObjectWrapper({
           <Html position={[0, 1.8, 0]} center zIndexRange={[100, 0]}>
             <div style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none',
-              transform: selected ? 'scale(1)' : 'scale(0.8)',
-              opacity: selected ? 1 : 0.8,
+              transform: selected ? 'scale(1)' : 'scale(0.85)',
+              opacity: selected ? 1 : 0.85,
               transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
             }}>
               {!selected ? (
                 <div style={{
-                  background: 'rgba(255,255,255,0.9)', padding: '6px', borderRadius: '50%',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)', fontSize: 16
-                }}>💌</div>
+                  background: '#FAF7F2', padding: '6px', borderRadius: '50%',
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.25)', border: '1px solid #d4af37',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#be185d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 .8-1.6l8-6a2 2 0 0 1 2.4 0l8 6Z"/>
+                    <path d="m22 10-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 10"/>
+                  </svg>
+                </div>
               ) : (
                 <div style={{
-                  background: timeMode === 'night' ? 'rgba(20,24,34,0.9)' : 'rgba(255,255,255,0.95)',
-                  backdropFilter: 'blur(10px)', color: timeMode === 'night' ? '#FFF' : '#000',
-                  padding: '12px 16px', borderRadius: 16, width: 160,
+                  background: timeMode === 'night' ? 'rgba(20,24,34,0.95)' : 'rgba(250,247,242,0.96)',
+                  backdropFilter: 'blur(10px)', color: timeMode === 'night' ? '#FAF7F2' : '#2d1810',
+                  padding: '12px 16px', borderRadius: 16, width: 170,
                   boxShadow: '0 8px 24px rgba(0,0,0,0.3)', textAlign: 'center',
-                  border: timeMode === 'night' ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(0,0,0,0.1)'
+                  border: '1px solid #d4af37'
                 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: timeMode === 'night' ? '#38bdf8' : '#007AFF', marginBottom: 4 }}>
-                    DARI: {obj.senderName}
+                  <div style={{ fontSize: 10, fontWeight: 800, color: '#d4af37', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+                    DARI: {obj.senderName || 'Anonim'}
                   </div>
-                  <div style={{ fontSize: 12, lineHeight: 1.4, wordWrap: 'break-word' }}>
+                  <div style={{ fontSize: 12, lineHeight: 1.4, wordWrap: 'break-word', fontStyle: 'italic' }}>
                     "{obj.message}"
                   </div>
                 </div>
