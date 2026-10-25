@@ -20,32 +20,38 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
   const [letterText, setLetterText] = useState(DEFAULT_LETTER);
 
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      padding: '24px 34px',
-      boxSizing: 'border-box',
-      position: 'relative',
-      fontFamily: "'Cormorant Garamond', serif",
-      color: '#121212',
-    }}>
-      {/* Top Editorial Header */}
-      <div style={{
+    <div 
+      className="love-letter-page"
+      style={{
+        width: '100%',
+        minHeight: '100%',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        borderBottom: '1.5px solid #121212',
-        paddingBottom: '10px',
-        fontSize: '11px',
-        fontFamily: "'Montserrat', sans-serif",
+        padding: '24px 34px',
+        boxSizing: 'border-box',
+        position: 'relative',
+        fontFamily: "'Cormorant Garamond', serif",
         color: '#121212',
-        letterSpacing: '1.5px',
-        textTransform: 'uppercase',
-        fontWeight: 700,
-      }}>
+      }}
+    >
+      {/* Top Editorial Header */}
+      <div 
+        className="love-letter-header"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: '1.5px solid #121212',
+          paddingBottom: '10px',
+          fontSize: '11px',
+          fontFamily: "'Montserrat', sans-serif",
+          color: '#121212',
+          letterSpacing: '1.5px',
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
+      >
         <TornScrap rotate={-1} style={{ padding: '3px 10px', backgroundColor: '#fffdfa' }}>
           <span>TRUE LOVE</span>
         </TornScrap>
@@ -78,11 +84,14 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
         {/* Ribbon Banner + Calligraphy Heading on subtle torn backing */}
         <div style={{
           position: 'relative',
-          padding: '12px 36px',
+          padding: '10px 20px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
+          width: '100%',
+          maxWidth: '380px',
+          boxSizing: 'border-box',
         }}>
           <svg
             viewBox="0 0 380 110"
@@ -109,28 +118,32 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
             position: 'relative',
             zIndex: 2,
             fontFamily: "'Pinyon Script', cursive",
-            fontSize: '44px',
+            fontSize: 'clamp(26px, 7vw, 42px)',
             color: '#85101c',
-            lineHeight: 1.1,
+            lineHeight: 1.15,
             textShadow: '0 1px 2px rgba(255,255,255,0.8)',
           }}>
-            Girl, I'm so in love with <span style={{ fontSize: '50px', textDecoration: 'underline wavy #c8102e 1.5px' }}>You</span>
+            Girl, I'm so in love with <span style={{ fontSize: 'clamp(30px, 8.5vw, 48px)', textDecoration: 'underline wavy #c8102e 1.5px' }}>You</span>
           </div>
         </div>
 
         {/* The Letter on an Authentic Torn Paper Parchment Sheet */}
-        <div style={{
-          position: 'relative',
-          maxWidth: '560px',
-          width: '100%',
-          marginTop: '10px',
-          backgroundColor: '#fffdf9',
-          padding: '24px 30px',
-          boxShadow: '0 14px 32px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0,0,0,0.06)',
-          borderLeft: '1.5px solid #121212',
-          borderRight: '1.5px solid #121212',
-          transform: 'rotate(-0.4deg)',
-        }}>
+        <div 
+          className="love-letter-sheet"
+          style={{
+            position: 'relative',
+            maxWidth: '560px',
+            width: '100%',
+            marginTop: '10px',
+            backgroundColor: '#fffdf9',
+            padding: '24px 30px',
+            boxShadow: '0 14px 32px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0,0,0,0.06)',
+            borderLeft: '1.5px solid #121212',
+            borderRight: '1.5px solid #121212',
+            transform: 'rotate(-0.4deg)',
+            boxSizing: 'border-box',
+          }}
+        >
           {/* Top & Bottom Ripped Edges on Letter Sheet */}
           <TornEdgeTop color="#fffdf9" fiberColor="#ffffff" height={14} />
           <TornEdgeBottom color="#fffdf9" fiberColor="#ffffff" height={14} />
@@ -224,19 +237,22 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
       </div>
 
       {/* Footer Navigation Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderTop: '1.5px solid #121212',
-        paddingTop: '12px',
-      }}>
+      <div 
+        className="love-letter-footer"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderTop: '1.5px solid #121212',
+          paddingTop: '12px',
+        }}
+      >
         {/* Left: Circular Arrow Back Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <CircleArrowButton
             direction="prev"
             onClick={onPrev}
-            size={32}
+            size={28}
           />
           <span style={{
             fontFamily: "'Montserrat', sans-serif",
@@ -259,13 +275,16 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
           }}>
             02 / 03
           </span>
-          <span style={{
-            fontSize: '10px',
-            color: '#666',
-            fontFamily: "'Montserrat', sans-serif",
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-          }}>
+          <span 
+            className="love-letter-chapter-sub"
+            style={{
+              fontSize: '10px',
+              color: '#666',
+              fontFamily: "'Montserrat', sans-serif",
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+            }}
+          >
             • CHAPTER TWO
           </span>
         </div>
@@ -279,6 +298,38 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
           OUR PLAYLIST
         </EditorialButton>
       </div>
+
+      <style>{`
+        @media (max-width: 680px) {
+          .love-letter-page {
+            padding: 16px 14px 24px 14px !important;
+          }
+          .love-letter-header {
+            padding-bottom: 8px !important;
+          }
+          .love-letter-header span {
+            font-size: 10px !important;
+          }
+          .love-letter-sheet {
+            padding: 16px 14px !important;
+            margin-top: 6px !important;
+          }
+          .love-letter-sheet p {
+            font-size: 15px !important;
+            margin-bottom: 6px !important;
+          }
+          .love-letter-sheet div {
+            font-size: 15px !important;
+            line-height: 1.6 !important;
+          }
+          .love-letter-chapter-sub {
+            display: none !important;
+          }
+          .love-letter-footer {
+            padding-top: 10px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
