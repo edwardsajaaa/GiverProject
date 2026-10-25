@@ -1,157 +1,168 @@
 <div align="center">
 
-# GIVERPROJECT: Next-Gen 3D Web Sandbox
+# OUR LOVE CAPSULE 💌
+### Interactive Romantic Memory Capsule, Hi-Fi Vinyl Turntable & 3D Spatial Universe
 
-**Interactive 3D Diorama and Spatial World Builder running purely on WebGL, Three.js, and React.**
+**Sebuah karya seni web digital bertema *Torn Paper Scrapbook Aesthetic*, pemutar piringan hitam Hi-Fi vintage dengan dukungan audio internet, serta portal diorama 3D interaktif yang dilindungi enkripsi keamanan.**
 
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Three.js](https://img.shields.io/badge/Three.js-r170+-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
 [![React Three Fiber](https://img.shields.io/badge/R3F-v8.x-black?style=for-the-badge&logo=three.js&logoColor=white)](https://docs.pmnd.rs/react-three-fiber/)
 [![Vite](https://img.shields.io/badge/Vite-v7.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![WebGL 2.0](https://img.shields.io/badge/WebGL-2.0-990000?style=for-the-badge&logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
+[![Security: SHA-256 PIN](https://img.shields.io/badge/Security-SHA--256%20Lock-gold?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-[Fitur Utama](#fitur-utama) | [Sistem Biome](#1-sistem-kustomisasi-biome-dan-ruang-spasial) | [Art Style Engine](#2-universal-art-style-engine) | [Arsitektur GPU](#arsitektur-dan-optimalisasi-gpu) | [Pintasan Keyboard](#pintasan-keyboard-shortcuts) | [Instalasi](#instalasi-dan-menjalankan)
+[Fitur Utama](#-fitur-utama) | [Buku Jurnal 3 Bab](#-buku-jurnal-kenangan-3-bab) | [Pemutar Vinyl Hi-Fi](#-pemutar-piringan-hitam-vintage-hi-fi) | [Diorama 3D](#-semesta-diorama-3d-rahasia) | [Arsitektur Keamanan](#-arsitektur-keamanan--privasi) | [Instalasi](#-instalasi--menjalankan)
 
 ---
 
 </div>
 
-## Ringkasan Proyek
+## 📖 Tentang Proyek
 
-GIVERPROJECT adalah platform sandbox 3D interaktif berbasis peramban web yang dirancang dengan perpaduan visual imersif dan performa tinggi (low-spec GPU friendly). Pengguna dapat membangun, mendekorasi, menyesuaikan lingkungan spasial, serta memasukkan model 3D kustom secara langsung tanpa hambatan.
+**Our Love Capsule (GiverProject)** adalah pengalaman web editorial romantis berstandar galeri seni digital (*Awwwards / FWA Grade*). Proyek ini memadukan estetika fisik **Torn Paper Scrapbook & Mixed-Media Collage** (serat kertas robek, washi tape, lakban gaffer hitam, stempel pos vintage, dan tipografi haute couture) dengan **animasi fisika pegas fluida (*organic spring physics*)**, audio analog piringan hitam, serta **diorama 3D Three.js** berkinerja tinggi.
 
-Dibangun dengan prinsip efisiensi komputasi visual, platform ini menggabungkan antarmuka bertingkat kaca (visionOS-style glassmorphism) dengan mesin grafis Three.js dan React Three Fiber, menjamin kelancaran hingga 60 FPS pada laptop standar maupun perangkat seluler.
-
----
-
-## Fitur Utama
-
-### 1. Sistem Kustomisasi Biome dan Ruang Spasial
-Lingkungan spasial tidak terkunci pada satu bentuk dasar. Tersedia 5 pilihan lingkungan prosedural dengan alokasi memori efisien:
-* **Pulau Melayang (`floating_island`)**: Formasi bebatuan melayang di angkasa kosmik dengan danau kristal dan flora bioluminescent.
-* **Kota Cyberpunk (`cyber_city`)**: Rooftop plaza futuristik dengan panorama puluhan gedung pencakar langit berlampu (dioptimasi menggunakan `InstancedMesh` sehingga seluruh skyline dirender dalam 1 draw call tunggal).
-* **Puncak Gunung (`mountain_summit`)**: Puncak bebatuan bersalju alpine yang menjulang di atas lautan awan volumetrik.
-* **Alam Fantasi (`fantasy_realm`)**: Ruang kosmik dengan monolit kristal berputar, rune mistis, dan kolam violet bercahaya.
-* **Taman Zen (`zen_garden`)**: Taman pasir bergelombang khas Jepang dengan pembatas kayu jati, lentera batu, dan batu kali alam.
-
-### 2. Universal Art Style Engine
-Perubahan gaya visual dapat dilakukan secara instan:
-* **Low-Poly Modern**: Geometri bersih dengan palet minimalis kontemporer.
-* **Anime Cel-Shaded**: Pencahayaan kontras dengan karakter visual animasi Jepang.
-* **Retro 8-Bit 90s**: Shading datar tegas (flat shading) dengan estetika konsol game klasik era 90-an.
-* **Synthwave Neon**: Nuansa retrowave outrun dengan saturasi magenta dan cyan elektrik.
-* **Realistic PBR**: Pantulan permukaan logam dan pencahayaan fisik alami.
-
-### 3. Studio Altar dan Penyimpanan Model 3D Mandiri (IndexedDB)
-* **Kustomisasi Altar Pusat**: Pilihan geometri inti (Kubus Cyber, Bola Plasma, Cincin Quantum, Piramida Kristal, dan lainnya) dengan aneka material (Holographic, Chrome, Glass, Wireframe).
-* **Upload File 3D Mandiri**: Dukungan format standar industri `.glb` dan `.gltf`.
-* **Drag and Drop Langsung**: Pengguna dapat menarik file 3D langsung dari Desktop atau File Explorer ke kanvas browser.
-* **Preservasi Tekstur dan Material**: Mesin render mempertahankan tekstur asli, UV mapping, dan material bawaan model tanpa proses penimpaan destruktif.
-* **Penyimpanan Lokal Permanen**: File 3D disimpan secara lokal ke dalam IndexedDB browser, memungkinkan model berukuran puluhan megabyte tetap tersimpan saat halaman dimuat ulang.
-
-### 4. Alat Konstruksi dan Interaktivitas
-* **Sistem Snap-to-Grid**: Penataan presisi dengan resolusi grid 0.5 meter dan 1.0 meter.
-* **Transform Gizmo**: Mode Geser (T), Putar (R), dan Skala (S) untuk setiap objek yang diletakkan.
-* **Papan Pesan Interaktif**: Setiap objek dapat disematkan pesan teks yang muncul saat objek disentuh atau diklik dalam ruang 3D.
-* **Sistem Undo / Redo**: Riwayat snapshot hingga 25 langkah perubahan (Ctrl+Z dan Ctrl+Y).
-* **Ekspor dan Impor JSON**: Penyimpanan dan pemuatan kembali seluruh susunan diorama dalam format file JSON portabel.
-* **Mode Foto Resolusi Tinggi**: Pengambilan gambar kanvas 3D langsung dari buffer WebGL.
+Didesain khusus untuk mengabadikan momen berharga bersama pasangan, menyampaikan surat cinta penuh makna, memutar lagu-lagu kenangan (*Wave to Earth, Daniel Caesar, Rex Orange County, dll.*), dan menjelajahi pulau rahasia kenangan berdua dalam ruang tiga dimensi.
 
 ---
 
-## Arsitektur dan Optimalisasi GPU
-
-Aplikasi ini dirancang untuk mengatasi kendala performa dan panas berlebih pada unit pemroses grafis terintegrasi (Intel UHD/Iris, AMD Radeon Vega/RDNA, serta GPU mobile):
+## ✨ Fitur Utama
 
 ```
-+--------------------------------------------------------+
-|                   MAIN 3D VIEWPORT                     |
-+---------------------------+----------------------------+
-|      HIGH GPU TIER        |       ECO GPU TIER         |
-+---------------------------+----------------------------+
-| * Full Post-Processing    | * Post-Processing BYPASSED |
-| * Screen-space Bloom      | * Hardware ACES Filmic TM  |
-| * Soft Directional Shadow | * Shadows disabled         |
-| * 22.000 Galaxy Stars     | * 6.000 Galaxy Stars       |
-| * Device Pixel Ratio 1.25 | * Clamped DPR 1.0          |
-+---------------------------+----------------------------+
++-------------------------------------------------------------------------------+
+|                             OUR LOVE CAPSULE                                  |
++-------------------------------------------------------------------------------+
+|  1. WAX ENVELOPE       -> Segel lilin berderak, engsel 3D, kartu terangkat    |
+|  2. CHAPTER 1 GALLERY  -> Polaroid 3D tilt, kilau cahaya, lightbox zoom       |
+|  3. CHAPTER 2 LETTER   -> Kertas robek, watermark monogram, kustomisasi lirik|
+|  4. CHAPTER 3 VINYL    -> 6 Album, Drag & Drop, streaming MP3, VU meter       |
+|  5. 3D SECRET ISLAND   -> Diorama WebGL, studio altar SVG, kustomisasi biome  |
+|  6. LOVE LOCK SECURITY -> PIN SHA-256, anti brute-force, anti-XSS & CSP       |
++-------------------------------------------------------------------------------+
 ```
-
-1. **Dual-Tier Hardware Scaler**: Pengguna dapat mengubah mode performa melalui Telemetry Badge di pojok kiri atas:
-   - **GPU: ECO**: Mem-bypass seluruh pass komposit EffectComposer, meniadakan kalkulasi bayangan berat, dan mengandalkan hardware tone mapping. Mengurangi beban komputasi GPU hingga 70%.
-   - **GPU: HIGH**: Mengaktifkan Bloom halus, Vignette sinematik, dan penyaringan bayangan lembut.
-2. **Auto-Throttle Protection**: Apabila FPS terdeteksi berada di bawah ambang batas 24 FPS secara berkelanjutan, sistem otomatis menurunkan beban komputasi ke tier ECO.
-3. **Zero-Allocation Runtime**: Objek Three.Color, matriks transformasi, dan vektor dikalkulasi secara statis pada level modul guna mencegah lonjakan Garbage Collection (GC stutter).
-4. **Instanced Rendering**: Puluhan hingga ratusan objek geometris sejenis digabungkan ke dalam satu InstancedMesh untuk menekan jumlah draw call.
-5. **Canvas Error Boundary**: Proteksi WebGL Context Loss otomatis untuk memulihkan sesi render tanpa menyebabkan crash layar putih (WSOD).
 
 ---
 
-## Pintasan Keyboard (Shortcuts)
+## 💌 Buku Jurnal Kenangan (3 Bab)
+
+Buku jurnal dirancang dengan efek **balik lembaran halaman 3D (*paper page flip*)** dengan sumbu kiri autentik:
+
+### 1. Chapter One: Galeri Foto Polaroid Editorial
+* **Polaroid Bertingkat dengan Lakban Realistis**: Susunan foto berkarakter film hangat dengan lakban gaffer hitam dan selotip washi translusen.
+* **Interaktivitas 3D Tilt & Specular Sheen**: Mengarahkan kursor memiringkan foto dalam perspektif 3D dengan sapuan kilau pantulan cahaya di permukaan kaca foto.
+* **Ganti Foto Mandiri**: Mendukung pengunggahan foto kenangan pribadi langsung dari perangkat dengan validasi format dan proteksi kebocoran memori RAM.
+* **Lightbox Spring Pop**: Klik pada polaroid memperbesar foto secara elegan dengan efek latar belakang blur lembut.
+
+### 2. Chapter Two: Lembaran Surat Cinta Kertas Robek
+* **Parchment Paper dengan Serat Robek**: Serat kertas bagian atas dan bawah yang terpotong acak (*deckle edges*) dengan aksen kaligrafi romantis.
+* **Watermark Monogram**: Simbol monogram tipis yang elegan di sudut kertas.
+* **Kustomisasi Pesan Langsung**: Tombol `✎ CUSTOMIZE MESSAGE` memungkinkan pengguna menuliskan surat cinta personal yang langsung tersimpan secara aman.
+
+### 3. Chapter Three: Pemutar Piringan Hitam Vintage Hi-Fi
+* **6 Koleksi Vinyl Eksklusif**:
+  1. *Mac Miller ft. Bilal – Congratulations*
+  2. *Wave to Earth – Seasons*
+  3. *Daniel Caesar ft. H.E.R. – Best Part*
+  4. *Laufey – From the Start*
+  5. *Taylor Swift – Lover*
+  6. *Rex Orange County – Pluto Projector*
+* **Dukungan Plug & Play serta Drag & Drop**: Tarik piringan hitam langsung ke turntable atau klik untuk memuat lagu dengan animasi transisi melayang (*fluid floating motion*).
+* **Alat Kustomisasi Lagu Internet**: Tombol `✎ GANTI / EDIT LAGU INI` memungkinkan memasukkan **URL Audio MP3 dari internet**, memilih preset lagu cepat, atau mengunggah audio sendiri dari perangkat.
+* **Visualizer Equalizer Analog (VU Meter)**: 4 bilah equalizer analog menari dinamis mengikuti alunan musik.
+* **Suara Otentik Piringan Hitam**: Disertai efek suara dentuman jarum mendarat (*needle drop*) dan desis hangat vinyl (*analog crackle*).
+
+---
+
+## 🏝️ Semesta Diorama 3D Rahasia
+
+Pengguna dapat menekan tombol `ENTER 3D WORLD ⟶` untuk melangkah masuk ke dalam diorama pulau cinta 3D:
+
+* **Studio Objek Utama Altar Tanpa Emoji**: Seluruh antarmuka menggunakan **ikon vektor SVG presisi** (Kubus Geometri, Bola Celestial, Cincin Orbital, Piramida Kristal, Stellar Dodeca, dan Pilar Monolit).
+* **Unggah Model 3D Kustom**: Mendukung import file `.glb`, `.gltf`, `.fbx`, dan `.obj` yang disimpan permanen di IndexedDB lokal browser.
+* **Kustomisasi Biome & Gaya Visual**:
+  - *Biome*: Pulau Melayang, Kota Cyberpunk, Puncak Gunung, Alam Fantasi, dan Taman Zen.
+  - *Gaya Seni*: Low-Poly Modern, Anime Cel-Shaded, Retro 8-Bit 90s, Synthwave Neon, dan Realistic PBR.
+* **Sistem Dekorasi & Transform Gizmo**: Geser (T), Putar (R), dan Skala (S) objek dekorasi dengan penataan grid magnetik presisi (*Snap-to-Grid*).
+* **Pesan Rahasia Tersembunyi**: Sematkan pesan kado manis pada objek 3D yang dapat dibaca saat disentuh.
+* **Suasana Siang & Malam Romantis**: Beralih dari siang hari yang cerah ke malam berbintang dengan pencahayaan hangat.
+
+---
+
+## 🛡️ Arsitektur Keamanan & Privasi
+
+Website ini dilengkapi modul keamanan mutakhir ([securityEngine.js](src/utils/securityEngine.js)) untuk melindungi privasi kenangan:
+
+1. **Gembok Cinta PIN Rahasia (Love Lock)**:
+   - Akses kapsul dapat dikunci dengan PIN 4-6 digit (contoh: tanggal jadian / ulang tahun).
+   - Menggunakan hashing kriptografis **SHA-256** (*irreversible one-way hash*).
+   - **Sliding-Window Rate Limiting**: Proteksi anti brute-force otomatis memblokir input selama 30 detik setelah 5 kali kesalahan beruntun.
+2. **Pertahanan Anti-XSS (Cross-Site Scripting)**:
+   - Sanitasi teks ketat menghapus tag `<script>`, atribut `javascript:`, event handler `onload/onerror`, dan entitas HTML berbahaya.
+3. **Pembersihan Prototype Pollution**:
+   - Sanitasi rekursif pada impor file JSON menolak kunci berbahaya seperti `__proto__`, `constructor`, dan `prototype`.
+4. **Validasi Berkas Aman**:
+   - Pengecekan ketat tipe MIME dan pembatasan ukuran berkas gambar (8MB) dan audio (30MB).
+5. **Kebijakan Keamanan Konten (Content Security Policy - CSP)**:
+   - Dilengkapi header CSP ketat pada `index.html` dengan flag `X-Content-Type-Options: nosniff` dan `Referrer-Policy: strict-origin-when-cross-origin`.
+
+---
+
+## 📱 Responsivitas Seluler (Mobile Optimization)
+
+Aplikasi dirancang responsif secara penuh dari layar ponsel pintar Android dan iPhone (360px – 430px) hingga layar monitor desktop lebar:
+* Susunan grid polaroid dan vinyl otomatis bertransisi ke tampilan satu/tiga kolom ramah sentuhan.
+* Ukuran tombol dan bantalan sentuh dioptimasi untuk jemari ponsel tanpa distorsi visual.
+* Pengoptimalan memori dan rendering GPU memastikan performa mulus hingga 60 FPS pada perangkat seluler.
+
+---
+
+## ⌨️ Pintasan Keyboard (Shortcuts)
 
 | Tombol | Fungsi |
 | :--- | :--- |
-| `Ctrl + Z` | Batalkan aksi terakhir (Undo) |
-| `Ctrl + Y` / `Ctrl + Shift + Z` | Ulangi aksi (Redo) |
+| `Space` | Play / Pause lagu vinyl atau rotasi kamera 3D |
+| `Ctrl + Z` | Batalkan penataan objek 3D terakhir (Undo) |
+| `Ctrl + Y` / `Ctrl + Shift + Z` | Ulangi penataan objek 3D (Redo) |
 | `Delete` / `Backspace` | Hapus objek 3D yang sedang dipilih |
-| `Space` | Jeda atau lanjutkan rotasi otomatis kamera (Auto-Rotate) |
-| `T` | Aktifkan mode transformasi Geser (Translate) |
-| `R` | Aktifkan mode transformasi Putar (Rotate) |
-| `S` | Aktifkan mode transformasi Skala (Scale) |
-| `Escape` | Batalkan seleksi objek aktif atau tutup jendela modal |
+| `T` | Mode transformasi Geser (Translate) |
+| `R` | Mode transformasi Putar (Rotate) |
+| `S` | Mode transformasi Skala (Scale) |
 
 ---
 
-## Instalasi dan Menjalankan
+## 🚀 Instalasi & Menjalankan
 
-### Kebutuhan Sistem
-* Node.js versi 18.x atau lebih baru
-* Peramban modern dengan dukungan WebGL 2.0 (Google Chrome, Microsoft Edge, Brave, Firefox, Safari)
+### Kebutuhan Sistem:
+* [Node.js](https://nodejs.org/) versi 18 atau lebih tinggi
+* npm atau yarn / pnpm
 
-### Langkah Pemasangan
+### Langkah Menjalankan:
 
-1. **Clone Repositori**:
-   ```bash
-   git clone https://github.com/edwardsajaaa/GiverProject.git
-   cd GiverProject
-   ```
+```bash
+# 1. Clone repository
+git clone https://github.com/edwardsajaaa/GiverProject.git
 
-2. **Pasang Dependensi**:
-   ```bash
-   npm install
-   ```
+# 2. Masuk ke direktori proyek
+cd GiverProject
 
-3. **Jalankan Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Buka peramban di alamat `http://localhost:5173`.
+# 3. Pasang seluruh dependensi
+npm install
 
-4. **Verifikasi Kualitas Kode (Linting)**:
-   ```bash
-   npm run lint
-   ```
+# 4. Jalankan server pengembangan lokal
+npm run dev
+```
 
-5. **Kompilasi Produksi (Build)**:
-   ```bash
-   npm run build
-   ```
+Buka peramban web dan akses `http://localhost:5173/`.
+
+### Membangun Versi Produksi:
+```bash
+npm run build
+```
+Hasil build produksi siap rilis akan berada pada direktori `dist/`.
 
 ---
 
-## Tech Stack dan Ekosistem
+## 📄 Lisensi
 
-* **Core Runtime**: React 18, Vite
-* **3D Engine**: Three.js (r170+)
-* **Declarative 3D**: @react-three/fiber
-* **3D Helpers dan Controls**: @react-three/drei
-* **Post-Processing Pipeline**: @react-three/postprocessing
-* **Audio Synthesis**: Native Web Audio API (Synthesizer prosedural tanpa dependensi aset file suara)
-* **Local Persistence**: Browser IndexedDB API dan Web Storage API
-
----
-
-## Lisensi
-
-Proyek ini dirilis di bawah lisensi [MIT](LICENSE). Terbuka untuk eksplorasi, pembelajaran, dan pengembangan perangkat lunak visual 3D berbasis web.
+Proyek ini dilisensikan di bawah lisensi **MIT License** - bebas digunakan dan disesuaikan untuk hadiah kenangan personal maupun pengembangan kreatif.
