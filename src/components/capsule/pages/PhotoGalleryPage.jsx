@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SecurityEngine } from '../../../utils/securityEngine';
 import {
   TornScrap,
   WashiTape,
@@ -45,12 +46,32 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
 
   const handlePhotoUpload = (index, e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const newUrl = URL.createObjectURL(file);
-      const updated = [...photos];
-      updated[index] = { ...updated[index], url: newUrl };
-      setPhotos(updated);
+    if (!file) return;
+
+    // Strict file type and size validation
+    const validation = SecurityEngine.validateFile(file, {
+      allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+      maxSizeBytes: 8 * 1024 * 1024 // 8MB
+    });
+
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
     }
+
+    // Revoke previous blob URL if exists to prevent memory leak DoS
+    if (photos[index]?.url && photos[index].url.startsWith('blob:')) {
+      try {
+        URL.revokeObjectURL(photos[index].url);
+      } catch {
+        /* ignore */
+      }
+    }
+
+    const newUrl = URL.createObjectURL(file);
+    const updated = [...photos];
+    updated[index] = { ...updated[index], url: newUrl };
+    setPhotos(updated);
   };
 
   return (
