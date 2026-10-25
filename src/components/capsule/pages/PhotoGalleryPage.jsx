@@ -54,26 +54,32 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
   };
 
   return (
-    <div style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      padding: '24px 34px',
-      boxSizing: 'border-box',
-      position: 'relative',
-      fontFamily: "'Cormorant Garamond', serif",
-      color: '#121212',
-    }}>
-      {/* Top Editorial Header */}
-      <div style={{
+    <div 
+      className="photo-gallery-page"
+      style={{
+        width: '100%',
+        minHeight: '100%',
         display: 'flex',
-        alignItems: 'center',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        borderBottom: '1.5px solid #121212',
-        paddingBottom: '10px',
-      }}>
+        padding: '24px 34px',
+        boxSizing: 'border-box',
+        position: 'relative',
+        fontFamily: "'Cormorant Garamond', serif",
+        color: '#121212',
+      }}
+    >
+      {/* Top Editorial Header */}
+      <div 
+        className="photo-gallery-header"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: '1.5px solid #121212',
+          paddingBottom: '10px',
+        }}
+      >
         {/* Left Date / Issue Number on Torn Paper Chip */}
         <TornScrap rotate={-2} style={{ padding: '4px 12px', backgroundColor: '#fffdfa' }}>
           <span style={{
@@ -156,14 +162,17 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
       </div>
 
       {/* Middle Photo Gallery Grid (Mixed-Media Torn Collage with Red Paint Splash) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '22px',
-        margin: '14px 0',
-        alignItems: 'center',
-        position: 'relative',
-      }}>
+      <div 
+        className="photo-gallery-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '22px',
+          margin: '14px 0',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
         {photos.map((item, idx) => (
           <div
             key={item.id}
@@ -331,13 +340,16 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
       </div>
 
       {/* Footer Navigation Bar with Streetwear Editorial Style */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderTop: '1.5px solid #121212',
-        paddingTop: '12px',
-      }}>
+      <div 
+        className="photo-gallery-footer"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderTop: '1.5px solid #121212',
+          paddingTop: '12px',
+        }}
+      >
         {/* Left: Minimal Edition Stamp */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
@@ -361,13 +373,16 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
         </div>
 
         {/* Center: Dedication */}
-        <span style={{
-          fontStyle: 'italic',
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: '16px',
-          color: '#121212',
-          letterSpacing: '0.5px',
-        }}>
+        <span 
+          className="photo-gallery-dedication"
+          style={{
+            fontStyle: 'italic',
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: '16px',
+            color: '#121212',
+            letterSpacing: '0.5px',
+          }}
+        >
           made with love by {authorName}
         </span>
 
@@ -434,6 +449,34 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
       <style>{`
         div:hover .photo-edit-btn {
           opacity: 1 !important;
+        }
+
+        @media (max-width: 680px) {
+          .photo-gallery-page {
+            padding: 16px 14px 24px 14px !important;
+          }
+          .photo-gallery-grid {
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
+            margin: 16px 0 !important;
+            justify-items: center !important;
+          }
+          .photo-gallery-grid > div {
+            width: 100% !important;
+            max-width: 270px !important;
+          }
+          .photo-gallery-header {
+            padding-bottom: 8px !important;
+          }
+          .photo-gallery-header span {
+            font-size: 10px !important;
+          }
+          .photo-gallery-dedication {
+            display: none !important;
+          }
+          .photo-gallery-footer {
+            padding-top: 10px !important;
+          }
         }
       `}</style>
     </div>
