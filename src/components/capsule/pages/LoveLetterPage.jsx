@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SecurityEngine } from '../../../utils/securityEngine';
 import {
   TornScrap,
   WashiTape,
@@ -179,7 +180,7 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
           {isEditing ? (
             <textarea
               value={letterText}
-              onChange={(e) => setLetterText(e.target.value)}
+              onChange={(e) => setLetterText(SecurityEngine.sanitizeText(e.target.value, 1500))}
               rows={6}
               style={{
                 width: '100%',
