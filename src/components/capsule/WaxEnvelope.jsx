@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { capsuleAudio } from './audio/capsuleAudio';
+import { LoveLockModal, LoveLockManager } from './LoveLockModal';
 
 export function WaxEnvelope({ onOpen }) {
   const [isOpening, setIsOpening] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [showLockModal, setShowLockModal] = useState(false);
+  const [lockMode, setLockMode] = useState('unlock');
+  const [isLocked, setIsLocked] = useState(() => LoveLockManager.isLockEnabled());
 
-  const handleBreakSeal = (e) => {
-    e.stopPropagation();
-    if (isOpening) return;
+  const proceedBreakSeal = () => {
     setIsOpening(true);
 
     // Audio SFX
@@ -29,6 +31,20 @@ export function WaxEnvelope({ onOpen }) {
     setTimeout(() => {
       onOpen();
     }, 1200);
+  };
+
+  const handleBreakSeal = (e) => {
+    e.stopPropagation();
+    if (isOpening) return;
+
+    // Check if Love Lock is enabled
+    if (LoveLockManager.isLockEnabled()) {
+      setLockMode('unlock');
+      setShowLockModal(true);
+      return;
+    }
+
+    proceedBreakSeal();
   };
 
   return (
@@ -375,23 +391,70 @@ export function WaxEnvelope({ onOpen }) {
           ))}
         </div>
 
-        {/* Footer Subtitle */}
+        {/* Footer Subtitle & Security Love Lock Badge */}
         <div style={{
           textAlign: 'center',
           marginTop: 'auto',
           marginBottom: '10px',
           zIndex: 5,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px',
         }}>
+          <button
+            onClick={() => {
+              setLockMode('setup');
+              setShowLockModal(true);
+            }}
+            style={{
+              background: isLocked ? 'rgba(166, 19, 36, 0.45)' : 'rgba(255, 255, 255, 0.08)',
+              border: isLocked ? '1px solid rgba(225, 29, 72, 0.5)' : '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '2px',
+              color: isLocked ? '#ffccd5' : 'rgba(255, 255, 255, 0.65)',
+              fontSize: '10px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 700,
+              padding: '4px 10px',
+              letterSpacing: '1px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <span>{isLocked ? '🔒 TERKUNCI PIN (AMAN)' : '🔒 ATUR GEMBOK PIN'}</span>
+          </button>
+
           <p style={{
-            fontSize: '12px',
-            color: 'rgba(255, 255, 255, 0.45)',
+            fontSize: '11px',
+            color: 'rgba(255, 255, 255, 0.4)',
             letterSpacing: '1px',
             fontFamily: "'Montserrat', sans-serif",
+            margin: 0,
           }}>
             a special gift for someone dear
           </p>
         </div>
       </div>
+
+      {/* Love Lock Security Modal */}
+      <LoveLockModal
+        isOpen={showLockModal}
+        mode={lockMode}
+        onClose={() => {
+          setShowLockModal(false);
+          setIsLocked(LoveLockManager.isLockEnabled());
+        }}
+        onUnlocked={() => {
+          setShowLockModal(false);
+          setIsLocked(LoveLockManager.isLockEnabled());
+          proceedBreakSeal();
+        }}
+      />
 
       <style>{`
         @keyframes fadeBurst {
