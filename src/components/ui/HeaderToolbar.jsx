@@ -169,23 +169,6 @@ export function HeaderToolbar({
 
         <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
-        {/* Altar / Centerpiece Studio */}
-        <button 
-          onClick={() => { if (setCentralModalOpen) { setCentralModalOpen(true); SoundEngine.playPop(); } }} 
-          title="Studio Centerpiece" 
-          style={{
-            ...btnBaseStyle,
-            backgroundColor: isNight ? '#262626' : '#fffdf9',
-            border: '1px solid #121212',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        >
-          ✦ {getHeroLabel().toUpperCase()}
-        </button>
-
         {/* Dunia & Gaya (Vibrant Crimson Torn Block) */}
         <button 
           onClick={() => { if (setWorldModalOpen) { setWorldModalOpen(true); SoundEngine.playPop(); } }} 

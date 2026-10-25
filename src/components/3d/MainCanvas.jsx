@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { RealTimeAnalytics } from '../ui/TelemetryBadge';
 import { AtmosphericEnvironment } from './AtmosphericEnvironment';
 import { WorldEnvironment } from './biomes/WorldEnvironment';
-import { CentralHeroObject } from './CentralHeroObject';
 import { DynamicLights } from './DynamicLights';
 import { PlacedObjectWrapper } from './InteractiveObjects';
 import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
@@ -69,17 +68,7 @@ export function MainCanvas({
       <AtmosphericEnvironment timeMode={timeMode} isLowEnd={performanceTier === 'low'} />
       <DynamicLights timeMode={timeMode} placedObjects={placedObjects} isLowEnd={performanceTier === 'low'} />
       <WorldEnvironment biome={biome} artStyle={artStyle} timeMode={timeMode} onGroundTap={handleGroundTap} />
-      
-      <CentralHeroObject
-        centralObjectType={centralObjectType}
-        centralObjectColor={centralObjectColor}
-        centralObjectMaterial={centralObjectMaterial}
-        centralObjectScale={centralObjectScale}
-        centralObjectUrl={centralObjectUrl}
-        centralObjectName={centralObjectName}
-        setCentralModalOpen={setCentralModalOpen}
-        artStyle={artStyle}
-      />
+
 
       {placedObjects.map((obj) => (
         <PlacedObjectWrapper
