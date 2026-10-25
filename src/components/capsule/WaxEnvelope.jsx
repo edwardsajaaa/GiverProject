@@ -247,7 +247,7 @@ export function WaxEnvelope({ onOpen }) {
             }} />
           </div>
 
-          {/* The Inner Letter Card (slides up with Torn Paper Deckle Edge) */}
+          {/* The Inner Letter Card (slides up smoothly with natural spring damping) */}
           <div style={{
             position: 'absolute',
             top: '15px',
@@ -255,10 +255,10 @@ export function WaxEnvelope({ onOpen }) {
             right: '20px',
             height: '150px',
             backgroundColor: '#fbf8f3',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.25)',
+            boxShadow: isOpening ? '0 20px 45px rgba(0,0,0,0.45)' : '0 4px 15px rgba(0,0,0,0.25)',
             zIndex: isOpening ? 5 : 1,
-            transform: isOpening ? 'translateY(-95px) scale(1.05)' : 'translateY(0)',
-            transition: 'transform 0.9s cubic-bezier(0.25, 1, 0.5, 1)',
+            transform: isOpening ? 'translateY(-110px) scale(1.06)' : 'translateY(0)',
+            transition: 'transform 1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s ease',
             padding: '16px',
             display: 'flex',
             flexDirection: 'column',
@@ -289,7 +289,7 @@ export function WaxEnvelope({ onOpen }) {
             </span>
           </div>
 
-          {/* Top Flap (Flips open upwards) */}
+          {/* Top Flap (Flips open upwards with realistic 3D paper hinge motion) */}
           <div style={{
             position: 'absolute',
             top: 0,
@@ -301,17 +301,17 @@ export function WaxEnvelope({ onOpen }) {
             borderColor: '#941927 transparent transparent transparent',
             transformOrigin: 'top center',
             transform: isOpening ? 'rotateX(180deg)' : 'rotateX(0deg)',
-            transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: 'transform 0.85s cubic-bezier(0.34, 1.25, 0.64, 1)',
             zIndex: isOpening ? 2 : 4,
-            filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.3))',
+            filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.35))',
           }} />
 
-          {/* Authentic Embossed Wax Seal Medallion */}
+          {/* Authentic Embossed Wax Seal Medallion with Crack Fissure on Break */}
           <div style={{
             position: 'absolute',
             top: '90px',
             left: '50%',
-            transform: `translate(-50%, -50%) ${isOpening ? 'scale(0.7) rotate(25deg)' : hovered ? 'scale(1.08)' : 'scale(1)'}`,
+            transform: `translate(-50%, -50%) ${isOpening ? 'scale(0.85) rotate(-18deg) translateY(12px)' : hovered ? 'scale(1.08)' : 'scale(1)'}`,
             width: '56px',
             height: '56px',
             borderRadius: '50%',
@@ -323,7 +323,8 @@ export function WaxEnvelope({ onOpen }) {
             justifyContent: 'center',
             zIndex: 6,
             opacity: isOpening ? 0 : 1,
-            transition: 'all 0.5s ease',
+            transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+            overflow: 'hidden',
           }}>
             {/* Wax Edge Drips / Irregularity */}
             <div style={{
@@ -333,15 +334,31 @@ export function WaxEnvelope({ onOpen }) {
               background: 'radial-gradient(circle, transparent 65%, rgba(138, 90, 26, 0.6) 80%)',
               pointerEvents: 'none',
             }} />
+
             {/* Seal Monogram Heart */}
             <span style={{
               color: '#422405',
               fontSize: '22px',
               textShadow: '0 1px 1px rgba(255,255,255,0.4)',
               transform: 'translateY(-1px)',
+              userSelect: 'none',
             }}>
               ❦
             </span>
+
+            {/* Crack fissure splinter line */}
+            {isOpening && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: '50%',
+                width: '3px',
+                backgroundColor: '#301802',
+                transform: 'translateX(-50%) rotate(22deg)',
+                boxShadow: '0 0 4px #000',
+              }} />
+            )}
           </div>
 
           {/* Interactive Tap Hint below wax */}
