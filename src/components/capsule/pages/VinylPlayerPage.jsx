@@ -373,23 +373,21 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
                 height: '172px',
                 borderRadius: '50%',
                 background: 'radial-gradient(circle, #242424 0%, #111111 55%, #050505 100%)',
-                boxShadow: '0 6px 18px rgba(0,0,0,0.7)',
+                boxShadow: isPlaying 
+                  ? '0 8px 24px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06)' 
+                  : '0 4px 14px rgba(0,0,0,0.6)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 zIndex: 5,
-                // Motion Animation: Insertion, Ejection, and Rotation
-                transform: isEjecting
-                  ? 'translateX(120px) scale(0.6) rotate(90deg)'
+                animation: isEjecting
+                  ? 'vinylDiscFloatOut 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards'
                   : isInserting
-                    ? 'translateX(-120px) scale(0.6) rotate(-90deg)'
+                    ? 'vinylDiscFloatIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards'
                     : isPlaying
-                      ? 'scale(1) rotate(0deg)'
-                      : 'scale(1) rotate(0deg)',
-                opacity: isEjecting ? 0 : 1,
-                transition: 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease',
-                animation: isPlaying && !isInserting && !isEjecting ? 'spinVinylMotion 3s linear infinite' : 'none',
+                      ? 'spinVinylSmooth 2.8s linear infinite'
+                      : 'none',
               }}
               title="Click to Play / Pause"
             >
@@ -408,13 +406,14 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
                 `,
               }} />
 
-              {/* Shimmer Light Reflection on Vinyl (Rotates with vinyl) */}
+              {/* Shimmer Light Reflection on Vinyl (Rotates with dynamic iridescent sweep) */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 borderRadius: '50%',
-                background: 'conic-gradient(from 45deg, transparent 0deg, rgba(255,255,255,0.08) 45deg, transparent 90deg, rgba(255,255,255,0.08) 225deg, transparent 270deg)',
+                background: 'conic-gradient(from 45deg, transparent 0deg, rgba(255,255,255,0.11) 45deg, transparent 90deg, rgba(255,255,255,0.11) 225deg, transparent 270deg)',
                 pointerEvents: 'none',
+                animation: isPlaying && !isInserting && !isEjecting ? 'spinDiscShimmer 4s ease-in-out infinite alternate' : 'none',
               }} />
 
               {/* Center Record Label with Album Art */}
@@ -468,9 +467,9 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             width: '28px',
             height: '130px',
             transformOrigin: 'top center',
-            // When playing: swings over vinyl; when paused: rests outside
-            transform: isPlaying && !isInserting && !isEjecting ? 'rotate(24deg)' : 'rotate(-2deg)',
-            transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            // When playing: swings smoothly over vinyl; when paused: rests outside
+            transform: isPlaying && !isInserting && !isEjecting ? 'rotate(24.5deg)' : 'rotate(-2deg)',
+            transition: 'transform 0.85s cubic-bezier(0.22, 1, 0.36, 1)',
             zIndex: 20,
             pointerEvents: 'none',
           }}>
@@ -479,9 +478,9 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
               width: '24px',
               height: '24px',
               borderRadius: '50%',
-              backgroundColor: '#404040',
-              border: '2px solid #666',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.6)',
+              backgroundColor: '#38383a',
+              border: '2px solid #555',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.2)',
               margin: '0 auto',
             }} />
             {/* Metal Arm Shaft */}
@@ -490,20 +489,35 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
               height: '95px',
               backgroundColor: '#d1d1d1',
               margin: '-2px auto 0',
-              boxShadow: '1px 1px 3px rgba(0,0,0,0.5)',
-              backgroundImage: 'linear-gradient(to right, #999, #eee, #888)',
+              boxShadow: '1px 1px 4px rgba(0,0,0,0.6)',
+              backgroundImage: 'linear-gradient(to right, #888, #fff, #777)',
+              transition: 'transform 0.3s ease',
+              transform: isPlaying ? 'translateY(0)' : 'translateY(-2px)',
             }} />
-            {/* Cartridge & Needle Head */}
+            {/* Cartridge & Needle Head with Active Ruby Glow */}
             <div style={{
               width: '10px',
               height: '18px',
-              backgroundColor: '#a61324',
+              backgroundColor: isPlaying ? '#c8102e' : '#a61324',
               borderRadius: '2px',
               margin: '0 auto',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.6)',
+              boxShadow: isPlaying 
+                ? '0 0 10px rgba(225, 29, 72, 0.9), 0 2px 4px rgba(0,0,0,0.6)' 
+                : '0 2px 4px rgba(0,0,0,0.6)',
               transform: 'rotate(10deg)',
               border: '1px solid #ffffff',
-            }} />
+              transition: 'all 0.3s ease',
+            }}>
+              {/* Needle Tip Indicator */}
+              <div style={{
+                width: '2px',
+                height: '3px',
+                backgroundColor: isPlaying ? '#ffffff' : '#ffd700',
+                margin: '12px auto 0',
+                borderRadius: '50%',
+                boxShadow: isPlaying ? '0 0 4px #fff' : 'none',
+              }} />
+            </div>
           </div>
 
           {/* Controls Bar on Front of Turntable */}
@@ -528,21 +542,34 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
                 letterSpacing: '1px',
                 cursor: 'pointer',
                 borderRadius: '2px',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
-                transition: 'all 0.2s ease',
+                boxShadow: isPlaying ? '0 0 12px rgba(166, 19, 36, 0.5)' : '0 2px 6px rgba(0,0,0,0.4)',
+                transition: 'all 0.25s ease',
               }}
             >
               {isPlaying ? '❚❚ PAUSE' : '▶ START'}
             </button>
 
-            <span style={{
-              fontFamily: "'Montserrat', sans-serif",
-              fontSize: '10px',
-              color: '#888',
-              letterSpacing: '1px',
-            }}>
-              33 ⅓ RPM • HI-FI
-            </span>
+            {/* Dynamic Analog VU EQ Visualizer Bars & RPM Indicator */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '10px',
+                color: isPlaying ? '#ffccd5' : '#888',
+                letterSpacing: '1px',
+                transition: 'color 0.3s',
+              }}>
+                33 ⅓ RPM • HI-FI
+              </span>
+
+              {isPlaying && (
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '14px' }}>
+                  <div style={{ width: '2px', height: '10px', backgroundColor: '#a61324', borderRadius: '1px', animation: 'vuBar1 0.45s ease-in-out infinite alternate' }} />
+                  <div style={{ width: '2px', height: '14px', backgroundColor: '#e11d48', borderRadius: '1px', animation: 'vuBar2 0.35s ease-in-out infinite alternate' }} />
+                  <div style={{ width: '2px', height: '7px', backgroundColor: '#f43f5e', borderRadius: '1px', animation: 'vuBar3 0.5s ease-in-out infinite alternate' }} />
+                  <div style={{ width: '2px', height: '11px', backgroundColor: '#fb7185', borderRadius: '1px', animation: 'vuBar4 0.4s ease-in-out infinite alternate' }} />
+                </div>
+              )}
+            </div>
 
             <button
               onClick={handleEject}
@@ -566,10 +593,14 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           </div>
         </div>
 
-        {/* Right: Dynamic Lyric Clipping Card on Torn Paper Scrap */}
+        {/* Right: Dynamic Lyric Clipping Card on Torn Paper Scrap with Page Flip Transition */}
         <div 
           className="vinyl-lyrics-note"
-          style={{ position: 'relative' }}
+          key={loadedTrackId}
+          style={{
+            position: 'relative',
+            animation: 'lyricCardReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          }}
         >
           <WashiTape top="-10px" left="20px" width="70px" rotate={-2} color="rgba(255, 235, 205, 0.85)" />
           <BlackTape top="-8px" right="20px" width="60px" rotate={3} />
@@ -579,7 +610,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             bgColor="#fffdfa"
             style={{
               padding: '18px 22px',
-              boxShadow: '0 10px 26px rgba(0,0,0,0.12)',
+              boxShadow: '0 12px 28px rgba(0,0,0,0.14)',
             }}
           >
             <div style={{
@@ -714,15 +745,21 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
                   alignItems: 'center',
                   cursor: 'grab',
                   opacity: isBeingDragged ? 0.45 : 1,
-                  transform: isLoaded ? 'scale(1.04) translateY(-3px)' : 'scale(1)',
-                  transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transform: isLoaded 
+                    ? 'perspective(600px) rotateY(-6deg) rotateX(3deg) translateY(-8px) scale(1.06)' 
+                    : 'perspective(600px) translateY(0) scale(1)',
+                  transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                   userSelect: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  if (!isLoaded && !isBeingDragged) e.currentTarget.style.transform = 'translateY(-4px) scale(1.03)';
+                  if (!isLoaded && !isBeingDragged) {
+                    e.currentTarget.style.transform = 'perspective(600px) translateY(-6px) scale(1.04)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  if (!isLoaded && !isBeingDragged) e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  if (!isLoaded && !isBeingDragged) {
+                    e.currentTarget.style.transform = 'perspective(600px) translateY(0) scale(1)';
+                  }
                 }}
               >
                 {/* Album Cover Sleeve with Sliding Vinyl Peak Effect */}
@@ -733,26 +770,27 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
                   borderRadius: '2px',
                   overflow: 'visible',
                   boxShadow: isLoaded
-                    ? '0 6px 16px rgba(166, 19, 36, 0.4), 0 0 0 2px #a61324'
+                    ? '0 12px 26px rgba(166, 19, 36, 0.45), 0 0 0 2px #a61324'
                     : '0 4px 10px rgba(0,0,0,0.25)',
                   backgroundColor: '#121212',
+                  transition: 'box-shadow 0.3s ease',
                 }}>
                   {/* Peeking Vinyl Disc Behind Jacket */}
                   <div style={{
                     position: 'absolute',
                     top: '2px',
-                    right: isLoaded ? '-14px' : '-8px',
+                    right: isLoaded ? '-22px' : '-8px',
                     width: '70px',
                     height: '70px',
                     borderRadius: '50%',
                     backgroundColor: '#111',
                     zIndex: 0,
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                    transition: 'right 0.3s ease',
+                    boxShadow: isLoaded ? '0 6px 14px rgba(0,0,0,0.7)' : '0 2px 6px rgba(0,0,0,0.5)',
+                    transition: 'right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    animation: isLoaded && isPlaying ? 'spinVinylMotion 3s linear infinite' : 'none',
+                    animation: isLoaded && isPlaying ? 'spinVinylSmooth 2.8s linear infinite' : 'none',
                   }}>
                     <div style={{
                       width: '20px',
@@ -935,10 +973,65 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
 
       {/* Vinyl Rotation Keyframes Animation & Smartphone Media Queries */}
       <style>{`
-        @keyframes spinVinylMotion {
+        @keyframes spinVinylSmooth {
           0% { transform: scale(1) rotate(0deg); }
           100% { transform: scale(1) rotate(360deg); }
         }
+
+        @keyframes spinDiscShimmer {
+          0% { transform: rotate(0deg); opacity: 0.7; }
+          50% { opacity: 0.95; }
+          100% { transform: rotate(360deg); opacity: 0.7; }
+        }
+
+        @keyframes vinylDiscFloatIn {
+          0% {
+            opacity: 0;
+            transform: translateY(70px) scale(0.6) perspective(800px) rotateX(30deg) rotate(-35deg);
+          }
+          65% {
+            opacity: 1;
+            transform: translateY(-8px) scale(1.03) perspective(800px) rotateX(4deg) rotate(4deg);
+          }
+          85% {
+            transform: translateY(2px) scale(0.99) perspective(800px) rotateX(-1deg) rotate(-1deg);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1) perspective(800px) rotateX(0deg) rotate(0deg);
+          }
+        }
+
+        @keyframes vinylDiscFloatOut {
+          0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+          30% {
+            opacity: 0.95;
+            transform: translateY(-16px) scale(1.04) rotate(-10deg);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(90px) scale(0.55) rotate(45deg);
+          }
+        }
+
+        @keyframes lyricCardReveal {
+          0% {
+            opacity: 0;
+            transform: translateY(14px) rotate(1.8deg) scale(0.97);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) rotate(0.6deg) scale(1);
+          }
+        }
+
+        @keyframes vuBar1 { 0% { height: 3px; } 100% { height: 13px; } }
+        @keyframes vuBar2 { 0% { height: 5px; } 100% { height: 15px; } }
+        @keyframes vuBar3 { 0% { height: 2px; } 100% { height: 9px; } }
+        @keyframes vuBar4 { 0% { height: 4px; } 100% { height: 12px; } }
 
         @media (max-width: 768px) {
           .vinyl-player-page {
