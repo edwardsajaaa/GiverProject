@@ -41,7 +41,11 @@ export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
           borderBottom: '1.5px solid #121212',
           paddingBottom: '10px',
         }}>
-          💌 Panduan Pulau Kenangan Kita
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a61324" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+          Panduan Pulau Kenangan Kita
         </h2>
         <p style={{ 
           fontSize: 12, 
@@ -55,19 +59,39 @@ export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
 
         <div style={{ display: 'grid', gap: 14, margin: '0 0 24px 0', fontSize: 12, lineHeight: 1.5, fontFamily: "'Montserrat', sans-serif" }}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 16 }}>🎨</span>
+            <div style={{ color: '#a61324', flexShrink: 0, marginTop: 2 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                <path d="M2 12h20" />
+              </svg>
+            </div>
             <div><strong style={{ fontWeight: 800 }}>Palet Objek Bawah:</strong> Tarik atau ketuk item dari palet kertas bawah, lalu klik di atas tanah pulau untuk meletakkan dekorasi kenangan.</div>
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 16 }}>📐</span>
+            <div style={{ color: '#a61324', flexShrink: 0, marginTop: 2 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M2 2l20 20M2 22L22 2" />
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+              </svg>
+            </div>
             <div><strong style={{ fontWeight: 800 }}>Snap Grid & Foto Polaroid:</strong> Aktifkan "SNAP" di menu atas untuk merapikan posisi, dan gunakan tombol "FOTO" untuk mengabadikan sudut pulau terindah.</div>
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 16 }}>🔄</span>
+            <div style={{ color: '#a61324', flexShrink: 0, marginTop: 2 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              </svg>
+            </div>
             <div><strong style={{ fontWeight: 800 }}>Transform Toolbar:</strong> Klik objek di pulau untuk memutar, menggeser, atau menduplikasi objek.</div>
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-            <span style={{ fontSize: 16 }}>🌙</span>
+            <div style={{ color: '#a61324', flexShrink: 0, marginTop: 2 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </div>
             <div><strong style={{ fontWeight: 800 }}>Siang & Malam Romantis:</strong> Ubah suasana dari siang yang cerah menjadi malam bertabur bintang dengan pencahayaan hangat.</div>
           </div>
         </div>

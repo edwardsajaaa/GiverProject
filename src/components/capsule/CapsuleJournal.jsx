@@ -64,7 +64,11 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
               }}
             >
-              <span>✉ RE-SEAL</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              <span>RE-SEAL</span>
             </PostageStampButton>
           </div>
 
@@ -77,7 +81,6 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
               color: '#ffd700',
               padding: '6px 8px',
               cursor: 'pointer',
-              fontSize: '11px',
               display: 'flex',
               alignItems: 'center',
               boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
@@ -87,7 +90,10 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            🔒
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffd700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
           </button>
         </div>
 

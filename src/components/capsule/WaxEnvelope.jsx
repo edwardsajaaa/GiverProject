@@ -23,7 +23,7 @@ export function WaxEnvelope({ onOpen }) {
       y: (Math.random() - 0.5) * 160 - 40,
       scale: Math.random() * 0.8 + 0.6,
       rotate: (Math.random() - 0.5) * 90,
-      icon: ['❤️', '✨', '💌', '🌹', '🤍'][Math.floor(Math.random() * 5)],
+      icon: ['✦', '✧', '❦', '❧', '❀'][Math.floor(Math.random() * 5)],
     }));
     setParticles(newParticles);
 
@@ -443,7 +443,11 @@ export function WaxEnvelope({ onOpen }) {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <span>{isLocked ? '🔒 TERKUNCI PIN (AMAN)' : '🔒 ATUR GEMBOK PIN'}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffd700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span>{isLocked ? 'TERKUNCI PIN (AMAN)' : 'ATUR GEMBOK PIN'}</span>
           </button>
 
           <p style={{

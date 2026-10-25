@@ -3,6 +3,81 @@ import { SoundEngine } from '../../utils/SoundEngine';
 import { BIOMES, ART_STYLES } from '../../constants/worldPresets';
 import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
+// Curated SVG Vector Emblems for Biomes & Art Styles (No Emojis)
+const BiomeIcons = {
+  floating_island: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 13c3-1 6-1 9 1 3 2 6 2 9 0" />
+      <path d="M4 14l2 6h12l2-6" />
+      <path d="M12 3v5M10 6l2-2 2 2" />
+    </svg>
+  ),
+  cyber_city: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="10" width="6" height="11" />
+      <rect x="9" y="4" width="7" height="17" />
+      <rect x="16" y="8" width="5" height="13" />
+      <line x1="12" y1="7" x2="13" y2="7" />
+      <line x1="12" y1="10" x2="13" y2="10" />
+    </svg>
+  ),
+  mountain_summit: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="3 20 10 7 14 13 17 9 22 20 3 20" />
+      <polyline points="7.5 13 10 13 11.5 15" />
+    </svg>
+  ),
+  fantasy_realm: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 17 8 12 22 7 8 12 2" />
+      <line x1="7" y1="8" x2="17" y2="8" />
+    </svg>
+  ),
+  zen_garden: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <path d="M3 6h18M5 6v14M19 6v14M2 10h20M9 6v14M15 6v14" />
+    </svg>
+  )
+};
+
+const ArtStyleIcons = {
+  lowpoly: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 22 8.5 17 21 7 21 2 8.5 12 2" />
+      <line x1="12" y1="2" x2="12" y2="21" />
+      <line x1="2" y1="8.5" x2="22" y2="8.5" />
+    </svg>
+  ),
+  anime: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19" />
+    </svg>
+  ),
+  retro_8bit: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <line x1="6" y1="12" x2="10" y2="12" />
+      <line x1="8" y1="10" x2="8" y2="14" />
+      <circle cx="15" cy="13" r="1" fill="currentColor" />
+      <circle cx="18" cy="11" r="1" fill="currentColor" />
+    </svg>
+  ),
+  synthwave: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <circle cx="12" cy="9" r="6" />
+      <line x1="2" y1="15" x2="22" y2="15" />
+      <line x1="4" y1="18" x2="20" y2="18" />
+      <line x1="6" y1="21" x2="18" y2="21" />
+    </svg>
+  ),
+  pbr: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 8a5 5 0 0 1 7 3" />
+    </svg>
+  )
+};
+
 export function WorldStyleModal({
   isNight,
   isOpen,
@@ -20,8 +95,8 @@ export function WorldStyleModal({
     <div style={{
       position: 'fixed', inset: 0, zIndex: 99,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(0, 0, 0, 0.75)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(15, 2, 5, 0.82)',
+      backdropFilter: 'blur(10px)',
       animation: 'fadeIn 0.25s ease-out',
       padding: 16
     }}>
@@ -49,24 +124,38 @@ export function WorldStyleModal({
           borderBottom: '1.5px solid #121212'
         }}>
           <div>
+            <div style={{
+              display: 'inline-block',
+              backgroundColor: '#a61324',
+              color: '#ffffff',
+              fontSize: '9px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 800,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              padding: '2px 8px',
+              marginBottom: '6px',
+            }}>
+              ENVIRONMENT & RENDERING STUDIO
+            </div>
             <h2 style={{ 
               margin: 0, 
-              fontSize: 20, 
+              fontSize: 22, 
               fontWeight: 700, 
               fontFamily: "'Playfair Display', serif",
               color: isNight ? '#fff' : '#121212',
               letterSpacing: '-0.3px' 
             }}>
-              🌍 Kustomisasi Dunia & Gaya Seni
+              Kustomisasi Semesta & Gaya Seni
             </h2>
             <p style={{ 
-              margin: '4px 0 0', 
-              fontSize: 11, 
-              fontFamily: "'Montserrat', sans-serif",
+              margin: '3px 0 0', 
+              fontSize: 12, 
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: 'italic',
               color: isNight ? '#A3A3A3' : '#666',
-              letterSpacing: '0.5px' 
             }}>
-              Ubah lokasi pulau cinta dan gaya visual 3D diorama
+              Pilih atmosfer pulau kenangan dan estetika visual rendering 3D.
             </p>
           </div>
           <button
@@ -75,9 +164,9 @@ export function WorldStyleModal({
               SoundEngine.playClick();
             }}
             style={{
-              width: 32, height: 32, border: '1.5px solid #121212',
+              width: 30, height: 30, border: '1.5px solid #121212',
               backgroundColor: isNight ? '#222' : '#fff',
-              color: isNight ? '#fff' : '#000', fontSize: 13, cursor: 'pointer',
+              color: isNight ? '#fff' : '#000', fontSize: 12, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 800, fontFamily: "'Montserrat', sans-serif"
             }}
@@ -106,7 +195,7 @@ export function WorldStyleModal({
               clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
             }}
           >
-            <span>🏝️ Lokasi Tempat ({BIOMES.length})</span>
+            <span>LOKASI SEMESTA ({BIOMES.length})</span>
           </button>
           <button
             onClick={() => { setActiveTab('artStyle'); SoundEngine.playClick(); }}
@@ -124,7 +213,7 @@ export function WorldStyleModal({
               clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
             }}
           >
-            <span>🎨 Gaya Seni ({ART_STYLES.length})</span>
+            <span>GAYA VISUAL ({ART_STYLES.length})</span>
           </button>
         </div>
 
@@ -156,12 +245,17 @@ export function WorldStyleModal({
                 }}
               >
                 <div style={{
-                  fontSize: 26, width: 40, height: 40,
+                  fontSize: 16, width: 38, height: 38,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   backgroundColor: isNight ? '#121212' : '#fff',
                   border: '1px solid #121212',
+                  color: isSelected ? '#a61324' : '#121212',
                 }}>
-                  {b.icon}
+                  {BiomeIcons[b.icon] || BiomeIcons[b.id] || (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <circle cx="12" cy="12" r="9" />
+                    </svg>
+                  )}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -213,12 +307,17 @@ export function WorldStyleModal({
                 }}
               >
                 <div style={{
-                  fontSize: 26, width: 40, height: 40,
+                  fontSize: 16, width: 38, height: 38,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   backgroundColor: isNight ? '#121212' : '#fff',
                   border: '1px solid #121212',
+                  color: isSelected ? '#a61324' : '#121212',
                 }}>
-                  {s.icon}
+                  {ArtStyleIcons[s.icon] || ArtStyleIcons[s.id] || (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <rect x="3" y="3" width="18" height="18" />
+                    </svg>
+                  )}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -245,6 +344,33 @@ export function WorldStyleModal({
               </div>
             );
           })}
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '12px 24px 18px', borderTop: '1px solid #121212',
+          display: 'flex', justifyContent: 'flex-end', backgroundColor: isNight ? '#1a1a1a' : '#faf7f2'
+        }}>
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              SoundEngine.playPop();
+            }}
+            style={{
+              padding: '9px 18px', border: 'none', backgroundColor: '#121212',
+              color: '#ffffff', fontWeight: 800, fontSize: 11, cursor: 'pointer',
+              fontFamily: "'Montserrat', sans-serif",
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
+          >
+            TERAPKAN & TUTUP ⟶
+          </button>
         </div>
       </div>
     </div>

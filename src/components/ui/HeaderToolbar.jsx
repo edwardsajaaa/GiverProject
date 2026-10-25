@@ -196,6 +196,9 @@ export function HeaderToolbar({
             color: '#ffffff',
             boxShadow: '0 3px 8px rgba(166, 19, 36, 0.4)',
             clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#870e1c';
@@ -206,7 +209,12 @@ export function HeaderToolbar({
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          🌍 DUNIA & GAYA
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>SEMESTA & GAYA</span>
         </button>
 
         <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />

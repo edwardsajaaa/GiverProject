@@ -165,13 +165,15 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '24px',
           color: '#ffd700',
           boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
           marginBottom: '12px',
           border: '2px dashed rgba(255, 215, 0, 0.4)',
         }}>
-          🔒
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffd700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
         </div>
 
         <p style={{

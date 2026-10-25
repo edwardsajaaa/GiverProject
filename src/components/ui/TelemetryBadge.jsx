@@ -46,7 +46,7 @@ export function TelemetryBadge({ fps = 60, performanceTier = 'high', togglePerfo
       <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
       <button
         onClick={togglePerformanceTier}
-        title="Klik untuk beralih mode performa (⚡ ECO / 🚀 HIGH)"
+        title="Klik untuk beralih mode performa (ECO / HIGH TIER)"
         style={{
           background: performanceTier === 'high' ? '#121212' : '#a61324',
           border: 'none',
