@@ -69,47 +69,58 @@ export function WaxEnvelope({ onOpen }) {
         pointerEvents: 'none',
       }} />
 
-      {/* Main Container simulating smartphone / portrait card frame as in Image 1 */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        maxWidth: '440px',
-        height: '92vh',
-        maxHeight: '840px',
-        margin: '0 auto',
-        padding: '24px 20px',
-        borderRadius: '42px',
-        border: '3px solid rgba(255, 255, 255, 0.12)',
-        background: 'linear-gradient(165deg, #42060e 0%, #290308 100%)',
-        boxShadow: '0 25px 70px rgba(0,0,0,0.85), inset 0 1px 2px rgba(255,255,255,0.2)',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'transform 0.4s ease, opacity 0.8s ease',
-        opacity: isOpening ? 0.95 : 1,
-      }}>
-        {/* Dynamic Island Notch Accent */}
-        <div style={{
-          position: 'absolute',
-          top: '14px',
-          width: '90px',
-          height: '22px',
-          backgroundColor: '#000',
-          borderRadius: '20px',
-          zIndex: 10,
-        }} />
+      {/* Main Container simulating smartphone / portrait card frame on desktop, filling viewport on mobile */}
+      <div 
+        className="envelope-main-frame"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          maxWidth: '440px',
+          height: '92vh',
+          maxHeight: '840px',
+          margin: '0 auto',
+          padding: '24px 20px',
+          borderRadius: '42px',
+          border: '3px solid rgba(255, 255, 255, 0.12)',
+          background: 'linear-gradient(165deg, #42060e 0%, #290308 100%)',
+          boxShadow: '0 25px 70px rgba(0,0,0,0.85), inset 0 1px 2px rgba(255,255,255,0.2)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'transform 0.4s ease, opacity 0.8s ease',
+          opacity: isOpening ? 0.95 : 1,
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Dynamic Island Notch Accent (Desktop Preview only) */}
+        <div 
+          className="envelope-dynamic-island"
+          style={{
+            position: 'absolute',
+            top: '14px',
+            width: '90px',
+            height: '22px',
+            backgroundColor: '#000',
+            borderRadius: '20px',
+            zIndex: 10,
+          }} 
+        />
 
         {/* Intro Top Title */}
-        <div style={{
-          textAlign: 'center',
-          marginTop: '40px',
-          marginBottom: 'auto',
-          zIndex: 5,
-        }}>
+        <div 
+          className="envelope-title-section"
+          style={{
+            textAlign: 'center',
+            marginTop: '36px',
+            marginBottom: 'auto',
+            zIndex: 5,
+            padding: '0 10px',
+          }}
+        >
           <p style={{
-            fontSize: '12px',
+            fontSize: '11px',
             letterSpacing: '3px',
             textTransform: 'uppercase',
             color: 'rgba(255, 215, 220, 0.65)',
@@ -120,18 +131,19 @@ export function WaxEnvelope({ onOpen }) {
             A Lover Capsule
           </p>
           <h1 style={{
-            fontSize: '32px',
+            fontSize: 'clamp(26px, 7.5vw, 34px)',
             fontWeight: 400,
             color: '#fff',
             margin: '0',
             fontFamily: "'Pinyon Script', cursive",
             textShadow: '0 2px 14px rgba(255, 100, 120, 0.4)',
             letterSpacing: '1px',
+            lineHeight: 1.15,
           }}>
             Will You Be My Valentine?
           </h1>
           <p style={{
-            fontSize: '13px',
+            fontSize: '12px',
             color: 'rgba(255, 225, 225, 0.7)',
             marginTop: '6px',
             fontStyle: 'italic',
@@ -145,9 +157,10 @@ export function WaxEnvelope({ onOpen }) {
           onClick={handleBreakSeal}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          className="wax-envelope-body"
           style={{
             position: 'relative',
-            width: '290px',
+            width: 'min(290px, calc(100vw - 44px))',
             height: '190px',
             margin: 'auto 0',
             cursor: isOpening ? 'default' : 'pointer',
@@ -389,6 +402,37 @@ export function WaxEnvelope({ onOpen }) {
         @keyframes pulse {
           0%, 100% { opacity: 0.85; transform: scale(1); }
           50% { opacity: 0.4; transform: scale(0.97); }
+        }
+
+        @media (max-width: 520px) {
+          .envelope-main-frame {
+            height: 100vh !important;
+            max-height: 100vh !important;
+            max-width: 100vw !important;
+            border: none !important;
+            border-radius: 0px !important;
+            padding: 20px 16px !important;
+            box-shadow: none !important;
+          }
+          .envelope-dynamic-island {
+            display: none !important;
+          }
+          .envelope-title-section {
+            margin-top: 18px !important;
+          }
+          .wax-envelope-body {
+            transform: scale(0.95);
+          }
+        }
+
+        @media (max-height: 680px) and (max-width: 520px) {
+          .wax-envelope-body {
+            transform: scale(0.85);
+            margin: 6px 0 !important;
+          }
+          .envelope-title-section h1 {
+            font-size: 24px !important;
+          }
         }
       `}</style>
     </div>
