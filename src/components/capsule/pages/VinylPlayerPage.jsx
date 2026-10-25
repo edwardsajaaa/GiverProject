@@ -234,7 +234,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '20px 32px',
+        padding: '18px 30px 36px 30px',
         boxSizing: 'border-box',
         position: 'relative',
         fontFamily: "'Cormorant Garamond', serif",

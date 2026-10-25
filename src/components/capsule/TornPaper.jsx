@@ -12,7 +12,7 @@ export function TornEdgeTop({ color = '#faf7f2', height = 18, fiberColor = '#fff
       height: `${height}px`,
       overflow: 'hidden',
       pointerEvents: 'none',
-      zIndex: 10,
+      zIndex: 2,
     }}>
       {/* Torn Fiber Base (White Ragged Core) */}
       <svg
@@ -57,7 +57,7 @@ export function TornEdgeBottom({ color = '#faf7f2', height = 18, fiberColor = '#
       height: `${height}px`,
       overflow: 'hidden',
       pointerEvents: 'none',
-      zIndex: 10,
+      zIndex: 2,
     }}>
       {/* Torn Fiber Base */}
       <svg
@@ -248,6 +248,7 @@ export function EditorialButton({
         textTransform: 'uppercase',
         cursor: 'pointer',
         position: 'relative',
+        zIndex: 10,
         transform: `rotate(${rotate}deg)`,
         boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
         clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 3px, 99% 97%, 100% 100%, 3% 100%, 0% 97%)',

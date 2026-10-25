@@ -162,6 +162,7 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           maxWidth: '836px',
           height: '84vh',
           maxHeight: '668px',
+          minHeight: '568px',
           backgroundColor: '#ebdccb',
           borderRadius: '3px',
           transform: 'rotate(0.9deg) translateY(2px)',
@@ -183,6 +184,7 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           maxWidth: '828px',
           height: '84vh',
           maxHeight: '664px',
+          minHeight: '564px',
           backgroundColor: '#ffffff',
           borderRadius: '2px',
           transform: 'rotate(-0.6deg)',
@@ -204,6 +206,7 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           maxWidth: '820px',
           height: '84vh',
           maxHeight: '660px',
+          minHeight: '560px',
           backgroundColor: '#FAF7F2',
           // Natural paper fiber & soft deckle lines
           backgroundImage: `

@@ -83,7 +83,7 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '24px 34px',
+        padding: '18px 32px 36px 32px',
         boxSizing: 'border-box',
         position: 'relative',
         fontFamily: "'Cormorant Garamond', serif",
@@ -188,8 +188,8 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '22px',
-          margin: '14px 0',
+          gap: '20px',
+          margin: '8px 0',
           alignItems: 'center',
           position: 'relative',
         }}
@@ -280,7 +280,7 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
               style={{
                 width: '100%',
                 aspectRatio: '3/4',
-                maxHeight: '330px',
+                maxHeight: 'min(285px, 34vh)',
                 backgroundColor: '#ffffff',
                 padding: '6px',
                 boxShadow: '0 10px 26px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0,0,0,0.08)',

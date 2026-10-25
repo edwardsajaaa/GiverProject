@@ -29,7 +29,7 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '24px 34px',
+        padding: '18px 32px 36px 32px',
         boxSizing: 'border-box',
         position: 'relative',
         fontFamily: "'Cormorant Garamond', serif",
