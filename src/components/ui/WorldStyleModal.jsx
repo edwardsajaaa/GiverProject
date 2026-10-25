@@ -86,16 +86,21 @@ export function WorldStyleModal({
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 99,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(15, 2, 5, 0.82)',
-      backdropFilter: 'blur(10px)',
-      animation: 'fadeIn 0.25s ease-out',
-      padding: 16
-    }}>
+    <div 
+      onClick={() => { setIsOpen(false); SoundEngine.playClick(); }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 99,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(15, 2, 5, 0.82)',
+        backdropFilter: 'blur(10px)',
+        animation: 'fadeIn 0.25s ease-out',
+        padding: 16
+      }}
+    >
       {/* Torn Paper Scrapbook Dossier Modal Card */}
-      <div style={{
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        style={{
         position: 'relative',
         width: '100%', maxWidth: 560, maxHeight: '90vh',
         backgroundColor: isNight ? '#161616' : '#FAF7F2',
