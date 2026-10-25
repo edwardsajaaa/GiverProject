@@ -167,10 +167,9 @@ class CapsuleAudioEngine {
     }
   }
 
-  // Play Romantic Chords for the Vinyl Player
-  playTrack(trackId) {
+  // Play Audio for Vinyl Player: Supports Real Internet Audio Stream (MP3/OGG/WAV) with Procedural Chord Fallback
+  playTrack(trackId, audioUrl = null) {
     this.init();
-    if (!this.ctx) return;
 
     if (this.isPlayingMusic && this.currentTrackId === trackId) {
       // Toggle off
@@ -183,6 +182,49 @@ class CapsuleAudioEngine {
     this.startVinylCrackle();
     this.isPlayingMusic = true;
     this.currentTrackId = trackId;
+
+    // 1. If a custom internet audio URL or blob is provided, stream the real song!
+    if (audioUrl && typeof audioUrl === 'string' && audioUrl.trim().length > 0) {
+      try {
+        const audio = new Audio(audioUrl.trim());
+        audio.crossOrigin = 'anonymous';
+        audio.volume = this.volume;
+        audio.loop = true;
+
+        audio.addEventListener('error', (err) => {
+          console.warn('[CapsuleAudio] Media stream error or CORS restriction. Falling back to synthesized Rhodes chords:', err);
+          if (this.isPlayingMusic) {
+            this.playSynthesizedChords(trackId);
+          }
+        });
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              this.audioElement = audio;
+            })
+            .catch((err) => {
+              console.warn('[CapsuleAudio] Autoplay blocked or URL unreachable, using synthesized chord fallback:', err);
+              if (this.isPlayingMusic) {
+                this.playSynthesizedChords(trackId);
+              }
+            });
+        } else {
+          this.audioElement = audio;
+        }
+        return;
+      } catch (err) {
+        console.warn('[CapsuleAudio] Audio instantiation failed:', err);
+      }
+    }
+
+    // 2. Default: Authentic Rhodes Electric Piano Chords Procedural Synthesis
+    this.playSynthesizedChords(trackId);
+  }
+
+  playSynthesizedChords(trackId) {
+    if (!this.ctx) return;
 
     // Track progression templates (Hz frequencies for warm romantic chords)
     const chordProgressions = {
@@ -269,6 +311,17 @@ class CapsuleAudioEngine {
   stopMusic() {
     this.isPlayingMusic = false;
     this.currentTrackId = null;
+
+    if (this.audioElement) {
+      try {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+      } catch (e) {
+        // ignore
+      }
+      this.audioElement = null;
+    }
+
     if (this.musicTimer) {
       clearTimeout(this.musicTimer);
       this.musicTimer = null;
@@ -278,6 +331,9 @@ class CapsuleAudioEngine {
 
   toggleMute() {
     this.muted = !this.muted;
+    if (this.audioElement) {
+      this.audioElement.muted = this.muted;
+    }
     if (this.muted) {
       this.stopMusic();
     }

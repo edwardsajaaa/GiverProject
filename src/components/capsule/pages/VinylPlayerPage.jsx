@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { capsuleAudio } from '../audio/capsuleAudio';
+import { EditTrackModal } from '../EditTrackModal';
 import {
   TornScrap,
   WashiTape,
@@ -103,6 +104,20 @@ export const VINYL_COLLECTION = [
 ];
 
 export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
+  // State: Tracks loaded from localStorage or default
+  const [tracks, setTracks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('giver_capsule_vinyls_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.warn('Failed to load saved vinyls:', e);
+    }
+    return VINYL_COLLECTION;
+  });
+
   // State: Currently loaded track ID (1-6)
   const [loadedTrackId, setLoadedTrackId] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -110,11 +125,29 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
   const [isEjecting, setIsEjecting] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [draggedTrackId, setDraggedTrackId] = useState(null);
+  const [editingTrack, setEditingTrack] = useState(null);
 
-  const activeTrack = VINYL_COLLECTION.find((t) => t.id === loadedTrackId) || VINYL_COLLECTION[0];
+  const activeTrack = tracks.find((t) => t.id === loadedTrackId) || tracks[0];
+
+  // Save tracks to localStorage on change
+  const handleSaveTrack = (updatedTrack) => {
+    const updated = tracks.map((t) => (t.id === updatedTrack.id ? updatedTrack : t));
+    setTracks(updated);
+    try {
+      localStorage.setItem('giver_capsule_vinyls_v3', JSON.stringify(updated));
+    } catch (e) {
+      console.warn('Failed to save vinyls to localStorage:', e);
+    }
+
+    // If currently playing the track that was modified, replay with the new audio URL
+    if (loadedTrackId === updatedTrack.id && isPlaying) {
+      capsuleAudio.playTrack(updatedTrack.id, updatedTrack.audioUrl);
+    }
+  };
 
   // Plug & Play Track Switch Handler with Motion Animation
   const handlePlugTrack = (newTrackId) => {
+    const targetTrack = tracks.find((t) => t.id === newTrackId) || tracks[0];
     if (newTrackId === loadedTrackId) {
       // Toggle Play/Pause on current track
       togglePlayPause();
@@ -134,7 +167,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
       setTimeout(() => {
         setIsInserting(false);
         setIsPlaying(true);
-        capsuleAudio.playTrack(newTrackId);
+        capsuleAudio.playTrack(newTrackId, targetTrack.audioUrl);
       }, 700);
     }, 450);
   };
@@ -145,7 +178,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      capsuleAudio.playTrack(loadedTrackId);
+      capsuleAudio.playTrack(loadedTrackId, activeTrack.audioUrl);
     }
   };
 
@@ -657,6 +690,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
               fontFamily: "'Montserrat', sans-serif",
               fontStyle: 'italic',
               margin: '10px 0',
+              whiteSpace: typeof activeTrack.lyrics === 'string' ? 'pre-line' : 'normal',
             }}>
               {activeTrack.lyrics}
             </div>
@@ -664,15 +698,49 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              justifyContent: 'space-between',
               marginTop: '12px',
-              fontSize: '9px',
-              fontFamily: "'Montserrat', sans-serif",
-              color: '#888',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
+              paddingTop: '8px',
+              borderTop: '1px dashed rgba(0,0,0,0.15)',
+              flexWrap: 'wrap',
+              gap: '6px',
             }}>
-              <span>✦ SOUNDTRACK FOR OUR MOMENTS</span>
+              <span style={{
+                fontSize: '9px',
+                fontFamily: "'Montserrat', sans-serif",
+                color: '#888',
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+              }}>
+                ✦ SOUNDTRACK FOR OUR MOMENTS
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setEditingTrack(activeTrack)}
+                style={{
+                  background: '#121212',
+                  color: '#ffffff',
+                  border: 'none',
+                  fontSize: '9px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 700,
+                  letterSpacing: '1px',
+                  padding: '4px 8px',
+                  cursor: 'pointer',
+                  clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                  transition: 'background-color 0.2s',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
+                title="Ganti URL streaming MP3 atau ubah lagu ini"
+              >
+                <span>✎ GANTI / EDIT LAGU INI</span>
+              </button>
             </div>
           </TornScrap>
         </div>
@@ -720,7 +788,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             gap: '12px',
           }}
         >
-          {VINYL_COLLECTION.map((item) => {
+          {tracks.map((item) => {
             const isLoaded = loadedTrackId === item.id;
             const isBeingDragged = draggedTrackId === item.id;
 
@@ -1080,6 +1148,14 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
           }
         }
       `}</style>
+
+      {/* Edit Track Modal for Internet Audio Stream & Song Metadata */}
+      <EditTrackModal
+        isOpen={Boolean(editingTrack)}
+        onClose={() => setEditingTrack(null)}
+        track={editingTrack}
+        onSaveTrack={handleSaveTrack}
+      />
     </div>
   );
 }
