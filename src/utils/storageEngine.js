@@ -1,3 +1,5 @@
+import { SecurityEngine } from './securityEngine';
+
 const STORAGE_KEY = 'giver_sandbox_save_v3';
 const ONBOARDED_KEY = 'giver_sandbox_onboarded_v3';
 const CENTRAL_OBJECT_KEY = 'giver_central_object_v1';
@@ -109,22 +111,40 @@ export const StorageEngine = {
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
+
+      // File size limit: 5MB max
+      if (file.size > 5 * 1024 * 1024) {
+        const msg = 'Ukuran file JSON terlalu besar (maksimal 5MB)!';
+        if (onError) onError(msg);
+        else alert(msg);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (evt) => {
         try {
           const parsed = JSON.parse(evt.target.result);
-          if (parsed && Array.isArray(parsed.placedObjects)) {
-            setPlacedObjects(parsed.placedObjects);
-          } else if (Array.isArray(parsed)) {
-            setPlacedObjects(parsed);
+          // Deep clean prototype pollution and unsafe keys
+          const sanitized = SecurityEngine.sanitizeJsonScene(parsed);
+          if (!sanitized) {
+            throw new Error('Data tidak valid');
           }
-          if (parsed && parsed.timeMode && setTimeMode) {
-            setTimeMode(parsed.timeMode);
+
+          if (Array.isArray(sanitized.placedObjects)) {
+            setPlacedObjects(sanitized.placedObjects);
+          } else if (Array.isArray(sanitized)) {
+            setPlacedObjects(sanitized);
           }
+
+          if (sanitized.timeMode && setTimeMode) {
+            const safeTime = ['day', 'night'].includes(sanitized.timeMode) ? sanitized.timeMode : 'day';
+            setTimeMode(safeTime);
+          }
+
           if (onSuccess) onSuccess();
         } catch {
-          if (onError) onError('File JSON tidak valid!');
-          else alert('File JSON tidak valid!');
+          if (onError) onError('File JSON tidak valid atau rusak!');
+          else alert('File JSON tidak valid atau rusak!');
         }
       };
       reader.readAsText(file);
