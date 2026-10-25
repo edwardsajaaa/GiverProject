@@ -71,25 +71,31 @@ export function HeaderToolbar({
   };
 
   return (
-    <header style={{
-      position: 'absolute', top: 16, left: 0, right: 0, boxSizing: 'border-box',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 0, zIndex: 25, pointerEvents: 'none',
-      transition: 'all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)'
-    }}>
+    <header 
+      className="sandbox-header-toolbar"
+      style={{
+        position: 'absolute', top: 16, left: 0, right: 0, boxSizing: 'border-box',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 0, zIndex: 25, pointerEvents: 'none',
+        transition: 'all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1)'
+      }}
+    >
       {/* Torn Paper Scrapbook Ruler Toolbar */}
-      <div style={{
-        position: 'relative',
-        display: 'flex', alignItems: 'center', gap: 4, pointerEvents: 'auto', flexWrap: 'wrap',
-        backgroundColor: isNight ? '#161616' : '#faf7f2',
-        border: '1.5px solid #121212',
-        boxShadow: isNight 
-          ? '0 12px 36px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.4)' 
-          : '0 10px 30px rgba(74, 8, 18, 0.15), 0 2px 6px rgba(0,0,0,0.08)',
-        padding: '5px 8px',
-        // Jagged ragged torn paper ends
-        clipPath: 'polygon(0% 3px, 1% 0px, 99% 0px, 100% 3px, 99.5% 97%, 100% 100%, 0.5% 100%, 0% 97%)',
-      }}>
+      <div 
+        className="sandbox-toolbar-inner"
+        style={{
+          position: 'relative',
+          display: 'flex', alignItems: 'center', gap: 4, pointerEvents: 'auto', flexWrap: 'wrap',
+          backgroundColor: isNight ? '#161616' : '#faf7f2',
+          border: '1.5px solid #121212',
+          boxShadow: isNight 
+            ? '0 12px 36px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.4)' 
+            : '0 10px 30px rgba(74, 8, 18, 0.15), 0 2px 6px rgba(0,0,0,0.08)',
+          padding: '5px 8px',
+          // Jagged ragged torn paper ends
+          clipPath: 'polygon(0% 3px, 1% 0px, 99% 0px, 100% 3px, 99.5% 97%, 100% 100%, 0.5% 100%, 0% 97%)',
+        }}
+      >
         {/* Black Tape & Washi Tape Accents on Toolbar Edges */}
         <BlackTape top="-9px" left="-12px" width="50px" rotate={-5} />
         <WashiTape top="-9px" left="calc(100% - 38px)" width="50px" rotate={4} color="rgba(255, 230, 210, 0.85)" />
@@ -307,6 +313,22 @@ export function HeaderToolbar({
           ?
         </button>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .sandbox-header-toolbar {
+            top: 46px !important;
+          }
+          .sandbox-toolbar-inner {
+            max-width: 96vw !important;
+            overflow-x: auto !important;
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            padding: 4px 6px !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
+        }
+      `}</style>
     </header>
   );
 }
