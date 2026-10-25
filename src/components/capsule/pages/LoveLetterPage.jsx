@@ -138,11 +138,22 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
             marginTop: '10px',
             backgroundColor: '#fffdf9',
             padding: '24px 30px',
-            boxShadow: '0 14px 32px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0,0,0,0.06)',
+            boxShadow: '0 14px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.06)',
             borderLeft: '1.5px solid #121212',
             borderRight: '1.5px solid #121212',
             transform: 'rotate(-0.4deg)',
             boxSizing: 'border-box',
+            transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+            willChange: 'transform, box-shadow',
+            animation: 'letterSheetRise 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'perspective(1000px) rotateX(2deg) rotateY(-1deg) translateY(-6px) scale(1.01)';
+            e.currentTarget.style.boxShadow = '0 24px 50px rgba(0, 0, 0, 0.22), 0 6px 12px rgba(0,0,0,0.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'rotate(-0.4deg) translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = '0 14px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.06)';
           }}
         >
           {/* Top & Bottom Ripped Edges on Letter Sheet */}
@@ -229,6 +240,15 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
                 cursor: 'pointer',
                 clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
                 boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#a61324';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#121212';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               {isEditing ? '✓ SAVE LETTER' : '✎ CUSTOMIZE MESSAGE'}
@@ -301,6 +321,17 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
       </div>
 
       <style>{`
+        @keyframes letterSheetRise {
+          0% {
+            opacity: 0;
+            transform: translateY(28px) rotate(-1.5deg) scale(0.96);
+          }
+          100% {
+            opacity: 1;
+            transform: rotate(-0.4deg) translateY(0) scale(1);
+          }
+        }
+
         @media (max-width: 680px) {
           .love-letter-page {
             padding: 16px 14px 24px 14px !important;

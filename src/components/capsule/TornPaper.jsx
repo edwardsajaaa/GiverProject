@@ -251,24 +251,46 @@ export function EditorialButton({
         transform: `rotate(${rotate}deg)`,
         boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
         clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 3px, 99% 97%, 100% 100%, 3% 100%, 0% 97%)',
-        transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, box-shadow 0.2s',
+        transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        willChange: 'transform, box-shadow',
         ...style,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = `rotate(${rotate}deg) translateY(-2px) scale(1.03)`;
-        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.45)';
+        e.currentTarget.style.transform = `rotate(${rotate}deg) translateY(-3px) scale(1.035)`;
+        e.currentTarget.style.boxShadow = '0 10px 24px rgba(0,0,0,0.45)';
         if (isBlack) e.currentTarget.style.backgroundColor = '#a61324';
         if (isRed) e.currentTarget.style.backgroundColor = '#830e1b';
+        const arrowEl = e.currentTarget.querySelector('.editorial-arrow');
+        if (arrowEl) arrowEl.style.transform = 'translateX(4px)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = `rotate(${rotate}deg) translateY(0) scale(1)`;
         e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.3)';
         if (isBlack) e.currentTarget.style.backgroundColor = '#121212';
         if (isRed) e.currentTarget.style.backgroundColor = '#a61324';
+        const arrowEl = e.currentTarget.querySelector('.editorial-arrow');
+        if (arrowEl) arrowEl.style.transform = 'translateX(0)';
+      }}
+      onMouseDown={(e) => {
+        e.currentTarget.style.transform = `rotate(${rotate}deg) translateY(0) scale(0.97)`;
+      }}
+      onMouseUp={(e) => {
+        e.currentTarget.style.transform = `rotate(${rotate}deg) translateY(-3px) scale(1.035)`;
       }}
     >
       <span>{children}</span>
-      {arrow && <span style={{ fontSize: '13px', transition: 'transform 0.2s' }}>⟶</span>}
+      {arrow && (
+        <span 
+          className="editorial-arrow" 
+          style={{ 
+            fontSize: '13px', 
+            transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            display: 'inline-block',
+          }}
+        >
+          ⟶
+        </span>
+      )}
     </button>
   );
 }
@@ -293,20 +315,29 @@ export function CircleArrowButton({ direction = 'next', onClick, size = 32, dark
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        transition: 'all 0.2s ease',
+        transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         padding: 0,
+        outline: 'none',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = dark ? '#ffffff' : '#121212';
         e.currentTarget.style.color = dark ? '#121212' : '#ffffff';
         e.currentTarget.style.borderColor = dark ? '#ffffff' : '#121212';
-        e.currentTarget.style.transform = isNext ? 'translateX(2px)' : 'translateX(-2px)';
+        e.currentTarget.style.transform = isNext ? 'scale(1.12) translateX(2px)' : 'scale(1.12) translateX(-2px)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = 'transparent';
         e.currentTarget.style.color = color;
         e.currentTarget.style.borderColor = borderColor;
-        e.currentTarget.style.transform = 'translateX(0)';
+        e.currentTarget.style.transform = 'scale(1) translateX(0)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+      onMouseDown={(e) => {
+        e.currentTarget.style.transform = 'scale(0.92)';
+      }}
+      onMouseUp={(e) => {
+        e.currentTarget.style.transform = isNext ? 'scale(1.12) translateX(2px)' : 'scale(1.12) translateX(-2px)';
       }}
       title={isNext ? 'Next Page' : 'Previous Page'}
     >
@@ -338,16 +369,22 @@ export function PostageStampButton({ children, onClick, active = false, style = 
         textTransform: 'uppercase',
         cursor: 'pointer',
         boxShadow: '0 3px 10px rgba(0,0,0,0.18)',
-        transition: 'all 0.2s ease',
+        transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         ...style,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'scale(1.04) rotate(-1deg)';
-        e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.25)';
+        e.currentTarget.style.transform = 'scale(1.06) translateY(-2px) rotate(-1.5deg)';
+        e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.28)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
+        e.currentTarget.style.transform = 'scale(1) translateY(0) rotate(0deg)';
         e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.18)';
+      }}
+      onMouseDown={(e) => {
+        e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
+      }}
+      onMouseUp={(e) => {
+        e.currentTarget.style.transform = 'scale(1.06) translateY(-2px) rotate(-1.5deg)';
       }}
     >
       {children}

@@ -276,28 +276,36 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
             {/* Photo Frame Card */}
             <div
               onClick={() => setActivePhoto(item)}
+              className="photo-polaroid-frame"
               style={{
                 width: '100%',
                 aspectRatio: '3/4',
                 maxHeight: '330px',
                 backgroundColor: '#ffffff',
                 padding: '6px',
-                boxShadow: '0 10px 26px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.1)',
+                boxShadow: '0 10px 26px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0,0,0,0.08)',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
                 clipPath: 'polygon(0% 3px, 2% 0px, 98% 0px, 100% 4px, 99% 97%, 100% 100%, 2% 100%, 0% 97%)',
                 border: '1.5px solid #121212',
                 zIndex: 2,
-                transition: 'all 0.3s ease',
+                transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform, box-shadow',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.parentElement.style.transform = `rotate(0deg) scale(1.03) translateY(-4px)`;
+                e.currentTarget.parentElement.style.transform = `perspective(1000px) rotateX(4deg) rotateY(${idx === 0 ? 5 : idx === 2 ? -5 : 0}deg) scale(1.045) translateY(-8px)`;
                 e.currentTarget.parentElement.style.zIndex = '30';
+                e.currentTarget.style.boxShadow = '0 24px 48px -10px rgba(0, 0, 0, 0.38), 0 8px 16px rgba(0,0,0,0.15)';
+                const sheen = e.currentTarget.querySelector('.photo-sheen-sweep');
+                if (sheen) sheen.style.transform = 'translateX(100%)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.parentElement.style.transform = `rotate(${item.rotate}deg) scale(1) translateY(0)`;
                 e.currentTarget.parentElement.style.zIndex = '1';
+                e.currentTarget.style.boxShadow = '0 10px 26px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0,0,0,0.08)';
+                const sheen = e.currentTarget.querySelector('.photo-sheen-sweep');
+                if (sheen) sheen.style.transform = 'translateX(-100%)';
               }}
             >
               <div style={{ width: '100%', height: '100%', overflow: 'hidden', position: 'relative' }}>
@@ -310,6 +318,22 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
                     objectFit: 'cover',
                     filter: 'grayscale(35%) contrast(110%)',
                     display: 'block',
+                    transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                  className="photo-img-inner"
+                />
+
+                {/* Specular Light Sheen Sweep on hover */}
+                <div 
+                  className="photo-sheen-sweep"
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.05) 55%, transparent 70%)',
+                    transform: 'translateX(-100%)',
+                    transition: 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
+                    pointerEvents: 'none',
+                    mixBlendMode: 'overlay',
                   }}
                 />
 
@@ -425,7 +449,7 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(18, 18, 18, 0.92)',
-            backdropFilter: 'blur(10px)',
+            backdropFilter: 'blur(12px)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -433,17 +457,22 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
             zIndex: 1000,
             cursor: 'zoom-out',
             padding: '20px',
+            animation: 'fadeInLightbox 0.3s ease forwards',
           }}
         >
-          <div style={{
-            maxWidth: '520px',
-            backgroundColor: '#faf7f2',
-            padding: '14px 14px 26px 14px',
-            border: '2px solid #121212',
-            boxShadow: '0 25px 70px rgba(0,0,0,0.7)',
-            textAlign: 'center',
-            position: 'relative',
-          }}>
+          <div 
+            style={{
+              maxWidth: '520px',
+              backgroundColor: '#faf7f2',
+              padding: '14px 14px 26px 14px',
+              border: '2px solid #121212',
+              boxShadow: '0 30px 80px rgba(0,0,0,0.7)',
+              textAlign: 'center',
+              position: 'relative',
+              animation: 'lightboxSpring 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <BlackTape top="-10px" left="calc(50% - 40px)" width="80px" rotate={-2} />
             <img
               src={activePhoto.url}
@@ -468,6 +497,43 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
       )}
 
       <style>{`
+        @keyframes fadeInLightbox {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes lightboxSpring {
+          0% {
+            opacity: 0;
+            transform: scale(0.85) translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes polaroidDropIn {
+          0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .photo-gallery-grid > div:nth-child(1) {
+          animation: polaroidDropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+        }
+        .photo-gallery-grid > div:nth-child(2) {
+          animation: polaroidDropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
+        }
+        .photo-gallery-grid > div:nth-child(3) {
+          animation: polaroidDropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s backwards;
+        }
+
         div:hover .photo-edit-btn {
           opacity: 1 !important;
         }

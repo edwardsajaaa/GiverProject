@@ -131,22 +131,27 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
       backdropFilter: 'blur(12px)',
       padding: '16px',
       fontFamily: "'Cormorant Garamond', serif",
+      animation: 'fadeInLockModal 0.3s ease forwards',
     }}>
       {/* Torn Paper Scrapbook Lock Card */}
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        maxWidth: '360px',
-        backgroundColor: '#FAF7F2',
-        border: '2px solid #121212',
-        padding: '28px 24px 24px 24px',
-        boxShadow: '0 25px 60px rgba(0,0,0,0.7), 0 4px 14px rgba(0,0,0,0.3)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        clipPath: 'polygon(0% 4px, 2% 0px, 98% 0px, 100% 4px, 99% 96%, 100% 100%, 1% 100%, 0% 96%)',
-      }}>
+      <div 
+        className={`lovelock-card ${errorMsg ? 'lovelock-shake' : ''}`}
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: '360px',
+          backgroundColor: '#FAF7F2',
+          border: '2px solid #121212',
+          padding: '28px 24px 24px 24px',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.7), 0 4px 14px rgba(0,0,0,0.3)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          clipPath: 'polygon(0% 4px, 2% 0px, 98% 0px, 100% 4px, 99% 96%, 100% 100%, 1% 100%, 0% 96%)',
+          animation: 'popLockModal 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+        }}
+      >
         {/* Tape strips */}
         <WashiTape top="-10px" left="25px" width="70px" rotate={-3} color="rgba(255, 235, 205, 0.9)" />
         <BlackTape top="-8px" right="25px" width="60px" rotate={4} />
@@ -218,9 +223,9 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
                 borderRadius: '50%',
                 border: '2px solid #121212',
                 backgroundColor: pin.length > idx ? '#a61324' : 'transparent',
-                transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                transform: pin.length > idx ? 'scale(1.15)' : 'scale(1)',
-                boxShadow: pin.length > idx ? '0 0 8px rgba(166, 19, 36, 0.4)' : 'none',
+                transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                transform: pin.length > idx ? 'scale(1.2)' : 'scale(1)',
+                boxShadow: pin.length > idx ? '0 0 10px rgba(166, 19, 36, 0.5)' : 'none',
               }}
             />
           ))}
@@ -256,6 +261,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
               key={num}
               onClick={() => handleKeyPress(num.toString())}
               disabled={cooldown > 0 || isVerifying}
+              className="lovelock-btn"
               style={{
                 height: '42px',
                 backgroundColor: '#fffdf9',
@@ -265,9 +271,10 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
                 fontWeight: 700,
                 color: '#121212',
                 cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
+                transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s',
                 clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                outline: 'none',
               }}
               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#121212'; e.currentTarget.style.color = '#fff'; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fffdf9'; e.currentTarget.style.color = '#121212'; }}
@@ -278,6 +285,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           <button
             onClick={handleDelete}
             disabled={cooldown > 0}
+            className="lovelock-btn"
             style={{
               height: '42px',
               backgroundColor: '#f4ebd9',
@@ -288,6 +296,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
               color: '#666',
               cursor: 'pointer',
               letterSpacing: '0.5px',
+              transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             ⌫ HAPUS
@@ -295,6 +304,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           <button
             onClick={() => handleKeyPress('0')}
             disabled={cooldown > 0 || isVerifying}
+            className="lovelock-btn"
             style={{
               height: '42px',
               backgroundColor: '#fffdf9',
@@ -304,6 +314,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
               fontWeight: 700,
               color: '#121212',
               cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
+              transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#121212'; e.currentTarget.style.color = '#fff'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fffdf9'; e.currentTarget.style.color = '#121212'; }}
@@ -313,6 +324,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           <button
             onClick={handleSubmit}
             disabled={cooldown > 0 || isVerifying || pin.length < 4}
+            className="lovelock-btn"
             style={{
               height: '42px',
               backgroundColor: pin.length >= 4 ? '#a61324' : '#eee',
@@ -323,6 +335,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
               color: pin.length >= 4 ? '#fff' : '#888',
               cursor: pin.length >= 4 ? 'pointer' : 'not-allowed',
               letterSpacing: '1px',
+              transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s',
             }}
           >
             ✓ BUKA
@@ -352,7 +365,10 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
                 color: '#666',
                 cursor: 'pointer',
                 textTransform: 'uppercase',
+                transition: 'color 0.2s',
               }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#121212'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
             >
               ✕ TUTUP
             </button>
@@ -375,6 +391,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
                 color: '#a61324',
                 cursor: 'pointer',
                 textTransform: 'uppercase',
+                transition: 'opacity 0.2s',
               }}
             >
               HAPUS PIN (BUKA GEMBOK)
@@ -382,6 +399,40 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           )}
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInLockModal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes popLockModal {
+          0% {
+            opacity: 0;
+            transform: scale(0.88) translateY(24px);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes shakeLoveLock {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-10px) rotate(-1.5deg); }
+          40% { transform: translateX(9px) rotate(1.2deg); }
+          60% { transform: translateX(-6px) rotate(-0.8deg); }
+          80% { transform: translateX(4px) rotate(0.4deg); }
+        }
+
+        .lovelock-shake {
+          animation: shakeLoveLock 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
+        }
+
+        .lovelock-btn:active {
+          transform: scale(0.92) !important;
+        }
+      `}</style>
     </div>
   );
 }
