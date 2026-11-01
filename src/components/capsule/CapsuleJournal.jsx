@@ -261,7 +261,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             </PostageStampButton>
           </div>
 
-          {/* Receiver Mode: Reply via WhatsApp Button */}
+          {/* Receiver Mode: Sender Badge */}
           {isReceiver ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <div style={{
@@ -277,30 +277,6 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
               }}>
                 FROM {capsuleData.sender.toUpperCase()} ❤️
               </div>
-
-              <a
-                href={CapsuleShareEngine.generateWhatsAppReplyUrl(capsuleData)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  backgroundColor: '#25D366',
-                  color: '#fff',
-                  border: 'none',
-                  fontSize: '10px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: 800,
-                  letterSpacing: '1px',
-                  padding: '7px 12px',
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  boxShadow: '0 4px 12px rgba(37, 211, 102, 0.4)',
-                  transition: 'opacity 0.2s',
-                }}
-              >
-                <span>BALAS WA 💬</span>
-              </a>
             </div>
           ) : (
             /* Sender Mode: Share Link Button & Love Lock Option */
@@ -555,7 +531,6 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
               initialLetterText={capsuleData.letterText}
               onSaveLetterText={(newText) => handleUpdateConfig({ letterText: newText })}
               isReceiver={isReceiver}
-              onReplyWhatsApp={() => CapsuleShareEngine.generateWhatsAppReplyUrl(capsuleData)}
             />
           )}
 

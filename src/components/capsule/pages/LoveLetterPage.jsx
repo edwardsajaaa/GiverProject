@@ -23,8 +23,7 @@ export function LoveLetterPage({
   senderName = "Alex",
   initialLetterText,
   onSaveLetterText,
-  isReceiver = false,
-  onReplyWhatsApp
+  isReceiver = false
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [letterText, setLetterText] = useState(initialLetterText || DEFAULT_LETTER);
@@ -237,40 +236,13 @@ export function LoveLetterPage({
             Forever Yours, {senderName || 'Alex'}
           </p>
 
-          {/* Action Row: Customize or Reply */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginTop: '8px',
-          }}>
-            {isReceiver ? (
-              onReplyWhatsApp && (
-                <a
-                  href={onReplyWhatsApp()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    backgroundColor: '#25D366',
-                    color: '#fff',
-                    border: 'none',
-                    fontSize: '10px',
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: 700,
-                    letterSpacing: '1px',
-                    padding: '6px 14px',
-                    cursor: 'pointer',
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 3px 10px rgba(37, 211, 102, 0.4)',
-                    transition: 'opacity 0.2s',
-                  }}
-                >
-                  <span>💌 BALAS KE {senderName.toUpperCase()} VIA WA</span>
-                </a>
-              )
-            ) : (
+          {/* Customize Letter Button (Only in Creator/Sender Mode) */}
+          {!isReceiver && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginTop: '8px',
+            }}>
               <button
                 onClick={handleToggleEdit}
                 style={{
@@ -298,8 +270,8 @@ export function LoveLetterPage({
               >
                 {isEditing ? '✓ SAVE LETTER' : '✎ CUSTOMIZE MESSAGE'}
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 

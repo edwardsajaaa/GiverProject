@@ -222,29 +222,6 @@ export const CapsuleShareEngine = {
 
     const baseUrl = `${window.location.origin}${window.location.pathname}`;
     return `${baseUrl}?c=${encoded}`;
-  },
-
-  /**
-   * Menghasilkan URL langsung ke WhatsApp dengan pesan manis template
-   */
-  generateWhatsAppShareUrl(data, shareUrl) {
-    const to = data.recipient || 'kamu';
-    const from = data.sender || 'aku';
-
-    const message = `💌 *Ada amplop & kapsul cinta spesial untuk ${to} dari ${from}!* ✨\n\nAku udah bikin surat kenangan dan dunia kecil rahasia khusus buat kamu. Coba buka segel amplopnya di sini ya:\n\n👉 ${shareUrl}\n\n_(Buka lewat browser HP atau laptop ya ❤️)_`;
-
-    return `https://wa.me/?text=${encodeURIComponent(message)}`;
-  },
-
-  /**
-   * Menghasilkan URL balasan WhatsApp untuk penerima membalas pengirim
-   */
-  generateWhatsAppReplyUrl(data) {
-    const to = data.sender || 'kamu';
-    const from = data.recipient || 'aku';
-
-    const message = `Hai ${to}! ❤️\n\nAku baru aja buka amplop kapsul cinta dari kamu. Suratnya manis banget dan lagunya suka banget! Makasih banyak yaa, i love you so much ✨`;
-
-    return `https://wa.me/?text=${encodeURIComponent(message)}`;
   }
 };
+

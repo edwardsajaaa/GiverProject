@@ -16,14 +16,12 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
   };
 
   const shareLink = CapsuleShareEngine.generateShareLink(currentData);
-  const waShareUrl = CapsuleShareEngine.generateWhatsAppShareUrl(currentData, shareLink);
 
   const handleCopy = async () => {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shareLink);
       } else {
-        // Fallback for older browsers
         const textarea = document.createElement('textarea');
         textarea.value = shareLink;
         document.body.appendChild(textarea);
@@ -34,11 +32,30 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
 
-      // Save changes to parent state & localStorage
       onUpdateData({ sender, recipient });
       CapsuleShareEngine.saveLocalData(currentData);
     } catch (err) {
       console.error('Failed to copy share link:', err);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    handleApplyChanges();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Love Capsule for ${recipient}`,
+          text: `Ada kapsul cinta spesial untuk ${recipient} dari ${sender}! Buka amplopnya di sini:`,
+          url: shareLink,
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          handleCopy();
+        }
+      }
+    } else {
+      handleCopy();
     }
   };
 
@@ -116,7 +133,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               color: '#121212',
               lineHeight: 1.1,
             }}>
-              Share Your Love Capsule
+              Kirim Tautan Kapsul
             </h2>
           </div>
 
@@ -141,7 +158,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
           color: '#444',
           margin: '0 0 16px',
         }}>
-          Atur nama pengirim dan penerima, lalu bagikan tautan ini. Pasanganmu akan menerima amplop & surat cinta khusus yang dipersonalisasi!
+          Atur nama pengirim dan penerima, lalu salin tautan ini untuk dikirimkan ke pasanganmu. Pasanganmu akan menerima amplop & surat cinta khusus yang dipersonalisasi!
         </p>
 
         {/* Sender & Recipient Inputs */}
@@ -238,7 +255,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
             <div><strong>Untuk:</strong> <span style={{ color: '#85101c' }}>{recipient || '(Nama Penerima)'}</span></div>
             <div><strong>Dari:</strong> {sender || '(Nama Pengirim)'}</div>
             <div style={{ fontSize: '11px', color: '#666', marginTop: '2px' }}>
-              ✦ Penerima akan melihat pesan *"For {recipient || 'You'}, from {sender || 'Me'}"*
+              ✦ Penerima akan melihat amplop khusus *"For {recipient || 'You'}, from {sender || 'Me'}"*
             </div>
           </div>
         </div>
@@ -289,42 +306,38 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
                 whiteSpace: 'nowrap',
               }}
             >
-              {copied ? '✓ TERSALIN!' : 'SALIN LINK'}
+              {copied ? '✓ TERSALIN!' : 'SALIN'}
             </button>
           </div>
         </div>
 
-        {/* WhatsApp Share Button */}
+        {/* Action Buttons: Kirim / Salin Tautan & Pratinjau */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <a
-            href={waShareUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleApplyChanges}
+          <button
+            onClick={handleNativeShare}
             style={{
               flex: 1,
-              backgroundColor: '#25D366',
+              backgroundColor: copied ? '#10b981' : '#85101c',
               color: '#fff',
               border: 'none',
-              padding: '10px 16px',
+              padding: '11px 18px',
               fontFamily: "'Montserrat', sans-serif",
               fontSize: '11px',
               fontWeight: 800,
               letterSpacing: '1.5px',
               textTransform: 'uppercase',
               textAlign: 'center',
-              textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              boxShadow: '0 4px 12px rgba(37, 211, 102, 0.4)',
+              boxShadow: '0 4px 14px rgba(133, 16, 28, 0.4)',
               cursor: 'pointer',
-              transition: 'opacity 0.2s',
+              transition: 'all 0.2s',
             }}
           >
-            <span>KIRIM KE WHATSAPP 📲</span>
-          </a>
+            <span>{copied ? '✓ TAUTAN BERHASIL DISALIN!' : '🔗 SALIN / BAGIKAN TAUTAN'}</span>
+          </button>
 
           <button
             onClick={() => {
@@ -332,19 +345,22 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               window.open(shareLink, '_blank');
             }}
             style={{
-              backgroundColor: '#85101c',
+              backgroundColor: '#121212',
               color: '#fff',
               border: 'none',
-              padding: '10px 14px',
+              padding: '11px 16px',
               fontFamily: "'Montserrat', sans-serif",
               fontSize: '11px',
               fontWeight: 800,
               letterSpacing: '1px',
               textTransform: 'uppercase',
               cursor: 'pointer',
+              transition: 'background-color 0.2s',
             }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#333'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
           >
-            PRATINJAU LINK ↗
+            PRATINJAU ↗
           </button>
         </div>
       </div>
