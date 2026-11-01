@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { WaxEnvelope } from './WaxEnvelope';
 import { CapsuleJournal } from './CapsuleJournal';
 
 export function LoveCapsule({ children }) {
-  // Views: 'envelope' (starting view) | 'journal' (editorial scrapbook) | 'world3d' (the surprise 3D diorama)
-  const [activeView, setActiveView] = useState('envelope');
+  // Views: 'capsule' (seamless continuous envelope + journal) | 'world3d' (the surprise 3D diorama)
+  const [activeView, setActiveView] = useState('capsule');
 
   return (
     <>
-      {/* 1. Envelope Opening Phase (Image 1) */}
-      {activeView === 'envelope' && (
-        <WaxEnvelope onOpen={() => setActiveView('journal')} />
-      )}
-
-      {/* 2. Romantic Editorial Paper Journal Phase (Image 2) */}
-      {activeView === 'journal' && (
+      {/* 1 & 2. Continuous Seamless Envelope & Editorial Paper Journal Phase */}
+      {activeView === 'capsule' && (
         <CapsuleJournal
           onEnter3DWorld={() => setActiveView('world3d')}
-          onBackToEnvelope={() => setActiveView('envelope')}
         />
       )}
 
@@ -35,7 +28,7 @@ export function LoveCapsule({ children }) {
             }}
           >
             <button
-              onClick={() => setActiveView('journal')}
+              onClick={() => setActiveView('capsule')}
               className="return-capsule-btn"
               style={{
                 backgroundColor: '#121212',
