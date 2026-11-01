@@ -195,9 +195,15 @@ export function VinylPlayerPage({
     };
   }, [isReceiver]);
 
-  // Save tracks to localStorage on change
+  // Save or Add tracks to localStorage on change
   const handleSaveTrack = (updatedTrack) => {
-    const updated = tracks.map((t) => (t.id === updatedTrack.id ? updatedTrack : t));
+    let updated;
+    const existingIndex = tracks.findIndex((t) => t.id === updatedTrack.id);
+    if (existingIndex >= 0) {
+      updated = tracks.map((t) => (t.id === updatedTrack.id ? updatedTrack : t));
+    } else {
+      updated = [...tracks, updatedTrack];
+    }
     setTracks(updated);
     try {
       localStorage.setItem('giver_capsule_vinyls_v3', JSON.stringify(updated));
@@ -205,9 +211,69 @@ export function VinylPlayerPage({
       console.warn('Failed to save vinyls to localStorage:', e);
     }
 
-    // If currently playing the track that was modified, replay with the new audio URL
-    if (loadedTrackId === updatedTrack.id && isPlaying) {
+    // If new track, automatically plug it into turntable and play
+    if (existingIndex < 0) {
+      handlePlugTrack(updatedTrack.id);
+    } else if (loadedTrackId === updatedTrack.id && isPlaying) {
       capsuleAudio.playTrack(updatedTrack.id, updatedTrack.audioUrl);
+    }
+  };
+
+  // Add a new track
+  const handleAddNewTrack = () => {
+    const newId = Date.now();
+    setEditingTrack({
+      id: newId,
+      isNew: true,
+      title: '',
+      artist: '',
+      album: 'Special Single',
+      cover: 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=600&auto=format&fit=crop',
+      labelColor: '#85101c',
+      lyrics: '',
+      audioUrl: '',
+    });
+  };
+
+  // Delete a track
+  const handleDeleteTrack = (trackIdToDelete) => {
+    if (tracks.length <= 1) {
+      alert('Minimal harus ada 1 lagu di dalam rak piringan hitam.');
+      return;
+    }
+
+    const updated = tracks.filter((t) => t.id !== trackIdToDelete);
+    setTracks(updated);
+    try {
+      localStorage.setItem('giver_capsule_vinyls_v3', JSON.stringify(updated));
+    } catch (e) {
+      console.warn('Failed to save vinyls to localStorage:', e);
+    }
+
+    // If currently playing or loaded track was deleted, switch to first available
+    if (loadedTrackId === trackIdToDelete) {
+      capsuleAudio.stopMusic();
+      setIsPlaying(false);
+      setLoadedTrackId(updated[0].id);
+    }
+
+    // If dedicated track was deleted, redirect dedication
+    if (dedicatedTrackId === trackIdToDelete && onSelectDedicatedTrack) {
+      onSelectDedicatedTrack(updated[0]);
+    }
+  };
+
+  // Reset collection to original 6 albums
+  const handleResetToDefault = () => {
+    setTracks(VINYL_COLLECTION);
+    try {
+      localStorage.removeItem('giver_capsule_vinyls_v3');
+    } catch {
+      /* ignore */
+    }
+    setLoadedTrackId(1);
+    if (onSelectDedicatedTrack) {
+      onSelectDedicatedTrack(VINYL_COLLECTION[0]);
     }
   };
 
@@ -948,50 +1014,112 @@ export function VinylPlayerPage({
           </div>
         </div>
       ) : (
-        /* SENDER: 6 Album Crate with Badges & Dedicated Selector */
+        /* SENDER: Crate with Add, Edit, Delete & Dedicated Selector */
         <div style={{
           backgroundColor: 'rgba(18, 18, 18, 0.04)',
           borderTop: '1px dashed #121212',
           borderBottom: '1px dashed #121212',
-          padding: '10px 14px',
+          padding: '12px 14px 14px 14px',
           margin: '4px 0',
         }}>
+          {/* Header Row: Title on Left, Action Buttons on Right (No Text Overlap) */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: '8px',
+            marginBottom: '14px',
             flexWrap: 'wrap',
-            gap: '4px',
+            gap: '8px',
           }}>
-            <span style={{
-              fontSize: '10px',
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 800,
-              letterSpacing: '1.5px',
-              textTransform: 'uppercase',
-              color: '#121212',
-            }}>
-              ✦ VINYL CRATE — PILIH 1 LAGU UNTUK {recipientName.toUpperCase()}
-            </span>
-            <span style={{
-              fontSize: '9px',
-              fontFamily: "'Montserrat', sans-serif",
-              color: '#85101c',
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-            }}>
-              ★ Hanya lagu bertanda khusus yang akan muncul di pasanganmu
-            </span>
+            <div>
+              <span style={{
+                fontSize: '10px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 800,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                color: '#121212',
+                display: 'block',
+              }}>
+                ✦ VINYL CRATE ({tracks.length} ALBUM) — PILIH 1 LAGU UNTUK {recipientName.toUpperCase()}
+              </span>
+              <span style={{
+                fontSize: '9px',
+                fontFamily: "'Montserrat', sans-serif",
+                color: '#85101c',
+                fontWeight: 600,
+                letterSpacing: '0.5px',
+                display: 'block',
+                marginTop: '2px',
+              }}>
+                ★ Hanya lagu bertanda khusus yang akan muncul di pasanganmu
+              </span>
+            </div>
+
+            {/* Action Buttons: + Tambah Lagu & Reset */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button
+                type="button"
+                onClick={handleAddNewTrack}
+                style={{
+                  backgroundColor: '#85101c',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '5px 10px',
+                  fontSize: '9px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '1px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: '0 2px 6px rgba(133, 16, 28, 0.3)',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#85101c'}
+                title="Tambahkan lagu baru ke rak vinyl"
+              >
+                <span>+ TAMBAH LAGU</span>
+              </button>
+
+              {tracks.length !== 6 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('Kembalikan ke 6 lagu album default?')) {
+                      handleResetToDefault();
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#ffffff',
+                    color: '#666',
+                    border: '1px solid #ccc',
+                    padding: '5px 8px',
+                    fontSize: '9px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                  title="Kembalikan daftar album ke default awal"
+                >
+                  ↺ RESET
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* 6 Album Jackets */}
+          {/* Album Jackets Grid with Safe Top Padding to prevent badge overlap */}
           <div 
             className="vinyl-crate-grid"
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
-              gap: '12px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '16px 14px',
+              alignItems: 'flex-start',
+              paddingTop: '12px',
             }}
           >
             {tracks.map((item) => {
@@ -1025,6 +1153,7 @@ export function VinylPlayerPage({
                       : 'perspective(600px) translateY(0) scale(1)',
                     transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                     userSelect: 'none',
+                    width: '78px',
                   }}
                   onMouseEnter={(e) => {
                     if (!isLoaded && !isBeingDragged) {
@@ -1041,7 +1170,7 @@ export function VinylPlayerPage({
                   {isDedicated && (
                     <div style={{
                       position: 'absolute',
-                      top: '-12px',
+                      top: '-14px',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       backgroundColor: '#85101c',
@@ -1054,12 +1183,82 @@ export function VinylPlayerPage({
                       borderRadius: '2px',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
                       whiteSpace: 'nowrap',
-                      zIndex: 10,
+                      zIndex: 15,
                       border: '1px solid #ffd700',
                     }}>
                       ★ FOR {recipientName.toUpperCase()}
                     </div>
                   )}
+
+                  {/* Quick Action Overlay Buttons: ✎ Edit / ✕ Delete */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '2px',
+                    right: '2px',
+                    zIndex: 14,
+                    display: 'flex',
+                    gap: '2px',
+                  }}>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingTrack(item);
+                      }}
+                      title="Ganti / Edit lagu ini"
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(18, 18, 18, 0.85)',
+                        color: '#ffffff',
+                        border: '1px solid rgba(255,255,255,0.4)',
+                        fontSize: '9px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(18, 18, 18, 0.85)'}
+                    >
+                      ✎
+                    </button>
+                    {tracks.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(`Hapus lagu "${item.title}" dari koleksi?`)) {
+                            handleDeleteTrack(item.id);
+                          }
+                        }}
+                        title="Hapus lagu ini"
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          backgroundColor: 'rgba(18, 18, 18, 0.85)',
+                          color: '#ff6b6b',
+                          border: '1px solid rgba(255,255,255,0.4)',
+                          fontSize: '9px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: 0,
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(18, 18, 18, 0.85)'}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
 
                   {/* Album Cover Sleeve with Sliding Vinyl Peak Effect */}
                   <div style={{
@@ -1155,6 +1354,60 @@ export function VinylPlayerPage({
                 </div>
               );
             })}
+
+            {/* Add New Song Slot Card */}
+            <div
+              onClick={handleAddNewTrack}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                cursor: 'pointer',
+                userSelect: 'none',
+                transition: 'all 0.2s',
+                width: '78px',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <div style={{
+                width: '74px',
+                height: '74px',
+                border: '1.5px dashed #85101c',
+                borderRadius: '2px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(133, 16, 28, 0.05)',
+                color: '#85101c',
+                boxSizing: 'border-box',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+              }}>
+                <span style={{ fontSize: '20px', lineHeight: 1 }}>+</span>
+                <span style={{
+                  fontSize: '8px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase',
+                  marginTop: '2px',
+                }}>
+                  TAMBAH
+                </span>
+              </div>
+              <div style={{
+                marginTop: '5px',
+                fontSize: '9px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 600,
+                color: '#85101c',
+                textAlign: 'center',
+              }}>
+                Lagu Baru
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1319,9 +1572,10 @@ export function VinylPlayerPage({
             margin: 0 auto !important;
           }
           .vinyl-crate-grid {
-            grid-template-columns: repeat(3, 1fr) !important;
-            gap: 12px 6px !important;
-            justify-items: center !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 14px 10px !important;
+            justify-content: center !important;
           }
           .vinyl-3d-banner {
             flex-direction: column !important;
@@ -1344,6 +1598,8 @@ export function VinylPlayerPage({
         onClose={() => setEditingTrack(null)}
         track={editingTrack}
         onSaveTrack={handleSaveTrack}
+        onDeleteTrack={handleDeleteTrack}
+        canDelete={tracks.length > 1}
       />
     </div>
   );

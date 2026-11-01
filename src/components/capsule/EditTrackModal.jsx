@@ -46,7 +46,7 @@ const POPULAR_PRESETS = [
   },
 ];
 
-export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
+export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTrack, canDelete = true }) {
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
   const [album, setAlbum] = useState('');
@@ -66,6 +66,8 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
 
       if (typeof track.lyrics === 'string') {
         setLyrics(track.lyrics);
+      } else if (track.isNew) {
+        setLyrics('');
       } else {
         setLyrics(`“ The music plays, and in every note, I hear your laugh. ”`);
       }
@@ -119,12 +121,13 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
 
     onSaveTrack({
       ...track,
-      title: sanitizedTitle || 'Untitled Track',
-      artist: sanitizedArtist || 'Unknown Artist',
-      album: sanitizedAlbum || 'Exclusive Single',
-      cover: cover.trim() || track.cover,
+      title: sanitizedTitle || (track.isNew ? 'Lagu Persembahan' : 'Untitled Track'),
+      artist: sanitizedArtist || (track.isNew ? 'Our Special Song' : 'Unknown Artist'),
+      album: sanitizedAlbum || 'Exclusive Vinyl Single',
+      cover: cover.trim() || track.cover || 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=600&auto=format&fit=crop',
       audioUrl: audioUrl.trim(),
       lyrics: sanitizedLyrics,
+      isNew: undefined,
     });
     onClose();
   };
@@ -173,7 +176,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
           <div>
             <div style={{
               display: 'inline-block',
-              backgroundColor: '#a61324',
+              backgroundColor: track.isNew ? '#10b981' : '#a61324',
               color: '#ffffff',
               fontSize: '9px',
               fontFamily: "'Montserrat', sans-serif",
@@ -183,7 +186,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
               padding: '2px 8px',
               marginBottom: '6px',
             }}>
-              TRACK #{track.id} • HI-FI VINYL STATION
+              {track.isNew ? '✦ TAMBAH LAGU BARU' : `TRACK #${track.id} • HI-FI VINYL STATION`}
             </div>
             <h2 style={{
               margin: 0,
@@ -192,7 +195,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
               fontFamily: "'Playfair Display', serif",
               color: '#121212',
             }}>
-              Kustomisasi Lagu Vinyl
+              {track.isNew ? 'Tambah Lagu ke Rak Vinyl' : 'Kustomisasi / Ganti Lagu Vinyl'}
             </h2>
             <p style={{
               margin: '3px 0 0',
@@ -200,7 +203,9 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
               fontStyle: 'italic',
               color: '#666',
             }}>
-              Masukkan URL streaming internet (MP3) atau berkas audio Anda sendiri.
+              {track.isNew 
+                ? 'Tambahkan lagu kenangan kalian ke dalam rak piringan hitam.'
+                : 'Masukkan URL streaming internet (MP3) atau berkas audio Anda sendiri.'}
             </p>
           </div>
           <button
@@ -532,51 +537,92 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack }) {
         {/* Footer Actions */}
         <div style={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           gap: '10px',
           marginTop: '18px',
           borderTop: '1px solid #121212',
           paddingTop: '14px',
+          flexWrap: 'wrap',
         }}>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '10px',
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 700,
-              letterSpacing: '1px',
-              color: '#666',
-              cursor: 'pointer',
-              textTransform: 'uppercase',
-            }}
-          >
-            BATAL
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            style={{
-              backgroundColor: '#121212',
-              color: '#ffffff',
-              border: 'none',
-              padding: '9px 18px',
-              fontSize: '11px',
-              fontFamily: "'Montserrat', sans-serif",
-              fontWeight: 800,
-              letterSpacing: '1.5px',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
-          >
-            SIMPAN LAGU & PERBARUI VINYL ⟶
-          </button>
+          <div>
+            {!track.isNew && onDeleteTrack && canDelete && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm(`Yakin ingin menghapus lagu "${title || track.title}" dari rak vinyl?`)) {
+                    onDeleteTrack(track.id);
+                    onClose();
+                  }
+                }}
+                style={{
+                  background: 'none',
+                  border: '1px solid #dc2626',
+                  color: '#dc2626',
+                  padding: '7px 12px',
+                  fontSize: '10px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 700,
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#dc2626';
+                  e.currentTarget.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#dc2626';
+                }}
+              >
+                🗑 HAPUS LAGU
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '10px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 700,
+                letterSpacing: '1px',
+                color: '#666',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+              }}
+            >
+              BATAL
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              style={{
+                backgroundColor: '#121212',
+                color: '#ffffff',
+                border: 'none',
+                padding: '9px 18px',
+                fontSize: '11px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 800,
+                letterSpacing: '1.5px',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
+            >
+              {track.isNew ? '+ TAMBAHKAN LAGU INI ⟶' : 'SIMPAN & PERBARUI VINYL ⟶'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
