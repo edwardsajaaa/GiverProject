@@ -117,17 +117,6 @@ export function WaxEnvelope({ onOpen }) {
             maxWidth: '800px',
           }}
         >
-          <p style={{
-            fontSize: 'clamp(11px, 1.2vw, 13px)',
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            color: 'rgba(255, 215, 220, 0.75)',
-            marginBottom: '8px',
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 500,
-          }}>
-            A Lover Capsule
-          </p>
           <h1 style={{
             fontSize: 'clamp(32px, 5.5vw, 56px)',
             fontWeight: 400,
@@ -430,16 +419,6 @@ export function WaxEnvelope({ onOpen }) {
             </svg>
             <span>{isLocked ? 'TERKUNCI PIN (AMAN)' : 'ATUR GEMBOK PIN'}</span>
           </button>
-
-          <p style={{
-            fontSize: '11px',
-            color: 'rgba(255, 255, 255, 0.4)',
-            letterSpacing: '1px',
-            fontFamily: "'Montserrat', sans-serif",
-            margin: 0,
-          }}>
-            a special gift for someone dear
-          </p>
         </div>
       </div>
 
