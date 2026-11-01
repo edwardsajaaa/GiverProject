@@ -74,40 +74,35 @@ export function WaxEnvelope({ onOpen }) {
       {/* Ambient Vignette Glow */}
       <div style={{
         position: 'absolute',
-        top: '25%',
+        top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(225, 29, 72, 0.22) 0%, transparent 70%)',
+        width: 'min(900px, 90vw)',
+        height: 'min(900px, 90vw)',
+        background: 'radial-gradient(circle, rgba(225, 29, 72, 0.26) 0%, transparent 70%)',
         borderRadius: '50%',
-        filter: 'blur(50px)',
+        filter: 'blur(60px)',
         pointerEvents: 'none',
       }} />
 
-      {/* Main Container simulating smartphone / portrait card frame on desktop, filling viewport on mobile */}
+      {/* Main Responsive Envelope Container - seamlessly adapts to laptop, tablet, and mobile */}
       <div 
         className="envelope-main-frame"
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           width: '100%',
-          maxWidth: '440px',
-          height: '92vh',
-          maxHeight: '840px',
+          height: '100%',
           margin: '0 auto',
-          padding: '24px 20px',
-          borderRadius: '42px',
-          border: '3px solid rgba(255, 255, 255, 0.12)',
-          background: 'linear-gradient(165deg, #42060e 0%, #290308 100%)',
-          boxShadow: '0 25px 70px rgba(0,0,0,0.85), inset 0 1px 2px rgba(255,255,255,0.2)',
+          padding: 'clamp(20px, 4vh, 48px) clamp(16px, 4vw, 40px)',
           position: 'relative',
           overflow: 'hidden',
           transition: 'transform 0.4s ease, opacity 0.8s ease',
           opacity: isOpening ? 0.95 : 1,
           boxSizing: 'border-box',
+          zIndex: 2,
         }}
       >
         {/* Intro Top Title */}
@@ -115,40 +110,42 @@ export function WaxEnvelope({ onOpen }) {
           className="envelope-title-section"
           style={{
             textAlign: 'center',
-            marginTop: '16px',
+            marginTop: 'clamp(8px, 2vh, 24px)',
             marginBottom: 'auto',
             zIndex: 5,
-            padding: '0 10px',
+            padding: '0 16px',
+            maxWidth: '800px',
           }}
         >
           <p style={{
-            fontSize: '11px',
-            letterSpacing: '3px',
+            fontSize: 'clamp(11px, 1.2vw, 13px)',
+            letterSpacing: '4px',
             textTransform: 'uppercase',
-            color: 'rgba(255, 215, 220, 0.65)',
-            marginBottom: '6px',
+            color: 'rgba(255, 215, 220, 0.75)',
+            marginBottom: '8px',
             fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 400,
+            fontWeight: 500,
           }}>
             A Lover Capsule
           </p>
           <h1 style={{
-            fontSize: 'clamp(26px, 7.5vw, 34px)',
+            fontSize: 'clamp(32px, 5.5vw, 56px)',
             fontWeight: 400,
             color: '#fff',
             margin: '0',
             fontFamily: "'Pinyon Script', cursive",
-            textShadow: '0 2px 14px rgba(255, 100, 120, 0.4)',
+            textShadow: '0 2px 20px rgba(255, 100, 120, 0.5), 0 0 40px rgba(225, 29, 72, 0.3)',
             letterSpacing: '1px',
             lineHeight: 1.15,
           }}>
             Will You Be My Valentine?
           </h1>
           <p style={{
-            fontSize: '12px',
-            color: 'rgba(255, 225, 225, 0.7)',
-            marginTop: '6px',
+            fontSize: 'clamp(12px, 1.3vw, 15px)',
+            color: 'rgba(255, 225, 225, 0.75)',
+            marginTop: '8px',
             fontStyle: 'italic',
+            letterSpacing: '0.5px',
           }}>
             A little universe kept inside this envelope...
           </p>
@@ -159,16 +156,14 @@ export function WaxEnvelope({ onOpen }) {
           onClick={handleBreakSeal}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          className="wax-envelope-body"
+          className={`wax-envelope-body ${hovered ? 'is-hovered' : ''} ${isOpening ? 'is-opening' : ''}`}
           style={{
             position: 'relative',
-            width: 'min(290px, calc(100vw - 44px))',
+            width: '290px',
             height: '190px',
             margin: 'auto 0',
             cursor: isOpening ? 'default' : 'pointer',
             perspective: '1000px',
-            transform: hovered && !isOpening ? 'scale(1.03) rotate(-1deg)' : 'scale(1) rotate(0deg)',
-            transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
             zIndex: 20,
           }}
         >
@@ -474,31 +469,59 @@ export function WaxEnvelope({ onOpen }) {
           50% { opacity: 0.4; transform: scale(0.97); }
         }
 
+        .envelope-main-frame {
+          width: 100vw;
+          height: 100vh;
+          max-width: 100vw;
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          background: transparent;
+        }
+
+        .wax-envelope-body {
+          --scale-base: 1.05;
+          transform: scale(var(--scale-base));
+          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .wax-envelope-body.is-hovered:not(.is-opening) {
+          transform: scale(calc(var(--scale-base) * 1.06)) rotate(-1deg) !important;
+        }
+
+        @media (min-width: 768px) {
+          .wax-envelope-body {
+            --scale-base: 1.25;
+          }
+        }
+
+        @media (min-width: 1200px) {
+          .wax-envelope-body {
+            --scale-base: 1.38;
+          }
+          .envelope-title-section h1 {
+            font-size: 52px !important;
+          }
+        }
+
         @media (max-width: 520px) {
           .envelope-main-frame {
-            height: 100vh !important;
-            max-height: 100vh !important;
-            max-width: 100vw !important;
-            border: none !important;
-            border-radius: 0px !important;
-            padding: 20px 16px !important;
-            box-shadow: none !important;
+            padding: 16px 14px !important;
           }
           .envelope-title-section {
-            margin-top: 14px !important;
+            margin-top: 10px !important;
           }
           .wax-envelope-body {
-            transform: scale(0.95);
+            --scale-base: 0.92;
           }
         }
 
         @media (max-height: 680px) and (max-width: 520px) {
           .wax-envelope-body {
-            transform: scale(0.85);
-            margin: 6px 0 !important;
+            --scale-base: 0.82;
+            margin: 4px 0 !important;
           }
           .envelope-title-section h1 {
-            font-size: 24px !important;
+            font-size: 26px !important;
           }
         }
       `}</style>

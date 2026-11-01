@@ -308,6 +308,21 @@ export function CapsuleJournal({ onEnter3DWorld, onBackToEnvelope }) {
           }
         }
 
+        @media (min-width: 1280px) {
+          .journal-main-sheet {
+            max-width: 920px !important;
+            max-height: 720px !important;
+          }
+          .journal-under-sheet-1 {
+            max-width: 936px !important;
+            max-height: 728px !important;
+          }
+          .journal-under-sheet-2 {
+            max-width: 928px !important;
+            max-height: 724px !important;
+          }
+        }
+
         @media (max-width: 680px) {
           .journal-top-bar {
             top: 8px !important;
