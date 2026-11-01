@@ -4,6 +4,8 @@ import { LoveLetterPage } from './pages/LoveLetterPage';
 import { VinylPlayerPage } from './pages/VinylPlayerPage';
 import { capsuleAudio } from './audio/capsuleAudio';
 import { LoveLockModal, LoveLockManager } from './LoveLockModal';
+import { ShareCapsuleModal } from './ShareCapsuleModal';
+import { CapsuleShareEngine } from '../../utils/capsuleShareEngine';
 import { TornEdgeTop, TornEdgeBottom, WashiTape, EditorialButton, CircleArrowButton, PostageStampButton } from './TornPaper';
 
 export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
@@ -13,8 +15,25 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
   const [isLocked, setIsLocked] = useState(LoveLockManager.isLockEnabled());
   const [lockMode, setLockMode] = useState('setup');
   const [showLockModal, setShowLockModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [particles, setParticles] = useState([]);
   const totalPages = 3;
+
+  // Load initial capsule state (detects if user is Receiver via URL query or Sender via localStorage)
+  const [capsuleConfig, setCapsuleConfig] = useState(() => CapsuleShareEngine.getInitialState());
+  const { isReceiver, data: capsuleData } = capsuleConfig;
+
+  const handleUpdateConfig = (partial) => {
+    const updated = {
+      ...capsuleData,
+      ...partial,
+    };
+    setCapsuleConfig(prev => ({
+      ...prev,
+      data: updated,
+    }));
+    CapsuleShareEngine.saveLocalData(updated);
+  };
 
   const isOpened = envelopeState === 'opened';
   const isExpanding = envelopeState === 'expanding';
@@ -158,6 +177,26 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           transition: 'opacity 0.6s ease, transform 0.6s ease',
         }}
       >
+        {isReceiver && (
+          <div style={{
+            display: 'inline-block',
+            backgroundColor: 'rgba(255, 215, 220, 0.15)',
+            border: '1px solid rgba(255, 215, 220, 0.3)',
+            borderRadius: '2px',
+            padding: '4px 12px',
+            marginBottom: '10px',
+            fontSize: '10px',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 800,
+            letterSpacing: '2px',
+            color: '#ffd7dc',
+            textTransform: 'uppercase',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          }}>
+            ✦ SPECIAL DELIVERY FOR {capsuleData.recipient.toUpperCase()} · FROM {capsuleData.sender.toUpperCase()} ✦
+          </div>
+        )}
+
         <h1 style={{
           fontSize: 'clamp(32px, 5.5vw, 56px)',
           fontWeight: 400,
@@ -168,7 +207,10 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           letterSpacing: '1px',
           lineHeight: 1.15,
         }}>
-          Will You Be My Valentine?
+          {isReceiver 
+            ? `Will You Be My Valentine, ${capsuleData.recipient}?`
+            : (capsuleData.envelopeTitle || 'Will You Be My Valentine?')
+          }
         </h1>
         <p style={{
           fontSize: 'clamp(12px, 1.3vw, 15px)',
@@ -177,7 +219,10 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           fontStyle: 'italic',
           letterSpacing: '0.5px',
         }}>
-          A little universe kept inside this envelope...
+          {isReceiver 
+            ? `A little universe kept inside this envelope, crafted with love by ${capsuleData.sender}...`
+            : 'A little universe kept inside this envelope...'
+          }
         </p>
       </div>
 
@@ -198,8 +243,8 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           transition: 'opacity 0.5s ease',
         }}
       >
-        {/* Left: Vintage Postage Stamp Button & Love Lock Option */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        {/* Left: Vintage Postage Stamp Button & Share/Reply Option */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div className="journal-btn-reseal">
             <PostageStampButton
               onClick={handleReSeal}
@@ -216,32 +261,103 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             </PostageStampButton>
           </div>
 
-          <button
-            onClick={() => {
-              setLockMode('setup');
-              setShowLockModal(true);
-            }}
-            title="Kelola Gembok Kapsul (PIN)"
-            style={{
-              background: 'rgba(18, 18, 18, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#ffd700',
-              padding: '6px 8px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-              backdropFilter: 'blur(8px)',
-              transition: 'transform 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffd700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-          </button>
+          {/* Receiver Mode: Reply via WhatsApp Button */}
+          {isReceiver ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{
+                backgroundColor: 'rgba(18, 18, 18, 0.65)',
+                border: '1px solid rgba(255, 215, 220, 0.25)',
+                padding: '6px 12px',
+                fontSize: '10px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 700,
+                color: '#ffccd5',
+                letterSpacing: '1px',
+                backdropFilter: 'blur(8px)',
+              }}>
+                FROM {capsuleData.sender.toUpperCase()} ❤️
+              </div>
+
+              <a
+                href={CapsuleShareEngine.generateWhatsAppReplyUrl(capsuleData)}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  backgroundColor: '#25D366',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '10px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '1px',
+                  padding: '7px 12px',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: '0 4px 12px rgba(37, 211, 102, 0.4)',
+                  transition: 'opacity 0.2s',
+                }}
+              >
+                <span>BALAS WA 💬</span>
+              </a>
+            </div>
+          ) : (
+            /* Sender Mode: Share Link Button & Love Lock Option */
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button
+                onClick={() => setShowShareModal(true)}
+                title="Bagikan Kapsul Ini ke Pasanganmu"
+                style={{
+                  backgroundColor: '#85101c',
+                  color: '#fff',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  fontSize: '10px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '1px',
+                  padding: '7px 12px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 4px 12px rgba(133, 16, 28, 0.5)',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#85101c'}
+              >
+                <span>BAGIKAN LINK 🔗</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setLockMode('setup');
+                  setShowLockModal(true);
+                }}
+                title="Kelola Gembok Kapsul (PIN)"
+                style={{
+                  background: 'rgba(18, 18, 18, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#ffd700',
+                  padding: '6px 8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                  backdropFilter: 'blur(8px)',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffd700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Center: Inception Style Minimalist Pagination (01 / 03 with Circle Arrow Buttons) */}
@@ -422,7 +538,11 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           {page === 1 && (
             <PhotoGalleryPage
               onNext={() => goToPage(2)}
-              authorName="you"
+              authorName={capsuleData.sender}
+              recipientName={capsuleData.recipient}
+              customPhotos={capsuleData.photos}
+              onUpdatePhotos={(updated) => handleUpdateConfig({ photos: updated })}
+              isReceiver={isReceiver}
             />
           )}
 
@@ -430,7 +550,12 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             <LoveLetterPage
               onPrev={() => goToPage(1)}
               onNext={() => goToPage(3)}
-              recipientName="My Valentine"
+              recipientName={capsuleData.recipient}
+              senderName={capsuleData.sender}
+              initialLetterText={capsuleData.letterText}
+              onSaveLetterText={(newText) => handleUpdateConfig({ letterText: newText })}
+              isReceiver={isReceiver}
+              onReplyWhatsApp={() => CapsuleShareEngine.generateWhatsAppReplyUrl(capsuleData)}
             />
           )}
 
@@ -640,7 +765,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
         ))}
       </div>
 
-      {/* Footer Security PIN Button (visible when sealed) */}
+      {/* Footer Buttons (visible when sealed) */}
       <div 
         style={{
           position: 'absolute',
@@ -651,8 +776,38 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           opacity: (envelopeState === 'sealed' || envelopeState === 'opening-flap' || envelopeState === 'rising-paper') ? 1 : 0,
           pointerEvents: (envelopeState === 'sealed') ? 'auto' : 'none',
           transition: 'opacity 0.5s ease',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
         }}
       >
+        {!isReceiver && (
+          <button
+            onClick={() => setShowShareModal(true)}
+            style={{
+              background: '#85101c',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              borderRadius: '2px',
+              color: '#fff',
+              fontSize: '10px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 800,
+              padding: '5px 12px',
+              letterSpacing: '1px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(133, 16, 28, 0.5)',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#85101c'}
+          >
+            <span>BAGIKAN LINK 🔗</span>
+          </button>
+        )}
+
         <button
           onClick={() => {
             setLockMode('setup');
@@ -698,6 +853,14 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
           setIsLocked(LoveLockManager.isLockEnabled());
           proceedOpen();
         }}
+      />
+
+      {/* Share Capsule Link Modal */}
+      <ShareCapsuleModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        capsuleData={capsuleData}
+        onUpdateData={(partial) => handleUpdateConfig(partial)}
       />
 
       <style>{`

@@ -16,9 +16,25 @@ You bring warmth into ordinary days, and in your laugh, I've found my favorite m
 
 Thank you for being my peace, my adventure, and my love.`;
 
-export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
+export function LoveLetterPage({ 
+  onPrev, 
+  onNext, 
+  recipientName = "Sarah", 
+  senderName = "Alex",
+  initialLetterText,
+  onSaveLetterText,
+  isReceiver = false,
+  onReplyWhatsApp
+}) {
   const [isEditing, setIsEditing] = useState(false);
-  const [letterText, setLetterText] = useState(DEFAULT_LETTER);
+  const [letterText, setLetterText] = useState(initialLetterText || DEFAULT_LETTER);
+
+  const handleToggleEdit = () => {
+    if (isEditing) {
+      if (onSaveLetterText) onSaveLetterText(letterText);
+    }
+    setIsEditing(!isEditing);
+  };
 
   return (
     <div 
@@ -114,7 +130,7 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
             lineHeight: 1.15,
             textShadow: '0 1px 2px rgba(255,255,255,0.8)',
           }}>
-            Girl, I'm so in love with <span style={{ fontSize: 'clamp(30px, 8.5vw, 48px)', textDecoration: 'underline wavy #c8102e 1.5px' }}>You</span>
+            Girl, I'm so in love with <span style={{ fontSize: 'clamp(30px, 8.5vw, 48px)', textDecoration: 'underline wavy #c8102e 1.5px' }}>{recipientName || 'You'}</span>
           </div>
         </div>
 
@@ -210,39 +226,79 @@ export function LoveLetterPage({ onPrev, onNext, recipientName = "My Love" }) {
             </div>
           )}
 
-          {/* Customize Letter Button (Minimalist Stamp Style) */}
+          {/* Sender Signature */}
+          <p style={{
+            margin: '14px 0 4px',
+            fontSize: '22px',
+            fontFamily: "'Pinyon Script', cursive",
+            color: '#85101c',
+            textAlign: 'right',
+          }}>
+            Forever Yours, {senderName || 'Alex'}
+          </p>
+
+          {/* Action Row: Customize or Reply */}
           <div style={{
             display: 'flex',
             justifyContent: 'flex-end',
             marginTop: '8px',
           }}>
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              style={{
-                background: '#121212',
-                color: '#fff',
-                border: 'none',
-                fontSize: '10px',
-                fontFamily: "'Montserrat', sans-serif",
-                fontWeight: 700,
-                letterSpacing: '1px',
-                padding: '4px 10px',
-                cursor: 'pointer',
-                clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#a61324';
-                e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#121212';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              {isEditing ? '✓ SAVE LETTER' : '✎ CUSTOMIZE MESSAGE'}
-            </button>
+            {isReceiver ? (
+              onReplyWhatsApp && (
+                <a
+                  href={onReplyWhatsApp()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    backgroundColor: '#25D366',
+                    color: '#fff',
+                    border: 'none',
+                    fontSize: '10px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    letterSpacing: '1px',
+                    padding: '6px 14px',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 3px 10px rgba(37, 211, 102, 0.4)',
+                    transition: 'opacity 0.2s',
+                  }}
+                >
+                  <span>💌 BALAS KE {senderName.toUpperCase()} VIA WA</span>
+                </a>
+              )
+            ) : (
+              <button
+                onClick={handleToggleEdit}
+                style={{
+                  background: '#121212',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '10px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 700,
+                  letterSpacing: '1px',
+                  padding: '4px 10px',
+                  cursor: 'pointer',
+                  clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#a61324';
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#121212';
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {isEditing ? '✓ SAVE LETTER' : '✎ CUSTOMIZE MESSAGE'}
+              </button>
+            )}
           </div>
         </div>
       </div>

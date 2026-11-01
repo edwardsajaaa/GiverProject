@@ -40,11 +40,26 @@ const DEFAULT_PHOTOS = [
   }
 ];
 
-export function PhotoGalleryPage({ onNext, authorName = "you" }) {
-  const [photos, setPhotos] = useState(DEFAULT_PHOTOS);
+export function PhotoGalleryPage({ 
+  onNext, 
+  authorName = "Alex", 
+  recipientName = "Sarah",
+  customPhotos,
+  onUpdatePhotos,
+  isReceiver = false 
+}) {
+  const [photos, setPhotos] = useState(customPhotos || DEFAULT_PHOTOS);
   const [activePhoto, setActivePhoto] = useState(null);
 
+  // Sync if customPhotos changes externally
+  React.useEffect(() => {
+    if (customPhotos && customPhotos.length > 0) {
+      setPhotos(customPhotos);
+    }
+  }, [customPhotos]);
+
   const handlePhotoUpload = (index, e) => {
+    if (isReceiver) return;
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -70,8 +85,13 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
 
     const newUrl = URL.createObjectURL(file);
     const updated = [...photos];
-    updated[index] = { ...updated[index], url: newUrl };
+    updated[index] = {
+      ...updated[index],
+      url: newUrl,
+      caption: `Memory with ${recipientName || 'you'}`,
+    };
     setPhotos(updated);
+    if (onUpdatePhotos) onUpdatePhotos(updated);
   };
 
   return (
@@ -229,7 +249,7 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
             )}
 
             {/* Torn Red Paper Labels (Streetwear/Dymo Style) */}
-            {item.tagLeft && (
+            {(item.tagLeft || idx === 1) && (
               <div style={{
                 position: 'absolute',
                 left: '-20px',
@@ -248,10 +268,10 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
                 clipPath: 'polygon(0% 10%, 4% 0%, 96% 0%, 100% 12%, 97% 50%, 100% 88%, 96% 100%, 4% 100%, 0% 88%, 3% 50%)',
                 borderLeft: '2px solid #c8102e',
               }}>
-                {item.tagLeft}
+                {item.tagLeft || `${authorName}'s gallery`}
               </div>
             )}
-            {item.tagRight && (
+            {(item.tagRight || idx === 1) && (
               <div style={{
                 position: 'absolute',
                 right: '-18px',
@@ -269,7 +289,7 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
                 transform: 'rotate(5deg)',
                 clipPath: 'polygon(0% 12%, 4% 0%, 96% 0%, 100% 10%, 97% 50%, 100% 90%, 96% 100%, 4% 100%, 0% 90%, 3% 50%)',
               }}>
-                {item.tagRight}
+                {item.tagRight || `for ${recipientName}`}
               </div>
             )}
 
@@ -348,37 +368,39 @@ export function PhotoGalleryPage({ onNext, authorName = "you" }) {
                 }} />
               </div>
 
-              {/* Edit/Change Button */}
-              <label
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  right: '10px',
-                  backgroundColor: '#121212',
-                  color: '#fff',
-                  fontSize: '9px',
-                  fontWeight: 700,
-                  padding: '3px 8px',
-                  borderRadius: '0px',
-                  cursor: 'pointer',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  opacity: 0,
-                  transition: 'opacity 0.2s',
-                  fontFamily: "'Montserrat', sans-serif",
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-                  letterSpacing: '1px',
-                }}
-                className="photo-edit-btn"
-              >
-                ✎ CHANGE
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handlePhotoUpload(idx, e)}
-                  style={{ display: 'none' }}
-                />
-              </label>
+              {/* Edit/Change Button (Only shown in creator/sender mode) */}
+              {!isReceiver && (
+                <label
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    right: '10px',
+                    backgroundColor: '#121212',
+                    color: '#fff',
+                    fontSize: '9px',
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: '0px',
+                    cursor: 'pointer',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    opacity: 0,
+                    transition: 'opacity 0.2s',
+                    fontFamily: "'Montserrat', sans-serif",
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                    letterSpacing: '1px',
+                  }}
+                  className="photo-edit-btn"
+                >
+                  ✎ CHANGE
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePhotoUpload(idx, e)}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              )}
             </div>
           </div>
         ))}
