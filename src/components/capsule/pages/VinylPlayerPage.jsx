@@ -104,9 +104,34 @@ export const VINYL_COLLECTION = [
   },
 ];
 
-export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
-  // State: Tracks loaded from localStorage or default
+export function VinylPlayerPage({
+  onPrev,
+  onEnter3DWorld,
+  isReceiver = false,
+  senderName = 'Alex',
+  recipientName = 'Sarah',
+  dedicatedTrackId = 1,
+  dedicatedTrack = null,
+  onSelectDedicatedTrack,
+}) {
+  // Helper to resolve the dedicated track
+  const resolveDedicatedTrack = () => {
+    if (dedicatedTrack && dedicatedTrack.title) {
+      const fallback = VINYL_COLLECTION.find((t) => t.id === dedicatedTrack.id) || VINYL_COLLECTION[0];
+      return {
+        ...fallback,
+        ...dedicatedTrack,
+        lyrics: dedicatedTrack.lyrics || fallback.lyrics,
+      };
+    }
+    return VINYL_COLLECTION.find((t) => t.id === dedicatedTrackId) || VINYL_COLLECTION[0];
+  };
+
+  // State: Tracks loaded from localStorage or default (for receiver: STRICTLY only the dedicated track)
   const [tracks, setTracks] = useState(() => {
+    if (isReceiver) {
+      return [resolveDedicatedTrack()];
+    }
     try {
       const saved = localStorage.getItem('giver_capsule_vinyls_v3');
       if (saved) {
@@ -119,8 +144,14 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
     return VINYL_COLLECTION;
   });
 
-  // State: Currently loaded track ID (1-6)
-  const [loadedTrackId, setLoadedTrackId] = useState(1);
+  // State: Currently loaded track ID
+  const [loadedTrackId, setLoadedTrackId] = useState(() => {
+    if (isReceiver) {
+      return resolveDedicatedTrack().id;
+    }
+    return dedicatedTrackId || 1;
+  });
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInserting, setIsInserting] = useState(false);
   const [isEjecting, setIsEjecting] = useState(false);
@@ -128,10 +159,20 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
   const [draggedTrackId, setDraggedTrackId] = useState(null);
   const [editingTrack, setEditingTrack] = useState(null);
 
-  const activeTrack = tracks.find((t) => t.id === loadedTrackId) || tracks[0];
-
-  // Restore any persistent local audio files from IndexedDB on mount
+  // Sync if receiver props change
   useEffect(() => {
+    if (isReceiver) {
+      const target = resolveDedicatedTrack();
+      setTracks([target]);
+      setLoadedTrackId(target.id);
+    }
+  }, [isReceiver, dedicatedTrackId, dedicatedTrack]);
+
+  const activeTrack = tracks.find((t) => t.id === loadedTrackId) || tracks[0] || resolveDedicatedTrack();
+
+  // Restore any persistent local audio files from IndexedDB on mount (only for sender)
+  useEffect(() => {
+    if (isReceiver) return;
     let isMounted = true;
     AudioStorage.getAllTrackAudios().then((audioMap) => {
       if (!isMounted || !audioMap || Object.keys(audioMap).length === 0) return;
@@ -152,7 +193,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isReceiver]);
 
   // Save tracks to localStorage on change
   const handleSaveTrack = (updatedTrack) => {
@@ -263,7 +304,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             textTransform: 'uppercase',
             color: '#121212',
           }}>
-            ✦ VINTAGE HI-FI VINYL STATION
+            {isReceiver ? `✦ PERSEMBAHAN LAGU DARI ${senderName.toUpperCase()}` : '✦ VINTAGE HI-FI VINYL STATION'}
           </p>
           <span style={{
             fontSize: '18px',
@@ -271,7 +312,7 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
             fontStyle: 'italic',
             color: '#333',
           }}>
-            Songs that remind me of you...
+            {isReceiver ? `A special melody chosen for ${recipientName}...` : 'Songs that remind me of you...'}
           </span>
         </div>
       </div>
@@ -699,216 +740,424 @@ export function VinylPlayerPage({ onPrev, onEnter3DWorld }) {
               <span style={{
                 fontSize: '9px',
                 fontFamily: "'Montserrat', sans-serif",
-                color: '#888',
+                color: isReceiver ? '#85101c' : '#888',
                 letterSpacing: '1px',
                 textTransform: 'uppercase',
+                fontWeight: isReceiver ? 700 : 500,
               }}>
-                ✦ SOUNDTRACK FOR OUR MOMENTS
+                {isReceiver 
+                  ? `✦ LAGU PERSEMBAHAN KHUSUS DARI ${senderName.toUpperCase()}` 
+                  : '✦ SOUNDTRACK FOR OUR MOMENTS'}
               </span>
 
-              <button
-                type="button"
-                onClick={() => setEditingTrack(activeTrack)}
-                style={{
-                  background: '#121212',
-                  color: '#ffffff',
-                  border: 'none',
-                  fontSize: '9px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: 700,
-                  letterSpacing: '1px',
-                  padding: '4px 8px',
-                  cursor: 'pointer',
-                  clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                  transition: 'background-color 0.2s',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
-                title="Ganti URL streaming MP3 atau ubah lagu ini"
-              >
-                <span>✎ GANTI / EDIT LAGU INI</span>
-              </button>
+              {/* Sender controls: dedicate button & edit button */}
+              {!isReceiver && (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onSelectDedicatedTrack) {
+                        onSelectDedicatedTrack(activeTrack);
+                      }
+                    }}
+                    style={{
+                      background: dedicatedTrackId === activeTrack.id ? '#85101c' : '#ffffff',
+                      color: dedicatedTrackId === activeTrack.id ? '#ffffff' : '#121212',
+                      border: '1.5px solid #121212',
+                      fontSize: '9px',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 800,
+                      letterSpacing: '1px',
+                      padding: '4px 8px',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+                      transition: 'all 0.2s',
+                    }}
+                    title="Pilih lagu ini sebagai lagu yang akan diterima pasanganmu"
+                  >
+                    {dedicatedTrackId === activeTrack.id
+                      ? `★ LAGU UNTUK ${recipientName.toUpperCase()} ✓`
+                      : `★ PILIH UNTUK ${recipientName.toUpperCase()}`}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditingTrack(activeTrack)}
+                    style={{
+                      background: '#121212',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontSize: '9px',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 700,
+                      letterSpacing: '1px',
+                      padding: '4px 8px',
+                      cursor: 'pointer',
+                      clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                      transition: 'background-color 0.2s',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
+                    title="Ganti URL streaming MP3 atau ubah lagu ini"
+                  >
+                    <span>✎ GANTI / EDIT LAGU INI</span>
+                  </button>
+                </div>
+              )}
             </div>
           </TornScrap>
         </div>
       </div>
 
-      {/* The 6 Vinyl Record Albums Collection Shelf (Plug & Play Selector) */}
-      <div style={{
-        backgroundColor: 'rgba(18, 18, 18, 0.04)',
-        borderTop: '1px dashed #121212',
-        borderBottom: '1px dashed #121212',
-        padding: '10px 14px',
-        margin: '4px 0',
-      }}>
+      {/* The Vinyl Record Collection Section */}
+      {isReceiver ? (
+        /* RECEIVER: ONLY the single dedicated song chosen by the sender is shown */
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '8px',
+          backgroundColor: 'rgba(133, 16, 28, 0.04)',
+          borderTop: '1.5px dashed #85101c',
+          borderBottom: '1.5px dashed #85101c',
+          padding: '12px 16px',
+          margin: '6px 0',
         }}>
-          <span style={{
-            fontSize: '10px',
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 800,
-            letterSpacing: '1.5px',
-            textTransform: 'uppercase',
-            color: '#121212',
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '8px',
+            flexWrap: 'wrap',
+            gap: '4px',
           }}>
-            ✦ YOUR VINYL CRATE (6 EXCLUSIVE ALBUMS — DRAG & DROP OR CLICK)
-          </span>
-        </div>
+            <span style={{
+              fontSize: '10px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 800,
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+              color: '#85101c',
+            }}>
+              ✦ LAGU SPESIAL DIPILIHKAN KHUSUS OLEH {senderName.toUpperCase()}
+            </span>
+            <span style={{
+              fontSize: '9px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 600,
+              color: '#666',
+              letterSpacing: '0.5px',
+            }}>
+              Untuk {recipientName} tercinta
+            </span>
+          </div>
 
-        {/* 6 Album Jackets in a row on desktop, 3 columns on mobile */}
-        <div 
-          className="vinyl-crate-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: '12px',
-          }}
-        >
-          {tracks.map((item) => {
-            const isLoaded = loadedTrackId === item.id;
-            const isBeingDragged = draggedTrackId === item.id;
-
-            return (
-              <div
-                key={item.id}
-                draggable={true}
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('text/plain', item.id.toString());
-                  e.dataTransfer.effectAllowed = 'copy';
-                  setDraggedTrackId(item.id);
-                }}
-                onDragEnd={() => {
-                  setDraggedTrackId(null);
-                  setIsDraggingOver(false);
-                }}
-                onClick={() => handlePlugTrack(item.id)}
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  cursor: 'grab',
-                  opacity: isBeingDragged ? 0.45 : 1,
-                  transform: isLoaded 
-                    ? 'perspective(600px) rotateY(-6deg) rotateX(3deg) translateY(-8px) scale(1.06)' 
-                    : 'perspective(600px) translateY(0) scale(1)',
-                  transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  userSelect: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isLoaded && !isBeingDragged) {
-                    e.currentTarget.style.transform = 'perspective(600px) translateY(-6px) scale(1.04)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isLoaded && !isBeingDragged) {
-                    e.currentTarget.style.transform = 'perspective(600px) translateY(0) scale(1)';
-                  }
-                }}
-              >
-                {/* Album Cover Sleeve with Sliding Vinyl Peak Effect */}
-                <div style={{
-                  position: 'relative',
-                  width: '74px',
-                  height: '74px',
-                  borderRadius: '2px',
-                  overflow: 'visible',
-                  boxShadow: isLoaded
-                    ? '0 12px 26px rgba(166, 19, 36, 0.45), 0 0 0 2px #a61324'
-                    : '0 4px 10px rgba(0,0,0,0.25)',
-                  backgroundColor: '#121212',
-                  transition: 'box-shadow 0.3s ease',
-                }}>
-                  {/* Peeking Vinyl Disc Behind Jacket */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '2px',
-                    right: isLoaded ? '-22px' : '-8px',
-                    width: '70px',
-                    height: '70px',
-                    borderRadius: '50%',
-                    backgroundColor: '#111',
-                    zIndex: 0,
-                    boxShadow: isLoaded ? '0 6px 14px rgba(0,0,0,0.7)' : '0 2px 6px rgba(0,0,0,0.5)',
-                    transition: 'right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    animation: isLoaded && isPlaying ? 'spinVinylSmooth 2.8s linear infinite' : 'none',
-                  }}>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      backgroundColor: item.labelColor,
-                      border: '1px solid #fff',
-                    }} />
-                  </div>
-
-                  {/* Album Cover Artwork */}
-                  <img
-                    src={item.cover}
-                    alt={item.title}
-                    style={{
-                      position: 'relative',
-                      zIndex: 2,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                      borderRadius: '2px',
-                      filter: isLoaded ? 'contrast(115%)' : 'grayscale(15%)',
-                    }}
-                  />
-
-                  {/* Status Badge */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '2px',
-                    left: '2px',
-                    zIndex: 5,
-                    backgroundColor: isLoaded ? (isPlaying ? '#a61324' : '#121212') : 'rgba(0,0,0,0.7)',
-                    color: '#fff',
-                    fontSize: '8px',
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: 700,
-                    padding: '1px 4px',
-                    borderRadius: '1px',
-                    letterSpacing: '0.5px',
-                  }}>
-                    {isLoaded ? (isPlaying ? 'SPINNING ♫' : 'READY') : 'PLUG IN'}
-                  </div>
-                </div>
-
-                {/* Album Title Below */}
-                <div style={{
-                  marginTop: '5px',
-                  fontSize: '10px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: isLoaded ? 800 : 600,
-                  color: isLoaded ? '#a61324' : '#121212',
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '78px',
-                }}>
-                  {item.title}
-                </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            backgroundColor: '#FAF7F2',
+            border: '1.5px solid #121212',
+            padding: '10px 14px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+          }}>
+            <div style={{
+              position: 'relative',
+              width: '60px',
+              height: '60px',
+              borderRadius: '2px',
+              flexShrink: 0,
+              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+            }}>
+              <img
+                src={activeTrack.cover}
+                alt={activeTrack.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '2px' }}
+              />
+              <div style={{
+                position: 'absolute',
+                top: '-5px',
+                right: '-5px',
+                backgroundColor: '#85101c',
+                color: '#fff',
+                fontSize: '8px',
+                fontWeight: 900,
+                fontFamily: "'Montserrat', sans-serif",
+                padding: '1px 5px',
+                borderRadius: '2px',
+                letterSpacing: '0.5px',
+              }}>
+                ★ DEDICATED
               </div>
-            );
-          })}
-        </div>
-      </div>
+            </div>
 
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: '16px',
+                fontWeight: 700,
+                color: '#121212',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+                {activeTrack.title}
+              </div>
+              <div style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '11px',
+                color: '#666',
+                marginTop: '1px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+                {activeTrack.artist} • <em>{activeTrack.album}</em>
+              </div>
+              <div style={{
+                fontFamily: "'Pinyon Script', cursive",
+                fontSize: '17px',
+                color: '#85101c',
+                marginTop: '2px',
+                lineHeight: 1.1,
+              }}>
+                “Sebuah lagu yang {senderName} pilihkan khusus untuk menemani perjalanan cinta kita...”
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={togglePlayPause}
+              style={{
+                backgroundColor: isPlaying ? '#121212' : '#85101c',
+                color: '#fff',
+                border: 'none',
+                padding: '8px 14px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '10px',
+                fontWeight: 800,
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'background-color 0.2s',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              }}
+            >
+              {isPlaying ? 'PAUSE ❚❚' : 'PLAY ♫'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        /* SENDER: 6 Album Crate with Badges & Dedicated Selector */
+        <div style={{
+          backgroundColor: 'rgba(18, 18, 18, 0.04)',
+          borderTop: '1px dashed #121212',
+          borderBottom: '1px dashed #121212',
+          padding: '10px 14px',
+          margin: '4px 0',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '8px',
+            flexWrap: 'wrap',
+            gap: '4px',
+          }}>
+            <span style={{
+              fontSize: '10px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 800,
+              letterSpacing: '1.5px',
+              textTransform: 'uppercase',
+              color: '#121212',
+            }}>
+              ✦ VINYL CRATE — PILIH 1 LAGU UNTUK {recipientName.toUpperCase()}
+            </span>
+            <span style={{
+              fontSize: '9px',
+              fontFamily: "'Montserrat', sans-serif",
+              color: '#85101c',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+            }}>
+              ★ Hanya lagu bertanda khusus yang akan muncul di pasanganmu
+            </span>
+          </div>
+
+          {/* 6 Album Jackets */}
+          <div 
+            className="vinyl-crate-grid"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(6, 1fr)',
+              gap: '12px',
+            }}
+          >
+            {tracks.map((item) => {
+              const isLoaded = loadedTrackId === item.id;
+              const isBeingDragged = draggedTrackId === item.id;
+              const isDedicated = dedicatedTrackId === item.id;
+
+              return (
+                <div
+                  key={item.id}
+                  draggable={true}
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('text/plain', item.id.toString());
+                    e.dataTransfer.effectAllowed = 'copy';
+                    setDraggedTrackId(item.id);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedTrackId(null);
+                    setIsDraggingOver(false);
+                  }}
+                  onClick={() => handlePlugTrack(item.id)}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    cursor: 'grab',
+                    opacity: isBeingDragged ? 0.45 : 1,
+                    transform: isLoaded 
+                      ? 'perspective(600px) rotateY(-6deg) rotateX(3deg) translateY(-8px) scale(1.06)' 
+                      : 'perspective(600px) translateY(0) scale(1)',
+                    transition: 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    userSelect: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoaded && !isBeingDragged) {
+                      e.currentTarget.style.transform = 'perspective(600px) translateY(-6px) scale(1.04)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isLoaded && !isBeingDragged) {
+                      e.currentTarget.style.transform = 'perspective(600px) translateY(0) scale(1)';
+                    }
+                  }}
+                >
+                  {/* Dedicated Gold Star Badge for Sender */}
+                  {isDedicated && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-12px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      backgroundColor: '#85101c',
+                      color: '#ffffff',
+                      fontSize: '7px',
+                      fontWeight: 800,
+                      fontFamily: "'Montserrat', sans-serif",
+                      letterSpacing: '0.5px',
+                      padding: '2px 5px',
+                      borderRadius: '2px',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                      whiteSpace: 'nowrap',
+                      zIndex: 10,
+                      border: '1px solid #ffd700',
+                    }}>
+                      ★ FOR {recipientName.toUpperCase()}
+                    </div>
+                  )}
+
+                  {/* Album Cover Sleeve with Sliding Vinyl Peak Effect */}
+                  <div style={{
+                    position: 'relative',
+                    width: '74px',
+                    height: '74px',
+                    borderRadius: '2px',
+                    overflow: 'visible',
+                    boxShadow: isDedicated
+                      ? '0 0 0 2px #ffd700, 0 12px 26px rgba(166, 19, 36, 0.45)'
+                      : isLoaded
+                        ? '0 12px 26px rgba(166, 19, 36, 0.45), 0 0 0 2px #a61324'
+                        : '0 4px 10px rgba(0,0,0,0.25)',
+                    backgroundColor: '#121212',
+                    transition: 'box-shadow 0.3s ease',
+                  }}>
+                    {/* Peeking Vinyl Disc Behind Jacket */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '2px',
+                      right: isLoaded ? '-22px' : '-8px',
+                      width: '70px',
+                      height: '70px',
+                      borderRadius: '50%',
+                      backgroundColor: '#111',
+                      zIndex: 0,
+                      boxShadow: isLoaded ? '0 6px 14px rgba(0,0,0,0.7)' : '0 2px 6px rgba(0,0,0,0.5)',
+                      transition: 'right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      animation: isLoaded && isPlaying ? 'spinVinylSmooth 2.8s linear infinite' : 'none',
+                    }}>
+                      <div style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        backgroundColor: item.labelColor,
+                        border: '1px solid #fff',
+                      }} />
+                    </div>
+
+                    {/* Album Cover Artwork */}
+                    <img
+                      src={item.cover}
+                      alt={item.title}
+                      style={{
+                        position: 'relative',
+                        zIndex: 2,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                        borderRadius: '2px',
+                        filter: isLoaded ? 'contrast(115%)' : 'grayscale(15%)',
+                      }}
+                    />
+
+                    {/* Status Badge */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '2px',
+                      left: '2px',
+                      zIndex: 5,
+                      backgroundColor: isLoaded ? (isPlaying ? '#a61324' : '#121212') : 'rgba(0,0,0,0.7)',
+                      color: '#fff',
+                      fontSize: '8px',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 700,
+                      padding: '1px 4px',
+                      borderRadius: '1px',
+                      letterSpacing: '0.5px',
+                    }}>
+                      {isLoaded ? (isPlaying ? 'SPINNING ♫' : 'READY') : 'PLUG IN'}
+                    </div>
+                  </div>
+
+                  {/* Album Title Below */}
+                  <div style={{
+                    marginTop: '5px',
+                    fontSize: '10px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: isLoaded ? 800 : 600,
+                    color: isLoaded ? '#a61324' : '#121212',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '78px',
+                  }}>
+                    {item.title}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Footer Navigation Bar */}
       <div 

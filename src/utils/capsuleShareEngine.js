@@ -35,7 +35,8 @@ export const DEFAULT_CAPSULE_DATA = {
       tapeType: 'black',
     }
   ],
-  trackId: 1,
+  dedicatedTrackId: 1,
+  dedicatedTrack: null,
   biome: 'paris_romantique',
   pin: '',
 };
@@ -108,14 +109,16 @@ export const CapsuleShareEngine = {
         }
       }
 
-      // Dukungan format query sederhana: ?to=Sarah&from=Alex
+      // Dukungan format query sederhana: ?to=Sarah&from=Alex&track=2
       const toParam = urlParams.get('to');
       const fromParam = urlParams.get('from');
+      const trackParam = urlParams.get('track') || urlParams.get('trackId') || urlParams.get('song');
       if (toParam || fromParam) {
         const customData = {
           ...DEFAULT_CAPSULE_DATA,
           recipient: toParam ? SecurityEngine.sanitizeText(toParam, 40) : DEFAULT_CAPSULE_DATA.recipient,
           sender: fromParam ? SecurityEngine.sanitizeText(fromParam, 40) : DEFAULT_CAPSULE_DATA.sender,
+          dedicatedTrackId: trackParam ? (parseInt(trackParam, 10) || 1) : 1,
         };
         return {
           isReceiver: true,
@@ -156,7 +159,17 @@ export const CapsuleShareEngine = {
       letterHeading: SecurityEngine.sanitizeText(data.letterHeading || DEFAULT_CAPSULE_DATA.letterHeading, 100),
       letterText: SecurityEngine.sanitizeText(data.letterText || DEFAULT_CAPSULE_DATA.letterText, 3000),
       letterSignature: SecurityEngine.sanitizeText(data.letterSignature || DEFAULT_CAPSULE_DATA.letterSignature, 60),
-      trackId: Number(data.trackId) || 1,
+      dedicatedTrackId: Number(data.dedicatedTrackId) || Number(data.trackId) || 1,
+      dedicatedTrack: data.dedicatedTrack ? {
+        id: Number(data.dedicatedTrack.id) || 1,
+        title: SecurityEngine.sanitizeText(data.dedicatedTrack.title || '', 60),
+        artist: SecurityEngine.sanitizeText(data.dedicatedTrack.artist || '', 60),
+        album: SecurityEngine.sanitizeText(data.dedicatedTrack.album || '', 60),
+        cover: SecurityEngine.sanitizeText(data.dedicatedTrack.cover || '', 1000),
+        labelColor: SecurityEngine.sanitizeText(data.dedicatedTrack.labelColor || '#85101c', 20),
+        lyrics: typeof data.dedicatedTrack.lyrics === 'string' ? SecurityEngine.sanitizeText(data.dedicatedTrack.lyrics, 2000) : '',
+        audioUrl: SecurityEngine.sanitizeText(data.dedicatedTrack.audioUrl || '', 1000),
+      } : null,
       biome: SecurityEngine.sanitizeText(data.biome || DEFAULT_CAPSULE_DATA.biome, 40),
       pin: SecurityEngine.sanitizeText(data.pin || '', 10),
     };
@@ -202,7 +215,17 @@ export const CapsuleShareEngine = {
       letterHeading: data.letterHeading,
       letterText: data.letterText,
       letterSignature: data.letterSignature,
-      trackId: data.trackId,
+      dedicatedTrackId: data.dedicatedTrackId || data.trackId || 1,
+      dedicatedTrack: data.dedicatedTrack ? {
+        id: data.dedicatedTrack.id,
+        title: data.dedicatedTrack.title,
+        artist: data.dedicatedTrack.artist,
+        album: data.dedicatedTrack.album,
+        cover: data.dedicatedTrack.cover,
+        labelColor: data.dedicatedTrack.labelColor,
+        audioUrl: data.dedicatedTrack.audioUrl || '',
+        lyrics: typeof data.dedicatedTrack.lyrics === 'string' ? data.dedicatedTrack.lyrics : '',
+      } : null,
       biome: data.biome,
       pin: data.pin || '',
       photos: (data.photos || []).map(p => ({

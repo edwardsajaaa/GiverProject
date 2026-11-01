@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CapsuleShareEngine } from '../../utils/capsuleShareEngine';
+import { VINYL_COLLECTION } from './pages/VinylPlayerPage';
 import { TornEdgeTop, TornEdgeBottom, WashiTape, BlackTape } from './TornPaper';
 
 export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }) {
@@ -7,15 +8,70 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
 
   const [sender, setSender] = useState(capsuleData.sender || 'Alex');
   const [recipient, setRecipient] = useState(capsuleData.recipient || 'Sarah');
+  const [dedicatedTrackId, setDedicatedTrackId] = useState(capsuleData.dedicatedTrackId || 1);
   const [copied, setCopied] = useState(false);
+
+  // Ambil daftar lagu (baik dari localStorage kustom jika ada, atau default VINYL_COLLECTION)
+  const availableTracks = (() => {
+    try {
+      const saved = localStorage.getItem('giver_capsule_vinyls_v3');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      /* ignore */
+    }
+    return VINYL_COLLECTION;
+  })();
+
+  const selectedTrack = availableTracks.find(t => t.id === dedicatedTrackId) || availableTracks[0];
 
   const currentData = {
     ...capsuleData,
     sender,
     recipient,
+    dedicatedTrackId,
+    dedicatedTrack: selectedTrack ? {
+      id: selectedTrack.id,
+      title: selectedTrack.title,
+      artist: selectedTrack.artist,
+      album: selectedTrack.album,
+      cover: selectedTrack.cover,
+      labelColor: selectedTrack.labelColor,
+      audioUrl: selectedTrack.audioUrl || '',
+      lyrics: typeof selectedTrack.lyrics === 'string' ? selectedTrack.lyrics : '',
+    } : null,
   };
 
   const shareLink = CapsuleShareEngine.generateShareLink(currentData);
+
+  const handleApplyChanges = (newTrackId = dedicatedTrackId, newSender = sender, newRecipient = recipient) => {
+    const track = availableTracks.find(t => t.id === newTrackId) || availableTracks[0];
+    const dataToSave = {
+      ...currentData,
+      sender: newSender,
+      recipient: newRecipient,
+      dedicatedTrackId: newTrackId,
+      dedicatedTrack: track ? {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        album: track.album,
+        cover: track.cover,
+        labelColor: track.labelColor,
+        audioUrl: track.audioUrl || '',
+        lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
+      } : null,
+    };
+    onUpdateData({
+      sender: newSender,
+      recipient: newRecipient,
+      dedicatedTrackId: newTrackId,
+      dedicatedTrack: dataToSave.dedicatedTrack,
+    });
+    CapsuleShareEngine.saveLocalData(dataToSave);
+  };
 
   const handleCopy = async () => {
     try {
@@ -32,8 +88,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
 
-      onUpdateData({ sender, recipient });
-      CapsuleShareEngine.saveLocalData(currentData);
+      handleApplyChanges();
     } catch (err) {
       console.error('Failed to copy share link:', err);
     }
@@ -57,11 +112,6 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
     } else {
       handleCopy();
     }
-  };
-
-  const handleApplyChanges = () => {
-    onUpdateData({ sender, recipient });
-    CapsuleShareEngine.saveLocalData(currentData);
   };
 
   return (
@@ -166,7 +216,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '12px',
-          marginBottom: '16px',
+          marginBottom: '14px',
         }}>
           <div>
             <label style={{
@@ -185,8 +235,9 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               type="text"
               value={sender}
               onChange={(e) => {
-                setSender(e.target.value);
-                handleApplyChanges();
+                const val = e.target.value;
+                setSender(val);
+                handleApplyChanges(dedicatedTrackId, val, recipient);
               }}
               placeholder="Contoh: Alex"
               style={{
@@ -220,8 +271,9 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               type="text"
               value={recipient}
               onChange={(e) => {
-                setRecipient(e.target.value);
-                handleApplyChanges();
+                const val = e.target.value;
+                setRecipient(val);
+                handleApplyChanges(dedicatedTrackId, sender, val);
               }}
               placeholder="Contoh: Sarah"
               style={{
@@ -240,22 +292,135 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
           </div>
         </div>
 
+        {/* Dedicated Song Selector */}
+        <div style={{ marginBottom: '14px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '6px',
+          }}>
+            <label style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: '10px',
+              fontWeight: 800,
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              color: '#85101c',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}>
+              <span>🎵</span> PILIH 1 LAGU PERSEMBAHAN UNTUK PASANGAN:
+            </label>
+            <span style={{ fontSize: '9px', color: '#666', fontStyle: 'italic' }}>
+              Hanya lagu ini yang akan muncul di penerima
+            </span>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+            maxHeight: '130px',
+            overflowY: 'auto',
+            padding: '6px',
+            backgroundColor: '#ffffff',
+            border: '1.5px solid #121212',
+            boxSizing: 'border-box',
+          }}>
+            {availableTracks.map((item) => {
+              const isSelected = dedicatedTrackId === item.id;
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    setDedicatedTrackId(item.id);
+                    handleApplyChanges(item.id, sender, recipient);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '5px 6px',
+                    border: isSelected ? '2px solid #85101c' : '1px solid #e0e0e0',
+                    backgroundColor: isSelected ? 'rgba(133, 16, 28, 0.08)' : '#fafafa',
+                    cursor: 'pointer',
+                    borderRadius: '2px',
+                    transition: 'all 0.15s ease',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <img
+                    src={item.cover}
+                    alt={item.title}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      objectFit: 'cover',
+                      borderRadius: '2px',
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div style={{ overflow: 'hidden', flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      color: isSelected ? '#85101c' : '#121212',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {item.title}
+                    </div>
+                    <div style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '8px',
+                      color: '#666',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {item.artist}
+                    </div>
+                  </div>
+                  {isSelected && (
+                    <span style={{ color: '#85101c', fontWeight: 'bold', fontSize: '11px', flexShrink: 0 }}>
+                      ✓
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Live Preview Box */}
         <div style={{
           backgroundColor: '#f2ece1',
           border: '1px dashed #121212',
-          padding: '12px 14px',
-          marginBottom: '16px',
+          padding: '10px 12px',
+          marginBottom: '14px',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
         }}>
-          <span style={{ fontSize: '28px' }}>💌</span>
-          <div style={{ fontSize: '13px', lineHeight: 1.4 }}>
-            <div><strong>Untuk:</strong> <span style={{ color: '#85101c' }}>{recipient || '(Nama Penerima)'}</span></div>
-            <div><strong>Dari:</strong> {sender || '(Nama Pengirim)'}</div>
-            <div style={{ fontSize: '11px', color: '#666', marginTop: '2px' }}>
-              ✦ Penerima akan melihat amplop khusus *"For {recipient || 'You'}, from {sender || 'Me'}"*
+          <span style={{ fontSize: '26px' }}>💌</span>
+          <div style={{ fontSize: '12px', lineHeight: 1.4, flex: 1 }}>
+            <div>
+              <strong>Untuk:</strong> <span style={{ color: '#85101c', fontWeight: 700 }}>{recipient || '(Nama Penerima)'}</span>
+              <span style={{ margin: '0 6px', color: '#888' }}>•</span>
+              <strong>Dari:</strong> <span>{sender || '(Nama Pengirim)'}</span>
+            </div>
+            <div style={{ marginTop: '2px', color: '#121212' }}>
+              <strong>Lagu Persembahan:</strong>{' '}
+              <span style={{ color: '#85101c', fontWeight: 600 }}>
+                🎵 {selectedTrack?.title} ({selectedTrack?.artist})
+              </span>
+            </div>
+            <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>
+              ✦ Pasanganmu hanya akan menerima & memutar lagu ini di pemutar vinyl khususnya.
             </div>
           </div>
         </div>

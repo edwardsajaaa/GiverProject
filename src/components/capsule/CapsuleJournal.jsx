@@ -538,6 +538,26 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             <VinylPlayerPage
               onPrev={() => goToPage(2)}
               onEnter3DWorld={onEnter3DWorld}
+              isReceiver={isReceiver}
+              senderName={capsuleData.sender}
+              recipientName={capsuleData.recipient}
+              dedicatedTrackId={capsuleData.dedicatedTrackId || 1}
+              dedicatedTrack={capsuleData.dedicatedTrack}
+              onSelectDedicatedTrack={(track) => {
+                handleUpdateConfig({
+                  dedicatedTrackId: track.id,
+                  dedicatedTrack: {
+                    id: track.id,
+                    title: track.title,
+                    artist: track.artist,
+                    album: track.album,
+                    cover: track.cover,
+                    labelColor: track.labelColor,
+                    audioUrl: track.audioUrl || '',
+                    lyrics: typeof track.lyrics === 'string' ? track.lyrics : '',
+                  },
+                });
+              }}
             />
           )}
         </div>
