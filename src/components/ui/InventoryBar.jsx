@@ -79,7 +79,7 @@ export function InventoryBar({
           }}
           title={inventoryOpen ? "Tutup Palet Objek" : "Buka Palet Objek"}
         >
-          <span>{inventoryOpen ? '✦ CLOSE PALETTE ✦' : '✦ OPEN PALETTE ✦'}</span>
+          <span>{inventoryOpen ? '✦ TUTUP PALET ✦' : '✦ BUKA PALET ✦'}</span>
           <span style={{ transform: inventoryOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.4s ease', display: 'flex' }}>
             <IconChevronUp size={12} />
           </span>
@@ -244,7 +244,7 @@ export function InventoryBar({
             }}
           >
             <IconTrash size={12} />
-            <span>{deleteMode ? 'DEL: ON' : 'DELETE'}</span>
+            <span>{deleteMode ? 'HAPUS: AKTIF' : 'HAPUS'}</span>
           </button>
 
           {/* Reset Button */}
@@ -276,7 +276,7 @@ export function InventoryBar({
                 boxShadow: '0 3px 10px rgba(200, 16, 46, 0.4)'
               }}
             >
-              <IconWarning size={12} /> SURE?
+              <IconWarning size={12} /> YAKIN?
             </button>
           )}
         </div>

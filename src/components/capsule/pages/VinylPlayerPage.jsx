@@ -370,7 +370,7 @@ export function VinylPlayerPage({
             textTransform: 'uppercase',
             color: '#121212',
           }}>
-            {isReceiver ? `✦ PERSEMBAHAN LAGU DARI ${senderName.toUpperCase()}` : '✦ VINTAGE HI-FI VINYL STATION'}
+            {isReceiver ? `✦ PERSEMBAHAN LAGU DARI ${senderName.toUpperCase()}` : '✦ PEMUTAR PIRINGAN HITAM'}
           </p>
           <span style={{
             fontSize: '18px',
@@ -378,7 +378,7 @@ export function VinylPlayerPage({
             fontStyle: 'italic',
             color: '#333',
           }}>
-            {isReceiver ? `A special melody chosen for ${recipientName}...` : 'Songs that remind me of you...'}
+            {isReceiver ? `Lagu spesial yang dipilihkan untuk ${recipientName}...` : 'Lagu-lagu yang mengingatkanku padamu...'}
           </span>
         </div>
       </div>
@@ -813,7 +813,7 @@ export function VinylPlayerPage({
               }}>
                 {isReceiver 
                   ? `✦ LAGU PERSEMBAHAN KHUSUS DARI ${senderName.toUpperCase()}` 
-                  : '✦ SOUNDTRACK FOR OUR MOMENTS'}
+                  : '✦ LAGU PILIHAN KITA'}
               </span>
 
               {/* Sender controls: dedicate button & edit button */}
@@ -870,7 +870,7 @@ export function VinylPlayerPage({
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
                     title="Ganti URL streaming MP3 atau ubah lagu ini"
                   >
-                    <span>✎ GANTI / EDIT LAGU INI</span>
+                    <span>✎ GANTI LAGU</span>
                   </button>
                 </div>
               )}
@@ -1332,7 +1332,7 @@ export function VinylPlayerPage({
                       borderRadius: '1px',
                       letterSpacing: '0.5px',
                     }}>
-                      {isLoaded ? (isPlaying ? 'SPINNING ♫' : 'READY') : 'PLUG IN'}
+                      {isLoaded ? (isPlaying ? 'MEMUTAR ♫' : 'SIAP') : 'PUTAR'}
                     </div>
                   </div>
 
@@ -1436,7 +1436,7 @@ export function VinylPlayerPage({
             fontWeight: 800,
             letterSpacing: '2px',
           }}>
-            BACK
+            KEMBALI
           </span>
         </div>
 
@@ -1461,7 +1461,7 @@ export function VinylPlayerPage({
               letterSpacing: '1px',
             }}
           >
-            • CHAPTER THREE
+            • PIRINGAN HITAM
           </span>
         </div>
 
@@ -1476,7 +1476,7 @@ export function VinylPlayerPage({
             onClick={onEnter3DWorld}
             style={{ padding: '5px 12px', fontSize: '10px' }}
           >
-            ENTER 3D WORLD →
+            LIHAT PULAU 3D →
           </EditorialButton>
         </div>
       </div>

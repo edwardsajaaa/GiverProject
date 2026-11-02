@@ -1,5 +1,4 @@
-// Procedural Web Audio API sound engine for Love Capsule
-// Zero external assets required, instant and authentic audio feedback!
+// Efek suara dan pemutar audio untuk kapsul pesan
 
 class CapsuleAudioEngine {
   constructor() {
@@ -167,12 +166,11 @@ class CapsuleAudioEngine {
     }
   }
 
-  // Play Audio for Vinyl Player: Supports Real Internet Audio Stream (MP3/OGG/WAV) with Procedural Chord Fallback
+  // Putar lagu piringan hitam (file audio / stream, atau nada akord bawaan)
   playTrack(trackId, audioUrl = null) {
     this.init();
 
     if (this.isPlayingMusic && this.currentTrackId === trackId) {
-      // Toggle off
       this.stopMusic();
       return;
     }
@@ -183,7 +181,6 @@ class CapsuleAudioEngine {
     this.isPlayingMusic = true;
     this.currentTrackId = trackId;
 
-    // 1. If a custom internet audio URL or blob is provided, stream the real song!
     if (audioUrl && typeof audioUrl === 'string' && audioUrl.trim().length > 0) {
       try {
         const audio = new Audio(audioUrl.trim());
@@ -191,8 +188,7 @@ class CapsuleAudioEngine {
         audio.volume = this.volume;
         audio.loop = true;
 
-        audio.addEventListener('error', (err) => {
-          console.warn('[CapsuleAudio] Media stream error or CORS restriction. Falling back to synthesized Rhodes chords:', err);
+        audio.addEventListener('error', () => {
           if (this.isPlayingMusic) {
             this.playSynthesizedChords(trackId);
           }
@@ -204,8 +200,7 @@ class CapsuleAudioEngine {
             .then(() => {
               this.audioElement = audio;
             })
-            .catch((err) => {
-              console.warn('[CapsuleAudio] Autoplay blocked or URL unreachable, using synthesized chord fallback:', err);
+            .catch(() => {
               if (this.isPlayingMusic) {
                 this.playSynthesizedChords(trackId);
               }
@@ -214,12 +209,11 @@ class CapsuleAudioEngine {
           this.audioElement = audio;
         }
         return;
-      } catch (err) {
-        console.warn('[CapsuleAudio] Audio instantiation failed:', err);
+      } catch {
+        // Fallback jika pemutaran audio URL gagal
       }
     }
 
-    // 2. Default: Authentic Rhodes Electric Piano Chords Procedural Synthesis
     this.playSynthesizedChords(trackId);
   }
 

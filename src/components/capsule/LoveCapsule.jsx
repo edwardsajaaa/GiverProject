@@ -58,7 +58,7 @@ export function LoveCapsule({ children }) {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
               }}
             >
-              <span>⟵ RETURN TO LOVE CAPSULE</span>
+              <span>⟵ KEMBALI KE KAPSUL</span>
             </button>
           </div>
 

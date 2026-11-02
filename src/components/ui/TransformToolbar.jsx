@@ -51,7 +51,7 @@ export function TransformToolbar({
             fontFamily: "'Montserrat', sans-serif",
             color: '#a61324' 
           }}>
-            ✦ SELECTED:
+            ✦ OBJEK:
           </span>
 
           <button 
@@ -98,7 +98,7 @@ export function TransformToolbar({
               fontFamily: "'Montserrat', sans-serif",
             }}
           >
-            <option value="auto" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>STYLE: AUTO</option>
+            <option value="auto" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>GAYA: OTOMATIS</option>
             <option value="lowpoly" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>LOW-POLY</option>
             <option value="anime" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>ANIME TOON</option>
             <option value="retro_8bit" style={{ background: isNight ? '#1e1e1e' : '#fff', color: isNight ? '#fff' : '#000' }}>RETRO 8-BIT</option>
@@ -119,7 +119,7 @@ export function TransformToolbar({
               clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
             }}
           >
-            DELETE
+            HAPUS
           </button>
         </div>
       )}
@@ -137,7 +137,7 @@ export function TransformToolbar({
           clipPath: 'polygon(0% 2px, 2% 0px, 98% 0px, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
         }}>
           <BlackTape top="-8px" left="25px" width="50px" rotate={-3} />
-          <span>RELEASE <strong>{ITEM_DEFS[draggingItem]?.label}</strong> ON ISLAND TO PLACE</span>
+          <span>LEPAS <strong>{ITEM_DEFS[draggingItem]?.label}</strong> DI ATAS PULAU UNTUK MENEMPATKAN</span>
         </div>
       )}
 
@@ -154,7 +154,7 @@ export function TransformToolbar({
           clipPath: 'polygon(0% 2px, 2% 0px, 98% 0px, 100% 2px, 99% 98%, 100% 100%, 1% 100%, 0% 98%)',
         }}>
           <WashiTape top="-8px" left="25px" width="50px" rotate={2} color="rgba(255, 235, 215, 0.85)" />
-          <span>TAP ISLAND TO PLACE <strong>{ITEM_DEFS[activePlacementType]?.label}</strong></span>
+          <span>SENTUH PULAU UNTUK MENARUH <strong>{ITEM_DEFS[activePlacementType]?.label}</strong></span>
           <button 
             onClick={() => setActivePlacementType(null)} 
             style={{
@@ -163,7 +163,7 @@ export function TransformToolbar({
               fontFamily: "'Montserrat', sans-serif",
             }}
           >
-            CANCEL
+            BATAL
           </button>
         </div>
       )}

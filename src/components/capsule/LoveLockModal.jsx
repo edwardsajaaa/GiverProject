@@ -1,81 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { SecurityEngine } from '../../utils/securityEngine';
 import { TornScrap, WashiTape, BlackTape, EditorialButton } from './TornPaper';
 
+const PIN_KEY = 'giver_capsule_pin';
+const PIN_ENABLED_KEY = 'giver_capsule_lock_enabled';
 const PASSCODE_HASH_KEY = 'giver_capsule_passcode_hash';
-const PASSCODE_ENABLED_KEY = 'giver_capsule_lock_enabled';
 
 export const LoveLockManager = {
   isLockEnabled() {
     try {
-      const enabled = localStorage.getItem(PASSCODE_ENABLED_KEY);
-      const hash = localStorage.getItem(PASSCODE_HASH_KEY);
-      return enabled === 'true' && Boolean(hash);
+      const enabled = localStorage.getItem(PIN_ENABLED_KEY);
+      const pin = localStorage.getItem(PIN_KEY) || localStorage.getItem(PASSCODE_HASH_KEY);
+      return enabled === 'true' && Boolean(pin);
     } catch {
       return false;
     }
   },
 
-  async setPasscode(pin) {
+  setPasscode(pin) {
     if (!pin || pin.length < 4) return false;
-    const hash = await SecurityEngine.hashPasscode(pin);
-    localStorage.setItem(PASSCODE_HASH_KEY, hash);
-    localStorage.setItem(PASSCODE_ENABLED_KEY, 'true');
+    localStorage.setItem(PIN_KEY, pin);
+    localStorage.setItem(PIN_ENABLED_KEY, 'true');
     return true;
   },
 
   removePasscode() {
+    localStorage.removeItem(PIN_KEY);
     localStorage.removeItem(PASSCODE_HASH_KEY);
-    localStorage.setItem(PASSCODE_ENABLED_KEY, 'false');
+    localStorage.setItem(PIN_ENABLED_KEY, 'false');
   },
 
-  async verifyPasscode(inputPin) {
-    // Check rate limit to prevent brute force
-    const rateCheck = SecurityEngine.checkRateLimit('capsule_pin', 5, 30000);
-    if (!rateCheck.allowed) {
-      return { success: false, rateLimited: true, waitSeconds: rateCheck.waitSeconds };
-    }
-
+  verifyPasscode(inputPin) {
+    const savedPin = localStorage.getItem(PIN_KEY);
     const savedHash = localStorage.getItem(PASSCODE_HASH_KEY);
-    if (!savedHash) return { success: true };
 
-    const inputHash = await SecurityEngine.hashPasscode(inputPin);
-    if (inputHash === savedHash) {
-      SecurityEngine.resetRateLimit('capsule_pin');
-      return { success: true };
-    }
+    if (!savedPin && !savedHash) return { success: true };
+    if (savedPin && inputPin === savedPin) return { success: true };
+    if (savedHash && inputPin === savedHash) return { success: true };
 
-    return { success: false, rateLimited: false };
+    return { success: false };
   }
 };
 
 export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) {
-  // mode: 'unlock' (prompt PIN to open) | 'setup' (set or change PIN)
   const [pin, setPin] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
 
   useEffect(() => {
     if (isOpen) {
       setPin('');
       setErrorMsg('');
-      setCooldown(0);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    let timer;
-    if (cooldown > 0) {
-      timer = setTimeout(() => setCooldown(c => c - 1), 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [cooldown]);
 
   if (!isOpen) return null;
 
   const handleKeyPress = (digit) => {
-    if (cooldown > 0) return;
     if (pin.length < 6) {
       setPin(prev => prev + digit);
       setErrorMsg('');
@@ -83,39 +62,30 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
   };
 
   const handleDelete = () => {
-    if (cooldown > 0) return;
     setPin(prev => prev.slice(0, -1));
     setErrorMsg('');
   };
 
-  const handleSubmit = async () => {
-    if (cooldown > 0) return;
+  const handleSubmit = () => {
     if (pin.length < 4) {
       setErrorMsg('Masukkan minimal 4 digit PIN.');
       return;
     }
 
-    setIsVerifying(true);
     if (mode === 'setup') {
-      await LoveLockManager.setPasscode(pin);
-      setIsVerifying(false);
+      LoveLockManager.setPasscode(pin);
       onClose();
-      alert('🔒 Gembok Cinta berhasil diaktifkan dengan PIN rahasia!');
+      alert('Kunci amplop berhasil diaktifkan!');
       return;
     }
 
-    const result = await LoveLockManager.verifyPasscode(pin);
-    setIsVerifying(false);
-
+    const result = LoveLockManager.verifyPasscode(pin);
     if (result.success) {
       setPin('');
       onUnlocked();
-    } else if (result.rateLimited) {
-      setCooldown(result.waitSeconds);
-      setErrorMsg(`Terlalu banyak percobaan! Mohon tunggu ${result.waitSeconds} detik.`);
     } else {
       setPin('');
-      setErrorMsg('PIN salah! Harap masukkan tanggal atau kode yang benar.');
+      setErrorMsg('PIN salah, silakan coba lagi.');
     }
   };
 
@@ -262,7 +232,6 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
             <button
               key={num}
               onClick={() => handleKeyPress(num.toString())}
-              disabled={cooldown > 0 || isVerifying}
               className="lovelock-btn"
               style={{
                 height: '42px',
@@ -272,7 +241,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
                 fontSize: '16px',
                 fontWeight: 700,
                 color: '#121212',
-                cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s',
                 clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -286,7 +255,6 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           ))}
           <button
             onClick={handleDelete}
-            disabled={cooldown > 0}
             className="lovelock-btn"
             style={{
               height: '42px',
@@ -305,7 +273,6 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           </button>
           <button
             onClick={() => handleKeyPress('0')}
-            disabled={cooldown > 0 || isVerifying}
             className="lovelock-btn"
             style={{
               height: '42px',
@@ -315,7 +282,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
               fontSize: '16px',
               fontWeight: 700,
               color: '#121212',
-              cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
+              cursor: 'pointer',
               transition: 'transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#121212'; e.currentTarget.style.color = '#fff'; }}
@@ -325,7 +292,7 @@ export function LoveLockModal({ isOpen, onClose, onUnlocked, mode = 'unlock' }) 
           </button>
           <button
             onClick={handleSubmit}
-            disabled={cooldown > 0 || isVerifying || pin.length < 4}
+            disabled={pin.length < 4}
             className="lovelock-btn"
             style={{
               height: '42px',

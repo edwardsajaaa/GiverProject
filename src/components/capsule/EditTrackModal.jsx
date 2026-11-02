@@ -186,7 +186,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
               padding: '2px 8px',
               marginBottom: '6px',
             }}>
-              {track.isNew ? '✦ TAMBAH LAGU BARU' : `TRACK #${track.id} • HI-FI VINYL STATION`}
+              {track.isNew ? '✦ TAMBAH LAGU' : '✦ EDIT LAGU'}
             </div>
             <h2 style={{
               margin: 0,
@@ -195,7 +195,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
               fontFamily: "'Playfair Display', serif",
               color: '#121212',
             }}>
-              {track.isNew ? 'Tambah Lagu ke Rak Vinyl' : 'Kustomisasi / Ganti Lagu Vinyl'}
+              {track.isNew ? 'Tambah Lagu ke Rak Vinyl' : 'Ganti / Edit Lagu'}
             </h2>
             <p style={{
               margin: '3px 0 0',
@@ -205,7 +205,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
             }}>
               {track.isNew 
                 ? 'Tambahkan lagu kenangan kalian ke dalam rak piringan hitam.'
-                : 'Masukkan URL streaming internet (MP3) atau berkas audio Anda sendiri.'}
+                : 'Ganti lagu dengan memasukkan link audio atau unggah file musikmu sendiri.'}
             </p>
           </div>
           <button
@@ -511,7 +511,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
               textTransform: 'uppercase',
               marginBottom: '4px',
             }}>
-              KUTIPAN LIRIK LAGU / PESAN ROMANTIS
+              LIRIK LAGU / PESAN ROMANTIS
             </label>
             <textarea
               rows={4}
@@ -620,7 +620,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
             >
-              {track.isNew ? '+ TAMBAHKAN LAGU INI ⟶' : 'SIMPAN & PERBARUI VINYL ⟶'}
+              {track.isNew ? '+ TAMBAHKAN LAGU' : 'SIMPAN PERUBAHAN'}
             </button>
           </div>
         </div>

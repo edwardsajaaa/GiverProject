@@ -173,7 +173,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               textTransform: 'uppercase',
               color: '#85101c',
             }}>
-              ✦ SPECIAL DELIVERY
+              ✦ BAGIKAN KAPSUL
             </span>
             <h2 style={{
               margin: '2px 0 0',
@@ -183,7 +183,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               color: '#121212',
               lineHeight: 1.1,
             }}>
-              Kirim Tautan Kapsul
+              Bagikan Tautan Kapsul
             </h2>
           </div>
 
@@ -208,7 +208,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
           color: '#444',
           margin: '0 0 16px',
         }}>
-          Atur nama pengirim dan penerima, lalu salin tautan ini untuk dikirimkan ke pasanganmu. Pasanganmu akan menerima amplop & surat cinta khusus yang dipersonalisasi!
+          Atur nama kalian, pilih 1 lagu persembahan, lalu bagikan tautan ini ke pasanganmu. Pasanganmu akan menerima amplop dan surat cinta khusus yang dipersonalisasi!
         </p>
 
         {/* Sender & Recipient Inputs */}
@@ -501,7 +501,7 @@ export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }
               transition: 'all 0.2s',
             }}
           >
-            <span>{copied ? '✓ TAUTAN BERHASIL DISALIN!' : '🔗 SALIN / BAGIKAN TAUTAN'}</span>
+            <span>{copied ? '✓ TAUTAN BERHASIL DISALIN!' : '🔗 SALIN TAUTAN'}</span>
           </button>
 
           <button

@@ -268,7 +268,7 @@ export function LoveLetterPage({
                   e.currentTarget.style.transform = 'scale(1)';
                 }}
               >
-                {isEditing ? '✓ SAVE LETTER' : '✎ CUSTOMIZE MESSAGE'}
+                {isEditing ? '✓ SIMPAN SURAT' : '✎ TULIS SURAT'}
               </button>
             </div>
           )}
@@ -299,7 +299,7 @@ export function LoveLetterPage({
             fontWeight: 800,
             letterSpacing: '2px',
           }}>
-            BACK
+            KEMBALI
           </span>
         </div>
 
@@ -324,7 +324,7 @@ export function LoveLetterPage({
               letterSpacing: '1px',
             }}
           >
-            • CHAPTER TWO
+            • SURAT CINTA
           </span>
         </div>
 
@@ -334,7 +334,7 @@ export function LoveLetterPage({
           onClick={onNext}
           arrow
         >
-          OUR PLAYLIST
+          PUTAR MUSIK
         </EditorialButton>
       </div>
 

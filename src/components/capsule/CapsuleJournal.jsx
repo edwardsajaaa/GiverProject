@@ -257,7 +257,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
-              <span>RE-SEAL</span>
+              <span>TUTUP AMPLOP</span>
             </PostageStampButton>
           </div>
 
@@ -275,7 +275,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
                 letterSpacing: '1px',
                 backdropFilter: 'blur(8px)',
               }}>
-                FROM {capsuleData.sender.toUpperCase()} ❤️
+                DARI {capsuleData.sender.toUpperCase()} ❤️
               </div>
             </div>
           ) : (
@@ -303,7 +303,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#85101c'}
               >
-                <span>BAGIKAN LINK 🔗</span>
+                <span>BAGIKAN TAUTAN 🔗</span>
               </button>
 
               <button
@@ -387,7 +387,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
               boxShadow: '0 6px 18px rgba(0,0,0,0.5)',
             }}
           >
-            OUR 3D ISLAND
+            PULAU 3D →
           </EditorialButton>
         </div>
       </div>
@@ -733,7 +733,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
               fontFamily: "'Montserrat', sans-serif",
               textShadow: '0 1px 4px rgba(0,0,0,0.7)',
             }}>
-              ✦ tap to break seal ✦
+              ✦ sentuh untuk membuka ✦
             </span>
           </div>
         )}
@@ -799,7 +799,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#85101c'}
           >
-            <span>BAGIKAN LINK 🔗</span>
+            <span>BAGIKAN TAUTAN 🔗</span>
           </button>
         )}
 
@@ -831,7 +831,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <span>{isLocked ? 'TERKUNCI PIN (AMAN)' : 'ATUR GEMBOK PIN'}</span>
+          <span>{isLocked ? 'TERKUNCI PIN' : 'KUNCI AMPLOP'}</span>
         </button>
       </div>
 

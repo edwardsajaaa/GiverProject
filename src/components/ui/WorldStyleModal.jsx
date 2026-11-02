@@ -135,7 +135,7 @@ export function WorldStyleModal({
               padding: '2px 8px',
               marginBottom: '6px',
             }}>
-              ENVIRONMENT & RENDERING STUDIO
+              ✦ TEMA & SUASANA PULAU ✦
             </div>
             <h2 style={{ 
               margin: 0, 
@@ -145,7 +145,7 @@ export function WorldStyleModal({
               color: isNight ? '#fff' : '#121212',
               letterSpacing: '-0.3px' 
             }}>
-              Kustomisasi Semesta & Gaya Seni
+              Pilih Tema & Gaya Visual
             </h2>
             <p style={{ 
               margin: '3px 0 0', 
@@ -154,7 +154,7 @@ export function WorldStyleModal({
               fontStyle: 'italic',
               color: isNight ? '#A3A3A3' : '#666',
             }}>
-              Pilih atmosfer pulau kenangan dan estetika visual rendering 3D.
+              Pilih suasana tempat dan gaya tampilan untuk pulau 3D kita.
             </p>
           </div>
           <button
@@ -194,7 +194,7 @@ export function WorldStyleModal({
               clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
             }}
           >
-            <span>LOKASI SEMESTA ({BIOMES.length})</span>
+            <span>PILIH LOKASI ({BIOMES.length})</span>
           </button>
           <button
             onClick={() => { setActiveTab('artStyle'); SoundEngine.playClick(); }}
@@ -368,7 +368,7 @@ export function WorldStyleModal({
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a61324'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#121212'}
           >
-            TERAPKAN & TUTUP ⟶
+            SIMPAN & TUTUP
           </button>
         </div>
       </div>

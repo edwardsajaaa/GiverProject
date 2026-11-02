@@ -220,7 +220,7 @@ export function CentralObjectModal({
               padding: '2px 8px',
               marginBottom: '6px',
             }}>
-              CURATOR STUDIO • 3D CENTERPIECE
+              ✦ OBJEK UTAMA PULAU ✦
             </div>
             <h2 style={{
               margin: 0,
@@ -230,7 +230,7 @@ export function CentralObjectModal({
               color: isNight ? '#F5F5F7' : '#121212',
               letterSpacing: '-0.3px',
             }}>
-              Studio Objek Utama Altar
+              Pilih Objek Utama
             </h2>
             <p style={{
               margin: '3px 0 0',
@@ -239,7 +239,7 @@ export function CentralObjectModal({
               fontStyle: 'italic',
               color: isNight ? '#a3a3a3' : '#555',
             }}>
-              Tentukan monumen pusat pulau cinta atau sematkan patung 3D kustom berharga.
+              Pilih bentuk monumen di tengah pulau atau unggah model 3D milikmu sendiri.
             </p>
           </div>
           <button
@@ -274,7 +274,7 @@ export function CentralObjectModal({
               color: '#85101c',
               textTransform: 'uppercase',
             }}>
-              ✦ 01 / GEOMETRIC MONUMENTS
+              ✦ 01 / BENTUK OBJEK
             </span>
           </div>
 
@@ -341,7 +341,7 @@ export function CentralObjectModal({
               color: '#85101c',
               textTransform: 'uppercase',
             }}>
-              ✦ 02 / BESPOKE 3D IMPORT (.GLB, .GLTF, .FBX, .OBJ)
+              ✦ 02 / UNGGAH MODEL 3D (.GLB, .GLTF, .FBX, .OBJ)
             </span>
             {centralObjectType === 'custom' && (
               <button
@@ -453,7 +453,7 @@ export function CentralObjectModal({
               textTransform: 'uppercase',
               marginBottom: 8,
             }}>
-              ✦ 03 / AURA PALETTE
+              ✦ 03 / PILIHAN WARNA
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {COLOR_SWATCHES.map((item) => (
@@ -484,7 +484,7 @@ export function CentralObjectModal({
               textTransform: 'uppercase',
               marginBottom: 8,
             }}>
-              ✦ 04 / SURFACE MATERIAL
+              ✦ 04 / TEKSTUR & MATERIAL
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
               {MATERIAL_PRESETS.map((mat) => {
@@ -530,7 +530,7 @@ export function CentralObjectModal({
               color: '#85101c',
               textTransform: 'uppercase',
             }}>
-              ✦ 05 / SCALE: {centralObjectScale.toFixed(1)}X
+              ✦ 05 / UKURAN: {centralObjectScale.toFixed(1)}X
             </span>
             <button
               onClick={() => { setCentralObjectScale(1.0); SoundEngine.playClick(); }}
@@ -540,7 +540,7 @@ export function CentralObjectModal({
                 cursor: 'pointer', letterSpacing: '0.5px', textDecoration: 'underline'
               }}
             >
-              RESET (1.0X)
+              RESET
             </button>
           </div>
           <input
@@ -586,7 +586,7 @@ export function CentralObjectModal({
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          <span>TERAPKAN OBJEK UTAMA & SIMPAN</span>
+          <span>SIMPAN & GUNAKAN</span>
           <span style={{ fontSize: '13px' }}>⟶</span>
         </button>
       </div>

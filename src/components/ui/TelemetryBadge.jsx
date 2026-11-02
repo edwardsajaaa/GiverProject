@@ -65,7 +65,7 @@ export function TelemetryBadge({ fps = 60, performanceTier = 'high', togglePerfo
         <span>{performanceTier === 'high' ? 'HIGH' : 'ECO'}</span>
       </button>
       <div style={{ width: 1, height: 12, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
-      <span style={{ pointerEvents: 'none' }}>✦ <strong>{objectCount}</strong> ITEMS</span>
+      <span style={{ pointerEvents: 'none' }}>✦ <strong>{objectCount}</strong> OBJEK</span>
     </div>
   );
 }

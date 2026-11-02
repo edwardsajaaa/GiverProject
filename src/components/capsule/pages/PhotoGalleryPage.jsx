@@ -63,10 +63,9 @@ export function PhotoGalleryPage({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Strict file type and size validation
     const validation = SecurityEngine.validateFile(file, {
       allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-      maxSizeBytes: 8 * 1024 * 1024 // 8MB
+      maxSizeBytes: 8 * 1024 * 1024
     });
 
     if (!validation.valid) {
@@ -74,7 +73,6 @@ export function PhotoGalleryPage({
       return;
     }
 
-    // Revoke previous blob URL if exists to prevent memory leak DoS
     if (photos[index]?.url && photos[index].url.startsWith('blob:')) {
       try {
         URL.revokeObjectURL(photos[index].url);
@@ -88,7 +86,7 @@ export function PhotoGalleryPage({
     updated[index] = {
       ...updated[index],
       url: newUrl,
-      caption: `Memory with ${recipientName || 'you'}`,
+      caption: `Kenangan bersama ${recipientName || 'kamu'}`,
     };
     setPhotos(updated);
     if (onUpdatePhotos) onUpdatePhotos(updated);
@@ -392,7 +390,7 @@ export function PhotoGalleryPage({
                   }}
                   className="photo-edit-btn"
                 >
-                  ✎ CHANGE
+                  ✎ GANTI FOTO
                   <input
                     type="file"
                     accept="image/*"
@@ -406,7 +404,7 @@ export function PhotoGalleryPage({
         ))}
       </div>
 
-      {/* Footer Navigation Bar with Streetwear Editorial Style */}
+      {/* Footer Navigation Bar */}
       <div 
         className="photo-gallery-footer"
         style={{
@@ -435,7 +433,7 @@ export function PhotoGalleryPage({
             textTransform: 'uppercase',
             letterSpacing: '1px',
           }}>
-            • CHAPTER ONE
+            • GALERI FOTO
           </span>
         </div>
 
@@ -450,16 +448,16 @@ export function PhotoGalleryPage({
             letterSpacing: '0.5px',
           }}
         >
-          made with love by {authorName}
+          dibuat dengan cinta oleh {authorName}
         </span>
 
-        {/* Right: High-Fashion Editorial Button */}
+        {/* Right: Next Button */}
         <EditorialButton
           variant="black"
           onClick={onNext}
           arrow
         >
-          READ LETTER
+          BACA SURAT
         </EditorialButton>
       </div>
 
