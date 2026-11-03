@@ -7,7 +7,6 @@ import * as THREE from 'three';
 import { SoundEngine } from '../../utils/SoundEngine';
 import { useGLTF } from '@react-three/drei';
 
-// Error Boundary khusus untuk menangkap error saat loading model 3D (agar web tidak blank)
 class ModelErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -63,7 +62,6 @@ function applyCustomMaterial(object, materialType, color) {
   });
 }
 
-// Komponen pemuat Model GLTF / GLB
 function CustomGLTFModel({ url, color, materialType, scaleVal }) {
   const { scene } = useGLTF(url, true, true, (loader) => {
     const dracoLoader = new DRACOLoader();
@@ -98,7 +96,6 @@ function CustomGLTFModel({ url, color, materialType, scaleVal }) {
   ) : null;
 }
 
-// Komponen pemuat Model FBX (Mendukung animasi FBX jika tersedia)
 function CustomFBXModel({ url, color, materialType, scaleVal }) {
   const [fbxScene, setFbxScene] = useState(null);
   const mixerRef = useRef(null);
@@ -163,7 +160,6 @@ function CustomFBXModel({ url, color, materialType, scaleVal }) {
   );
 }
 
-// Komponen pemuat Model OBJ
 function CustomOBJModel({ url, color, materialType, scaleVal }) {
   const [objScene, setObjScene] = useState(null);
 
@@ -210,7 +206,6 @@ function CustomOBJModel({ url, color, materialType, scaleVal }) {
   );
 }
 
-// Komponen Dispatcher Multi-Format (GLB, GLTF, FBX, OBJ)
 function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
   const ext = fileName ? fileName.toLowerCase().split('.').pop() : 'glb';
 
@@ -223,8 +218,6 @@ function CustomUploadedModel({ url, fileName, color, materialType, scaleVal }) {
   return <CustomGLTFModel url={url} color={color} materialType={materialType} scaleVal={scaleVal} />;
 }
 
-
-// Fallback jika loading model atau error
 function FallbackHeroCube({ color, scaleVal }) {
   const meshRef = useRef();
   useFrame((_, delta) => {
@@ -238,7 +231,6 @@ function FallbackHeroCube({ color, scaleVal }) {
   );
 }
 
-// Komponen Utama Hero Centerpiece Altar
 export function CentralHeroObject({
   centralObjectType = 'cube',
   centralObjectColor = '#4f8cff',
@@ -343,13 +335,11 @@ export function CentralHeroObject({
 
   return (
     <group position={[0, 0, 0]}>
-      {/* Altar Pedestal Glow Ring di Tanah */}
       <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.7, 1.3, 32]} />
         <meshBasicMaterial color={centralObjectColor} transparent opacity={0.35} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Main Hero Floating Group */}
       <group
         ref={heroRef}
         position={[0, 0.55, 0]}
@@ -381,7 +371,6 @@ export function CentralHeroObject({
           </mesh>
         )}
 
-        {/* Outer Wireframe Energy Aura saat Holographic atau Hovered */}
         {(centralObjectMaterial === 'holographic' || hovered) && (
           <mesh ref={auraRef} scale={[1.18, 1.18, 1.18]}>
             {centralObjectType === 'custom' ? <sphereGeometry args={[0.85, 16, 16]} /> : renderPresetGeometry()}

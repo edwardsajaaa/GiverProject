@@ -12,7 +12,6 @@ import { CanvasErrorBoundary } from './components/common/CanvasErrorBoundary';
 import { Loader } from '@react-three/drei';
 import { LoveCapsule } from './components/capsule/LoveCapsule';
 
-// Lazy load MainCanvas agar bundle awal (UI HTML) sangat ringan dan cepat dimuat
 const MainCanvas = React.lazy(() => import('./components/3d/MainCanvas').then(m => ({ default: m.MainCanvas })));
 
 export default function App() {
@@ -81,7 +80,6 @@ export default function App() {
       overflow: 'hidden', userSelect: 'none', position: 'relative',
       transition: 'background 0.4s ease, color 0.4s ease'
     }}>
-      {/* 1. Telemetry Performance Glass Badge */}
       <TelemetryBadge
         fps={fps}
         performanceTier={performanceTier}
@@ -90,7 +88,6 @@ export default function App() {
         isNight={isNight}
       />
 
-      {/* 2. Apple Header Pill Controls & Snap-to-Grid / Photo Mode */}
       <HeaderToolbar
         isNight={isNight}
         audioActive={audioActive}
@@ -117,7 +114,6 @@ export default function App() {
         handleImportJson={handleImportJson}
       />
 
-      {/* 3. Transform Dynamic Island & Placement Hint Banners */}
       <TransformToolbar
         isNight={isNight}
         selectedId={selectedId}
@@ -132,7 +128,6 @@ export default function App() {
         setActivePlacementType={setActivePlacementType}
       />
 
-      {/* 4. Main 3D Canvas Sandbox Container */}
       <div
         ref={canvasContainerRef}
         onDragOver={handleDragOver}
@@ -186,7 +181,6 @@ export default function App() {
         </CanvasErrorBoundary>
       </div>
 
-      {/* 5. Apple macOS / visionOS Bottom Dock Inventory Bar */}
       <InventoryBar
         isNight={isNight}
         inventoryOpen={inventoryOpen}
@@ -206,7 +200,6 @@ export default function App() {
         handleResetAll={handleResetAll}
       />
 
-      {/* 6. Onboarding Tutorial Overlay Modal */}
       <OnboardingModal
         isNight={isNight}
         showTutorial={showTutorial}
@@ -220,7 +213,6 @@ export default function App() {
         setPlacedObjects={setPlacedObjects}
       />
 
-      {/* 7. Central Altar Centerpiece Studio Modal */}
       <CentralObjectModal
         isNight={isNight}
         centralModalOpen={centralModalOpen}
@@ -239,7 +231,6 @@ export default function App() {
         setCentralObjectName={setCentralObjectName}
       />
 
-      {/* 8. World Biome & Art Style Customization Modal */}
       <WorldStyleModal
         isNight={isNight}
         isOpen={worldModalOpen}
@@ -250,7 +241,6 @@ export default function App() {
         setArtStyle={setArtStyle}
       />
 
-      {/* 9. Fullscreen Loading Overlay (dari @react-three/drei) */}
       <Loader 
         containerStyles={{ background: isNight ? '#0A0A0A' : '#FAFAFA' }}
         innerStyles={{ width: '300px' }}

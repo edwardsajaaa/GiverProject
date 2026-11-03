@@ -1,9 +1,3 @@
-/**
- * modelStorage.js
- * Penyimpanan model 3D kustom (.glb / .gltf) menggunakan browser IndexedDB.
- * Mencegah file hilang saat halaman di-refresh tanpa batasan kuota kecil localStorage (5MB).
- */
-
 const DB_NAME = 'GiverModelStorageDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'custom_models';
@@ -31,9 +25,6 @@ function openDB() {
 }
 
 export const ModelStorage = {
-  /**
-   * Menyimpan file 3D (Blob / File) ke IndexedDB
-   */
   async saveHeroModel(file) {
     try {
       const db = await openDB();
@@ -53,7 +44,6 @@ export const ModelStorage = {
 
       return new Promise((resolve, reject) => {
         tx.oncomplete = () => {
-          // Buat blob URL dari buffer yang baru disimpan
           const blob = new Blob([buffer], { type: modelRecord.type });
           const blobUrl = URL.createObjectURL(blob);
           resolve({ blobUrl, fileName: file.name });
@@ -66,9 +56,6 @@ export const ModelStorage = {
     }
   },
 
-  /**
-   * Memuat model 3D yang tersimpan di IndexedDB saat aplikasi pertama kali dibuka / di-refresh
-   */
   async loadHeroModel() {
     try {
       const db = await openDB();
@@ -95,9 +82,6 @@ export const ModelStorage = {
     }
   },
 
-  /**
-   * Menghapus model 3D yang tersimpan
-   */
   async deleteHeroModel() {
     try {
       const db = await openDB();

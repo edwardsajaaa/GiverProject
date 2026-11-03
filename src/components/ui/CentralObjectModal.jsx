@@ -3,7 +3,6 @@ import { SoundEngine } from '../../utils/SoundEngine';
 import { ModelStorage } from '../../utils/modelStorage';
 import { WashiTape, BlackTape } from '../capsule/TornPaper';
 
-// Curated SVG Geometric Vector Emblems (Professional Digital Arts / Gallery Standard)
 const ShapeIcons = {
   cube: (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -137,7 +136,7 @@ export function CentralObjectModal({
       return;
     }
 
-    const maxSize = 25 * 1024 * 1024; // 25MB
+    const maxSize = 25 * 1024 * 1024;
     if (file.size > maxSize) {
       alert(`Berkas Cukup Besar (${(file.size / 1024 / 1024).toFixed(1)} MB):\nDisarankan di bawah 25MB untuk performa rendering optimal.`);
     }
@@ -188,7 +187,6 @@ export function CentralObjectModal({
         }
       `}</style>
 
-      {/* Torn Paper Editorial Studio Panel */}
       <div style={{
         position: 'relative',
         backgroundColor: isNight ? '#161616' : '#FAF7F2',
@@ -201,11 +199,9 @@ export function CentralObjectModal({
         color: isNight ? '#F5F5F7' : '#121212',
         clipPath: 'polygon(0% 4px, 1.5% 0px, 98.5% 0px, 100% 4px, 99.5% 96%, 100% 100%, 0.5% 100%, 0% 96%)',
       }}>
-        {/* Tape strips */}
         <WashiTape top="-8px" left="28px" width="70px" rotate={-2} color="rgba(255, 235, 215, 0.85)" />
         <BlackTape top="-6px" right="28px" width="60px" rotate={3} />
 
-        {/* Header Modal */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', borderBottom: '1.5px solid #121212', paddingBottom: '12px' }}>
           <div>
             <div style={{
@@ -263,7 +259,6 @@ export function CentralObjectModal({
           </button>
         </div>
 
-        {/* 1. Bentuk Geometri Bawaan */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
             <span style={{
@@ -330,7 +325,6 @@ export function CentralObjectModal({
           </div>
         </div>
 
-        {/* 2. Upload Model 3D Kustom */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <span style={{
@@ -441,7 +435,6 @@ export function CentralObjectModal({
           </div>
         </div>
 
-        {/* 3. Warna Energi & Gaya Material */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div>
             <div style={{
@@ -519,7 +512,6 @@ export function CentralObjectModal({
           </div>
         </div>
 
-        {/* 5. Skala Ukuran */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <span style={{
@@ -554,7 +546,6 @@ export function CentralObjectModal({
           />
         </div>
 
-        {/* Tombol Simpan / Tutup (Editorial Block Button) */}
         <button
           onClick={() => { setCentralModalOpen(false); SoundEngine.playPop(); }}
           style={{
