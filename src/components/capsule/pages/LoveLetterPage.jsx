@@ -40,18 +40,19 @@ export function LoveLetterPage({
       className="love-letter-page"
       style={{
         width: '100%',
-        minHeight: '100%',
+        height: '100%',
+        maxHeight: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '18px 32px 36px 32px',
+        padding: '14px 28px 18px 28px',
         boxSizing: 'border-box',
         position: 'relative',
         fontFamily: "'Cormorant Garamond', serif",
         color: '#121212',
+        overflow: 'hidden',
       }}
     >
-      {/* Top Editorial Header */}
       <div 
         className="love-letter-header"
         style={{
@@ -59,13 +60,14 @@ export function LoveLetterPage({
           alignItems: 'center',
           justifyContent: 'space-between',
           borderBottom: '1.5px solid #121212',
-          paddingBottom: '10px',
+          paddingBottom: '8px',
           fontSize: '11px',
           fontFamily: "'Montserrat', sans-serif",
           color: '#121212',
           letterSpacing: '1.5px',
           textTransform: 'uppercase',
           fontWeight: 700,
+          flexShrink: 0,
         }}
       >
         <TornScrap rotate={-1} style={{ padding: '3px 10px', backgroundColor: '#fffdfa' }}>
@@ -77,34 +79,35 @@ export function LoveLetterPage({
         </TornScrap>
       </div>
 
-      {/* Middle Section: Ribbon Banner & Torn Paper Love Letter */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 'auto 0',
+        flex: 1,
+        minHeight: 0,
         position: 'relative',
         width: '100%',
+        margin: '2px 0 6px 0',
       }}>
-        {/* Ribbon Banner + Calligraphy Heading on subtle torn backing */}
         <div style={{
           position: 'relative',
-          padding: '10px 20px',
+          padding: '2px 14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
           width: '100%',
-          maxWidth: '380px',
+          maxWidth: '340px',
           boxSizing: 'border-box',
+          flexShrink: 0,
         }}>
           <svg
             viewBox="0 0 380 110"
             style={{
               position: 'absolute',
               width: '100%',
-              maxWidth: '380px',
+              maxWidth: '340px',
               height: 'auto',
               pointerEvents: 'none',
               stroke: '#85101c',
@@ -124,36 +127,38 @@ export function LoveLetterPage({
             position: 'relative',
             zIndex: 2,
             fontFamily: "'Pinyon Script', cursive",
-            fontSize: 'clamp(26px, 7vw, 42px)',
+            fontSize: 'clamp(22px, 5.5vw, 36px)',
             color: '#85101c',
             lineHeight: 1.15,
             textShadow: '0 1px 2px rgba(255,255,255,0.8)',
           }}>
-            Girl, I'm so in love with <span style={{ fontSize: 'clamp(30px, 8.5vw, 48px)', textDecoration: 'underline wavy #c8102e 1.5px' }}>{recipientName || 'You'}</span>
+            Girl, I'm so in love with <span style={{ fontSize: 'clamp(26px, 6.5vw, 42px)', textDecoration: 'underline wavy #c8102e 1.5px' }}>{recipientName || 'You'}</span>
           </div>
         </div>
 
-        {/* The Letter on an Authentic Torn Paper Parchment Sheet */}
         <div 
           className="love-letter-sheet"
           style={{
             position: 'relative',
             maxWidth: '560px',
             width: '100%',
-            marginTop: '10px',
+            marginTop: '6px',
             backgroundColor: '#fffdf9',
-            padding: '24px 30px',
+            padding: '16px 22px',
             boxShadow: '0 14px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.06)',
             borderLeft: '1.5px solid #121212',
             borderRight: '1.5px solid #121212',
             transform: 'rotate(-0.4deg)',
             boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            maxHeight: 'min(290px, 44vh)',
             transition: 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
             willChange: 'transform, box-shadow',
             animation: 'letterSheetRise 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'perspective(1000px) rotateX(2deg) rotateY(-1deg) translateY(-6px) scale(1.01)';
+            e.currentTarget.style.transform = 'perspective(1000px) rotateX(2deg) rotateY(-1deg) translateY(-4px) scale(1.01)';
             e.currentTarget.style.boxShadow = '0 24px 50px rgba(0, 0, 0, 0.22), 0 6px 12px rgba(0,0,0,0.08)';
           }}
           onMouseLeave={(e) => {
@@ -161,15 +166,12 @@ export function LoveLetterPage({
             e.currentTarget.style.boxShadow = '0 14px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0,0,0,0.06)';
           }}
         >
-          {/* Top & Bottom Ripped Edges on Letter Sheet */}
           <TornEdgeTop color="#fffdf9" fiberColor="#ffffff" height={14} />
           <TornEdgeBottom color="#fffdf9" fiberColor="#ffffff" height={14} />
 
-          {/* Tape holding the letter: Black tape + Washi tape */}
           <BlackTape top="-10px" left="25px" width="60px" rotate={-3} />
           <WashiTape top="-10px" left="calc(100% - 85px)" rotate={3} width="70px" color="rgba(255, 235, 205, 0.85)" />
 
-          {/* Watermark Monogram */}
           <div style={{
             position: 'absolute',
             bottom: '16px',
@@ -183,99 +185,108 @@ export function LoveLetterPage({
             ❦
           </div>
 
-          <p style={{
-            margin: '0 0 10px',
-            fontSize: '17px',
-            fontWeight: 700,
-            fontFamily: "'Playfair Display', serif",
-            color: '#121212',
-          }}>
-            Dearest {recipientName},
-          </p>
-
-          {isEditing ? (
-            <textarea
-              value={letterText}
-              onChange={(e) => setLetterText(SecurityEngine.sanitizeText(e.target.value, 1500))}
-              rows={6}
-              style={{
-                width: '100%',
-                padding: '8px',
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: '17px',
-                lineHeight: 1.6,
-                color: '#121212',
-                border: '1.5px dashed #121212',
-                backgroundColor: 'rgba(255,255,255,0.9)',
-                borderRadius: '0px',
-                outline: 'none',
-                resize: 'vertical',
-                boxSizing: 'border-box',
-              }}
-            />
-          ) : (
-            <div style={{
+          <div 
+            className="love-letter-scroll-area"
+            style={{
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              flex: 1,
+              minHeight: 0,
+              paddingRight: '8px',
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
+            <p style={{
+              margin: '0 0 8px',
               fontSize: '17px',
-              lineHeight: 1.7,
-              color: '#222222',
-              whiteSpace: 'pre-line',
-              fontStyle: 'italic',
+              fontWeight: 700,
+              fontFamily: "'Playfair Display', serif",
+              color: '#121212',
             }}>
-              {letterText}
-            </div>
-          )}
+              Dearest {recipientName},
+            </p>
 
-          {/* Sender Signature */}
-          <p style={{
-            margin: '14px 0 4px',
-            fontSize: '22px',
-            fontFamily: "'Pinyon Script', cursive",
-            color: '#85101c',
-            textAlign: 'right',
-          }}>
-            Forever Yours, {senderName || 'Alex'}
-          </p>
-
-          {/* Customize Letter Button (Only in Creator/Sender Mode) */}
-          {!isReceiver && (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginTop: '8px',
-            }}>
-              <button
-                onClick={handleToggleEdit}
+            {isEditing ? (
+              <textarea
+                value={letterText}
+                onChange={(e) => setLetterText(SecurityEngine.sanitizeText(e.target.value, 1500))}
+                rows={6}
                 style={{
-                  background: '#121212',
-                  color: '#fff',
-                  border: 'none',
-                  fontSize: '10px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontWeight: 700,
-                  letterSpacing: '1px',
-                  padding: '4px 10px',
-                  cursor: 'pointer',
-                  clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                  transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  width: '100%',
+                  padding: '8px',
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: '16px',
+                  lineHeight: 1.6,
+                  color: '#121212',
+                  border: '1.5px dashed #121212',
+                  backgroundColor: 'rgba(255,255,255,0.9)',
+                  borderRadius: '0px',
+                  outline: 'none',
+                  resize: 'vertical',
+                  boxSizing: 'border-box',
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#a61324';
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#121212';
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-              >
-                {isEditing ? '✓ SIMPAN SURAT' : '✎ TULIS SURAT'}
-              </button>
-            </div>
-          )}
+              />
+            ) : (
+              <div style={{
+                fontSize: '16px',
+                lineHeight: 1.65,
+                color: '#222222',
+                whiteSpace: 'pre-line',
+                fontStyle: 'italic',
+              }}>
+                {letterText}
+              </div>
+            )}
+
+            <p style={{
+              margin: '12px 0 4px',
+              fontSize: '22px',
+              fontFamily: "'Pinyon Script', cursive",
+              color: '#85101c',
+              textAlign: 'right',
+            }}>
+              Forever Yours, {senderName || 'Alex'}
+            </p>
+
+            {!isReceiver && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginTop: '8px',
+              }}>
+                <button
+                  onClick={handleToggleEdit}
+                  style={{
+                    background: '#121212',
+                    color: '#fff',
+                    border: 'none',
+                    fontSize: '10px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    letterSpacing: '1px',
+                    padding: '4px 10px',
+                    cursor: 'pointer',
+                    clipPath: 'polygon(0% 2px, 3% 0%, 97% 0%, 100% 2px, 98% 98%, 100% 100%, 2% 100%, 0% 98%)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#a61324';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#121212';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  {isEditing ? '✓ SIMPAN SURAT' : '✎ TULIS SURAT'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Footer Navigation Bar */}
       <div 
         className="love-letter-footer"
         style={{
@@ -283,10 +294,14 @@ export function LoveLetterPage({
           alignItems: 'center',
           justifyContent: 'space-between',
           borderTop: '1.5px solid #121212',
-          paddingTop: '12px',
+          paddingTop: '8px',
+          paddingBottom: '2px',
+          marginTop: 'auto',
+          flexShrink: 0,
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        {/* Left: Circular Arrow Back Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <CircleArrowButton
             direction="prev"
@@ -303,7 +318,6 @@ export function LoveLetterPage({
           </span>
         </div>
 
-        {/* Center: Pagination */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
             fontSize: '11px',
@@ -328,17 +342,38 @@ export function LoveLetterPage({
           </span>
         </div>
 
-        {/* Right: Next Chapter Button */}
         <EditorialButton
           variant="black"
           onClick={onNext}
           arrow
+          rotate={0}
+          style={{
+            padding: '7px 16px',
+            fontSize: '11px',
+            position: 'relative',
+            zIndex: 15,
+          }}
         >
           PUTAR MUSIK
         </EditorialButton>
       </div>
 
       <style>{`
+        .love-letter-scroll-area::-webkit-scrollbar {
+          width: 5px;
+        }
+        .love-letter-scroll-area::-webkit-scrollbar-track {
+          background: rgba(18, 18, 18, 0.04);
+          border-radius: 4px;
+        }
+        .love-letter-scroll-area::-webkit-scrollbar-thumb {
+          background: rgba(133, 16, 28, 0.35);
+          border-radius: 4px;
+        }
+        .love-letter-scroll-area::-webkit-scrollbar-thumb:hover {
+          background: rgba(133, 16, 28, 0.7);
+        }
+
         @keyframes letterSheetRise {
           0% {
             opacity: 0;
@@ -352,17 +387,18 @@ export function LoveLetterPage({
 
         @media (max-width: 680px) {
           .love-letter-page {
-            padding: 16px 14px 24px 14px !important;
+            padding: 12px 12px 18px 12px !important;
           }
           .love-letter-header {
-            padding-bottom: 8px !important;
+            padding-bottom: 6px !important;
           }
           .love-letter-header span {
             font-size: 10px !important;
           }
           .love-letter-sheet {
-            padding: 16px 14px !important;
-            margin-top: 6px !important;
+            padding: 12px 14px !important;
+            margin-top: 4px !important;
+            max-height: 48vh !important;
           }
           .love-letter-sheet p {
             font-size: 15px !important;
@@ -370,13 +406,13 @@ export function LoveLetterPage({
           }
           .love-letter-sheet div {
             font-size: 15px !important;
-            line-height: 1.6 !important;
+            line-height: 1.5 !important;
           }
           .love-letter-chapter-sub {
             display: none !important;
           }
           .love-letter-footer {
-            padding-top: 10px !important;
+            padding-top: 6px !important;
           }
         }
       `}</style>

@@ -97,15 +97,17 @@ export function PhotoGalleryPage({
       className="photo-gallery-page"
       style={{
         width: '100%',
-        minHeight: '100%',
+        height: '100%',
+        maxHeight: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '18px 32px 36px 32px',
+        padding: '14px 28px 18px 28px',
         boxSizing: 'border-box',
         position: 'relative',
         fontFamily: "'Cormorant Garamond', serif",
         color: '#121212',
+        overflow: 'hidden',
       }}
     >
       {/* Top Editorial Header */}
@@ -412,10 +414,14 @@ export function PhotoGalleryPage({
           alignItems: 'center',
           justifyContent: 'space-between',
           borderTop: '1.5px solid #121212',
-          paddingTop: '12px',
+          paddingTop: '8px',
+          paddingBottom: '2px',
+          marginTop: 'auto',
+          flexShrink: 0,
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        {/* Left: Minimal Edition Stamp */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
             fontSize: '11px',
@@ -437,7 +443,6 @@ export function PhotoGalleryPage({
           </span>
         </div>
 
-        {/* Center: Dedication */}
         <span 
           className="photo-gallery-dedication"
           style={{
@@ -451,11 +456,17 @@ export function PhotoGalleryPage({
           dibuat dengan cinta oleh {authorName}
         </span>
 
-        {/* Right: Next Button */}
         <EditorialButton
           variant="black"
           onClick={onNext}
           arrow
+          rotate={0}
+          style={{
+            padding: '7px 16px',
+            fontSize: '11px',
+            position: 'relative',
+            zIndex: 15,
+          }}
         >
           BACA SURAT
         </EditorialButton>
