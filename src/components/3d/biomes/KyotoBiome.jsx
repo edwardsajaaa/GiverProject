@@ -6,81 +6,262 @@ import { SoundEngine } from '../../../utils/SoundEngine';
 // ============================================================================
 // 1. DISTANT MOUNT FUJI & ROMANTIC MOON HORIZON (Without jagged spiky cones!)
 // ============================================================================
+// ============================================================================
+// 1. CHUREITO-STYLE MOUNT FUJI HORIZON VISTA (Fuji-san with Snowy Cap & Haze)
+// ============================================================================
 function RomanticFujiHorizon({ isNight }) {
   const moonColor = isNight ? '#fef08a' : '#f43f5e';
-  const slopeColor = isNight ? '#131b2e' : '#475569';
-  const snowCapColor = isNight ? '#e0e7ff' : '#FAF7F2';
+  const slopeColor = isNight ? '#0f172a' : '#293548';
+  const snowCapColor = isNight ? '#e2e8f0' : '#ffffff';
+  const forestColor = isNight ? '#06131c' : '#1e3a2b';
   const goldTrim = '#d4af37';
 
+  // Radial snow furrow tongue offsets for realistic snow-cap contour
+  const snowTongues = [
+    { rot: 0, scaleY: 1.2, width: 2.2 },
+    { rot: 0.45, scaleY: 1.0, width: 1.8 },
+    { rot: 0.9, scaleY: 1.35, width: 2.4 },
+    { rot: 1.4, scaleY: 0.9, width: 1.6 },
+    { rot: 1.9, scaleY: 1.25, width: 2.1 },
+    { rot: 2.4, scaleY: 1.1, width: 1.9 },
+    { rot: 2.85, scaleY: 1.4, width: 2.3 },
+    { rot: 3.3, scaleY: 0.95, width: 1.7 },
+    { rot: 3.8, scaleY: 1.3, width: 2.2 },
+    { rot: 4.3, scaleY: 1.05, width: 1.8 },
+    { rot: 4.8, scaleY: 1.38, width: 2.4 },
+    { rot: 5.3, scaleY: 0.88, width: 1.5 },
+    { rot: 5.8, scaleY: 1.2, width: 2.0 },
+  ];
+
   return (
-    <group position={[-44, -1.8, -44]}>
-      {/* Romantic Golden-Silver Full Moon Disc */}
-      <mesh position={[-6, 36, -6]}>
-        <circleGeometry args={[13, 36]} />
+    <group position={[-42, -1.8, -32]}>
+      {/* Golden-Silver Full Moon / Sun Disc Over Horizon */}
+      <mesh position={[-8, 38, -8]}>
+        <circleGeometry args={[14, 36]} />
         <meshBasicMaterial
           color={moonColor}
           transparent
-          opacity={isNight ? 0.92 : 0.9}
+          opacity={isNight ? 0.92 : 0.88}
         />
       </mesh>
-      {/* Moon Gold Halo Rim */}
-      <mesh position={[-6, 36, -5.95]}>
-        <ringGeometry args={[12.9, 13.3, 36]} />
+      {/* Halo Rim */}
+      <mesh position={[-8, 38, -7.95]}>
+        <ringGeometry args={[13.9, 14.35, 36]} />
         <meshBasicMaterial color={goldTrim} transparent opacity={0.65} />
       </mesh>
 
-      {/* Mount Fuji Majestic Slope */}
-      <mesh position={[0, 16, 0]} castShadow={false}>
-        <coneGeometry args={[24, 34, 28, 1, true]} />
+      {/* Mount Fuji Symmetrical Volcanic Cone */}
+      <mesh position={[0, 18, 0]} castShadow={false}>
+        <coneGeometry args={[28, 38, 32, 1, true]} />
         <meshStandardMaterial
           color={slopeColor}
-          roughness={0.9}
+          roughness={0.92}
           metalness={0.05}
           flatShading
         />
       </mesh>
 
-      {/* Gold Contour Ridge on Fuji */}
-      <mesh position={[0, 24.5, 0]}>
-        <ringGeometry args={[10.2, 10.45, 28]} rotation={[Math.PI / 2, 0, 0]} />
-        <meshStandardMaterial color={goldTrim} roughness={0.25} metalness={0.85} />
-      </mesh>
-
-      {/* Mount Fuji Handcrafted Snow Crown */}
-      <mesh position={[0, 28.5, 0]}>
-        <coneGeometry args={[10.4, 11, 28]} />
-        <meshStandardMaterial
-          color={snowCapColor}
-          roughness={0.65}
-          metalness={0.1}
-          emissive={isNight ? '#818cf8' : '#ffffff'}
-          emissiveIntensity={isNight ? 0.28 : 0.05}
-          flatShading
-        />
-      </mesh>
-
-      {/* Soft Mountain Mist Waves (Gentle curved hills, not spiky cones) */}
-      {[-24, -8, 8, 24].map((offsetX, idx) => (
-        <mesh key={idx} position={[offsetX, 4 + (idx % 2) * 2, -10 + (idx % 3) * 4]} rotation={[0, 0, 0]}>
-          <sphereGeometry args={[12, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.45]} />
+      {/* Mount Fuji Snow Cap (Iconic Snow Crown with Furrows) */}
+      <group position={[0, 30.5, 0]}>
+        {/* Core Snow Cap Cone */}
+        <mesh castShadow={false}>
+          <coneGeometry args={[12.2, 13.5, 32]} />
           <meshStandardMaterial
-            color={isNight ? '#0b1120' : '#64748b'}
+            color={snowCapColor}
+            roughness={0.5}
+            metalness={0.08}
+            emissive={isNight ? '#818cf8' : '#ffffff'}
+            emissiveIntensity={isNight ? 0.25 : 0.08}
+            flatShading
+          />
+        </mesh>
+
+        {/* Radial Snow Tongues Extending into Volcanic Gullies */}
+        {snowTongues.map((st, i) => (
+          <mesh
+            key={i}
+            position={[
+              Math.sin(st.rot) * 11.2,
+              -4.8 * st.scaleY,
+              Math.cos(st.rot) * 11.2
+            ]}
+            rotation={[0.32, st.rot, 0]}
+          >
+            <coneGeometry args={[st.width * 0.45, 4.2 * st.scaleY, 3]} />
+            <meshStandardMaterial
+              color={snowCapColor}
+              roughness={0.5}
+              emissive={isNight ? '#818cf8' : '#ffffff'}
+              emissiveIntensity={isNight ? 0.22 : 0.08}
+              flatShading
+            />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Lush Green Pine Foothills & Fujiyoshida Ridge */}
+      {[-28, -14, 0, 14, 28].map((ox, idx) => (
+        <mesh key={idx} position={[ox, 3.5 + (idx % 2) * 2, -6 + (idx % 3) * 5]}>
+          <sphereGeometry args={[13, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.45]} />
+          <meshStandardMaterial
+            color={forestColor}
             roughness={0.95}
             transparent
-            opacity={0.85}
+            opacity={0.92}
           />
         </mesh>
       ))}
+
+      {/* Soft Mountain Mist Veil across the Base */}
+      <mesh position={[0, 4.5, 8]}>
+        <boxGeometry args={[70, 4.5, 12]} />
+        <meshBasicMaterial
+          color={isNight ? '#0b1325' : '#e0f2fe'}
+          transparent
+          opacity={isNight ? 0.35 : 0.45}
+        />
+      </mesh>
     </group>
   );
 }
 
 // ============================================================================
-// 2. YASAKA FIVE-TIERED PAGODA (The Iconic Landmark of Kyoto)
+// 2. CHUREITO FIVE-STORIED RED PAGODA (忠霊塔 - Fujiyoshida Iconic Landmark)
 // ============================================================================
-function YasakaPagoda({ position = [-7.5, 0, -7.5], isNight }) {
-  const woodDark = isNight ? '#241611' : '#452b1e';
-  const tileRoof = isNight ? '#172033' : '#334155';
+function ChureitoPagodaTier({
+  coreWidth,
+  coreHeight,
+  roofWidth,
+  roofHeight,
+  isNight,
+  vermilionRed,
+  wallWhite,
+  roofTeal,
+  goldTrim
+}) {
+  const cornerAngle = Math.PI / 4;
+  return (
+    <group>
+      {/* 1. Vermilion Balcony Platform & Railing Base */}
+      <mesh position={[0, 0.05, 0]} castShadow receiveShadow>
+        <boxGeometry args={[coreWidth * 1.34, 0.1, coreWidth * 1.34]} />
+        <meshStandardMaterial color={vermilionRed} roughness={0.65} />
+      </mesh>
+      {/* Red Balustrade Railings (Kouran) around perimeter */}
+      <mesh position={[0, 0.28, 0]}>
+        <boxGeometry args={[coreWidth * 1.32, 0.36, coreWidth * 1.32]} />
+        <meshStandardMaterial color={vermilionRed} roughness={0.65} />
+      </mesh>
+      {/* Balcony Floor Inset */}
+      <mesh position={[0, 0.29, 0]}>
+        <boxGeometry args={[coreWidth * 1.22, 0.38, coreWidth * 1.22]} />
+        <meshStandardMaterial color={isNight ? '#121824' : '#fffdfa'} roughness={0.7} />
+      </mesh>
+
+      {/* 2. Central Sanctuary Chamber: Crisp White Plaster Walls */}
+      <mesh position={[0, coreHeight / 2 + 0.1, 0]} castShadow>
+        <boxGeometry args={[coreWidth, coreHeight, coreWidth]} />
+        <meshStandardMaterial
+          color={wallWhite}
+          roughness={0.7}
+          emissive={isNight ? '#fed7aa' : '#ffffff'}
+          emissiveIntensity={isNight ? 0.08 : 0.02}
+        />
+      </mesh>
+
+      {/* 3. Red Corner Pillars (Hashira) */}
+      {[
+        [-coreWidth / 2, -coreWidth / 2],
+        [coreWidth / 2, -coreWidth / 2],
+        [-coreWidth / 2, coreWidth / 2],
+        [coreWidth / 2, coreWidth / 2]
+      ].map(([px, pz], pIdx) => (
+        <mesh key={pIdx} position={[px, coreHeight / 2 + 0.1, pz]} castShadow>
+          <boxGeometry args={[0.22, coreHeight + 0.02, 0.22]} />
+          <meshStandardMaterial color={vermilionRed} roughness={0.6} />
+        </mesh>
+      ))}
+
+      {/* 4. Shoji / Lattice Windows with Gold/Amber Glow */}
+      {[
+        [0, 0, coreWidth / 2 + 0.01, 0],
+        [0, 0, -coreWidth / 2 - 0.01, Math.PI],
+        [coreWidth / 2 + 0.01, 0, 0, Math.PI / 2],
+        [-coreWidth / 2 - 0.01, 0, 0, -Math.PI / 2]
+      ].map(([wx, _wy, wz, rotY], wIdx) => (
+        <group key={wIdx} position={[wx, coreHeight / 2 + 0.1, wz]} rotation={[0, rotY, 0]}>
+          <mesh>
+            <planeGeometry args={[coreWidth * 0.45, coreHeight * 0.55]} />
+            <meshStandardMaterial
+              color={isNight ? '#fbbf24' : '#fef3c7'}
+              emissive={isNight ? '#f59e0b' : '#000000'}
+              emissiveIntensity={isNight ? 0.75 : 0}
+              roughness={0.4}
+            />
+          </mesh>
+        </group>
+      ))}
+
+      {/* 5. Stepped Brackets Complex (Tokyō) Under Eaves */}
+      <mesh position={[0, coreHeight + 0.06, 0]}>
+        <boxGeometry args={[coreWidth * 1.15, 0.14, coreWidth * 1.15]} />
+        <meshStandardMaterial color={vermilionRed} roughness={0.6} />
+      </mesh>
+      <mesh position={[0, coreHeight + 0.16, 0]}>
+        <boxGeometry args={[coreWidth * 1.25, 0.12, coreWidth * 1.25]} />
+        <meshStandardMaterial color={vermilionRed} roughness={0.6} />
+      </mesh>
+
+      {/* 6. Sweeping Dark Teal-Slate Curved Pagoda Roof */}
+      <group position={[0, coreHeight + roofHeight / 2 + 0.22, 0]}>
+        <mesh castShadow receiveShadow>
+          <coneGeometry args={[roofWidth * 0.72, roofHeight, 4]} rotation={[0, cornerAngle, 0]} />
+          <meshStandardMaterial
+            color={roofTeal}
+            roughness={0.65}
+            metalness={0.15}
+            flatShading
+          />
+        </mesh>
+        {/* Extended Eaves Rim */}
+        <mesh position={[0, -roofHeight * 0.42, 0]}>
+          <boxGeometry args={[roofWidth, 0.12, roofWidth]} />
+          <meshStandardMaterial color={roofTeal} roughness={0.6} metalness={0.2} />
+        </mesh>
+        {/* Gilded Roof Ridge Rim */}
+        <mesh position={[0, -roofHeight * 0.38, 0]}>
+          <boxGeometry args={[roofWidth * 1.02, 0.04, roofWidth * 1.02]} />
+          <meshStandardMaterial color={goldTrim} metalness={0.8} roughness={0.3} />
+        </mesh>
+
+        {/* 4 Upturned Corners with Hanging Wind-Bells (Fūtaku) */}
+        {[
+          [-roofWidth / 2, -roofHeight * 0.42, -roofWidth / 2],
+          [roofWidth / 2, -roofHeight * 0.42, -roofWidth / 2],
+          [-roofWidth / 2, -roofHeight * 0.42, roofWidth / 2],
+          [roofWidth / 2, -roofHeight * 0.42, roofWidth / 2]
+        ].map(([bx, by, bz], bIdx) => (
+          <group key={bIdx} position={[bx, by, bz]}>
+            <mesh position={[0, 0.08, 0]} rotation={[0, cornerAngle, 0]}>
+              <coneGeometry args={[0.16, 0.28, 3]} />
+              <meshStandardMaterial color={goldTrim} metalness={0.9} roughness={0.2} />
+            </mesh>
+            <mesh position={[0, -0.16, 0]}>
+              <cylinderGeometry args={[0.04, 0.07, 0.14, 6]} />
+              <meshStandardMaterial color={goldTrim} metalness={0.9} roughness={0.2} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+    </group>
+  );
+}
+
+function YasakaPagoda({ position = [-3.8, 0, -8.2], isNight }) {
+  // Authentic Chureito Pagoda Colors (Vermilion Crimson, Crisp White, Dark Teal Roof, Bronze Spire)
+  const vermilionRed = isNight ? '#991b1b' : '#c2222b';
+  const wallWhite = isNight ? '#e2e8f0' : '#fffdfa';
+  const roofTeal = isNight ? '#0e2627' : '#163e42';
   const goldSpire = '#d4af37';
   const amberGlow = '#f59e0b';
 
@@ -93,141 +274,120 @@ function YasakaPagoda({ position = [-7.5, 0, -7.5], isNight }) {
       }}
       cursor="pointer"
     >
-      {/* Stone Foundation Plinth */}
+      {/* Stone Foundation Terrace */}
       <mesh position={[0, 0.45, 0]} castShadow receiveShadow>
-        <boxGeometry args={[4.8, 0.9, 4.8]} />
+        <boxGeometry args={[5.8, 0.9, 5.8]} />
         <meshStandardMaterial color={isNight ? '#334155' : '#78716c'} roughness={0.9} />
       </mesh>
 
-      {/* Golden Uplight Illuminating the Pagoda Tiers at Night */}
+      {/* Golden Uplight Illuminating the Chureito Pagoda Tiers at Night */}
       {isNight && (
         <pointLight
-          position={[0, 2.5, 0]}
+          position={[0, 3.5, 0]}
           color={amberGlow}
-          intensity={3.2}
-          distance={15}
+          intensity={3.8}
+          distance={18}
           decay={1.6}
         />
       )}
 
       {/* Tier 1 */}
       <group position={[0, 0.9, 0]}>
-        {/* Core Sanctuary Room */}
-        <mesh position={[0, 1.1, 0]} castShadow>
-          <boxGeometry args={[3.2, 2.2, 3.2]} />
-          <meshStandardMaterial color={woodDark} roughness={0.8} />
-        </mesh>
-        {/* Lattice Door Paneling */}
-        <mesh position={[0, 1.0, 1.62]}>
-          <planeGeometry args={[1.4, 1.8]} />
-          <meshStandardMaterial
-            color={isNight ? '#fbbf24' : '#fef3c7'}
-            emissive={isNight ? '#fbbf24' : '#000000'}
-            emissiveIntensity={isNight ? 0.7 : 0}
-            roughness={0.5}
-          />
-        </mesh>
-        {/* Roof 1 */}
-        <mesh position={[0, 2.4, 0]} castShadow>
-          <coneGeometry args={[3.2, 0.8, 4]} rotation={[0, Math.PI / 4, 0]} />
-          <meshStandardMaterial color={tileRoof} roughness={0.7} flatShading />
-        </mesh>
-        <mesh position={[0, 2.2, 0]}>
-          <boxGeometry args={[4.6, 0.15, 4.6]} />
-          <meshStandardMaterial color={goldSpire} metalness={0.8} roughness={0.3} />
-        </mesh>
+        <ChureitoPagodaTier
+          coreWidth={3.6}
+          coreHeight={2.0}
+          roofWidth={5.4}
+          roofHeight={0.88}
+          isNight={isNight}
+          vermilionRed={vermilionRed}
+          wallWhite={wallWhite}
+          roofTeal={roofTeal}
+          goldTrim={goldSpire}
+        />
       </group>
 
       {/* Tier 2 */}
-      <group position={[0, 3.3, 0]}>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <boxGeometry args={[2.7, 1.8, 2.7]} />
-          <meshStandardMaterial color={woodDark} roughness={0.8} />
-        </mesh>
-        {/* Roof 2 */}
-        <mesh position={[0, 2.0, 0]} castShadow>
-          <coneGeometry args={[2.8, 0.75, 4]} rotation={[0, Math.PI / 4, 0]} />
-          <meshStandardMaterial color={tileRoof} roughness={0.7} flatShading />
-        </mesh>
-        <mesh position={[0, 1.85, 0]}>
-          <boxGeometry args={[4.0, 0.14, 4.0]} />
-          <meshStandardMaterial color={goldSpire} metalness={0.8} roughness={0.3} />
-        </mesh>
+      <group position={[0, 3.8, 0]}>
+        <ChureitoPagodaTier
+          coreWidth={3.1}
+          coreHeight={1.8}
+          roofWidth={4.6}
+          roofHeight={0.82}
+          isNight={isNight}
+          vermilionRed={vermilionRed}
+          wallWhite={wallWhite}
+          roofTeal={roofTeal}
+          goldTrim={goldSpire}
+        />
       </group>
 
       {/* Tier 3 */}
-      <group position={[0, 5.3, 0]}>
-        <mesh position={[0, 0.8, 0]} castShadow>
-          <boxGeometry args={[2.2, 1.6, 2.2]} />
-          <meshStandardMaterial color={woodDark} roughness={0.8} />
-        </mesh>
-        {/* Roof 3 */}
-        <mesh position={[0, 1.8, 0]} castShadow>
-          <coneGeometry args={[2.4, 0.7, 4]} rotation={[0, Math.PI / 4, 0]} />
-          <meshStandardMaterial color={tileRoof} roughness={0.7} flatShading />
-        </mesh>
-        <mesh position={[0, 1.65, 0]}>
-          <boxGeometry args={[3.5, 0.13, 3.5]} />
-          <meshStandardMaterial color={goldSpire} metalness={0.8} roughness={0.3} />
-        </mesh>
+      <group position={[0, 6.4, 0]}>
+        <ChureitoPagodaTier
+          coreWidth={2.6}
+          coreHeight={1.6}
+          roofWidth={3.9}
+          roofHeight={0.76}
+          isNight={isNight}
+          vermilionRed={vermilionRed}
+          wallWhite={wallWhite}
+          roofTeal={roofTeal}
+          goldTrim={goldSpire}
+        />
       </group>
 
       {/* Tier 4 */}
-      <group position={[0, 7.1, 0]}>
-        <mesh position={[0, 0.7, 0]} castShadow>
-          <boxGeometry args={[1.8, 1.4, 1.8]} />
-          <meshStandardMaterial color={woodDark} roughness={0.8} />
-        </mesh>
-        {/* Roof 4 */}
-        <mesh position={[0, 1.6, 0]} castShadow>
-          <coneGeometry args={[2.0, 0.65, 4]} rotation={[0, Math.PI / 4, 0]} />
-          <meshStandardMaterial color={tileRoof} roughness={0.7} flatShading />
-        </mesh>
-        <mesh position={[0, 1.45, 0]}>
-          <boxGeometry args={[3.0, 0.12, 3.0]} />
-          <meshStandardMaterial color={goldSpire} metalness={0.8} roughness={0.3} />
-        </mesh>
+      <group position={[0, 8.8, 0]}>
+        <ChureitoPagodaTier
+          coreWidth={2.2}
+          coreHeight={1.4}
+          roofWidth={3.3}
+          roofHeight={0.7}
+          isNight={isNight}
+          vermilionRed={vermilionRed}
+          wallWhite={wallWhite}
+          roofTeal={roofTeal}
+          goldTrim={goldSpire}
+        />
       </group>
 
-      {/* Tier 5 (Top Level) */}
-      <group position={[0, 8.7, 0]}>
-        <mesh position={[0, 0.65, 0]} castShadow>
-          <boxGeometry args={[1.4, 1.3, 1.4]} />
-          <meshStandardMaterial color={woodDark} roughness={0.8} />
-        </mesh>
-        {/* Master Top Roof */}
-        <mesh position={[0, 1.5, 0]} castShadow>
-          <coneGeometry args={[1.7, 0.75, 4]} rotation={[0, Math.PI / 4, 0]} />
-          <meshStandardMaterial color={tileRoof} roughness={0.7} flatShading />
-        </mesh>
-        <mesh position={[0, 1.35, 0]}>
-          <boxGeometry args={[2.6, 0.14, 2.6]} />
-          <meshStandardMaterial color={goldSpire} metalness={0.85} roughness={0.25} />
-        </mesh>
+      {/* Tier 5 (Top Tier) */}
+      <group position={[0, 10.9, 0]}>
+        <ChureitoPagodaTier
+          coreWidth={1.8}
+          coreHeight={1.3}
+          roofWidth={2.8}
+          roofHeight={0.65}
+          isNight={isNight}
+          vermilionRed={vermilionRed}
+          wallWhite={wallWhite}
+          roofTeal={roofTeal}
+          goldTrim={goldSpire}
+        />
       </group>
 
-      {/* Sōrin Spire (Bronze Spire with Sacred Rings & Jewel) */}
-      <group position={[0, 10.4, 0]}>
-        {/* Base Robe */}
-        <mesh position={[0, 0.4, 0]}>
-          <cylinderGeometry args={[0.22, 0.45, 0.8, 8]} />
+      {/* Grand Bronze Sōrin Spire (Nine Rings & Flame Lotus Jewel) */}
+      <group position={[0, 12.8, 0]}>
+        {/* Robe Pedestal */}
+        <mesh position={[0, 0.45, 0]}>
+          <cylinderGeometry args={[0.24, 0.5, 0.9, 8]} />
           <meshStandardMaterial color={goldSpire} metalness={0.9} roughness={0.2} />
         </mesh>
-        {/* Spire Rod */}
-        <mesh position={[0, 1.8, 0]}>
-          <cylinderGeometry args={[0.08, 0.14, 2.2, 8]} />
+        {/* Central Spire Mast */}
+        <mesh position={[0, 2.0, 0]}>
+          <cylinderGeometry args={[0.08, 0.16, 2.6, 8]} />
           <meshStandardMaterial color={goldSpire} metalness={0.9} roughness={0.2} />
         </mesh>
-        {/* 9 Sacred Nine Rings (Kururin) */}
-        {Array.from({ length: 7 }).map((_, i) => (
-          <mesh key={i} position={[0, 1.0 + i * 0.18, 0]}>
-            <torusGeometry args={[0.26 - i * 0.015, 0.04, 8, 16]} />
-            <meshStandardMaterial color={goldSpire} metalness={0.95} roughness={0.2} />
+        {/* 9 Sacred Rings (Kūrin) */}
+        {Array.from({ length: 9 }).map((_, i) => (
+          <mesh key={i} position={[0, 1.0 + i * 0.16, 0]}>
+            <torusGeometry args={[0.28 - i * 0.012, 0.038, 8, 16]} />
+            <meshStandardMaterial color={goldSpire} metalness={0.95} roughness={0.18} />
           </mesh>
         ))}
-        {/* Sacred Flame Jewel (Hōju) */}
-        <mesh position={[0, 2.6, 0]}>
-          <sphereGeometry args={[0.18, 12, 12]} />
+        {/* Sacred Flame Pierced Finial (Suien & Hōju) */}
+        <mesh position={[0, 2.8, 0]}>
+          <sphereGeometry args={[0.2, 12, 12]} />
           <meshStandardMaterial
             color={goldSpire}
             emissive={isNight ? amberGlow : '#ffffff'}
@@ -237,6 +397,50 @@ function YasakaPagoda({ position = [-7.5, 0, -7.5], isNight }) {
           />
         </mesh>
       </group>
+    </group>
+  );
+}
+
+// ============================================================================
+// 2B. AUTUMN MAPLE TREES (Momiji - Golden & Crimson Foliage from Photo)
+// ============================================================================
+function AutumnMomijiTree({ position = [0, 0, 0], scale = 1.0, color = '#d97706', isNight }) {
+  const trunkColor = isNight ? '#22140d' : '#452615';
+  const leafColor = isNight ? '#92400e' : color;
+
+  return (
+    <group position={position} scale={scale}>
+      {/* Gnarled Wood Trunk */}
+      <mesh position={[0, 1.2, 0]} castShadow>
+        <cylinderGeometry args={[0.15, 0.32, 2.4, 6]} />
+        <meshStandardMaterial color={trunkColor} roughness={0.9} />
+      </mesh>
+      <mesh position={[0.4, 2.2, 0.2]} rotation={[0.4, 0.2, -0.4]} castShadow>
+        <cylinderGeometry args={[0.09, 0.16, 1.4, 5]} />
+        <meshStandardMaterial color={trunkColor} roughness={0.9} />
+      </mesh>
+      <mesh position={[-0.3, 1.9, -0.2]} rotation={[-0.3, -0.2, 0.45]} castShadow>
+        <cylinderGeometry args={[0.08, 0.15, 1.2, 5]} />
+        <meshStandardMaterial color={trunkColor} roughness={0.9} />
+      </mesh>
+
+      {/* Layered Autumn Leaves Clouds */}
+      <mesh position={[0, 2.8, 0]} castShadow>
+        <dodecahedronGeometry args={[1.35, 1]} />
+        <meshStandardMaterial color={leafColor} roughness={0.7} flatShading />
+      </mesh>
+      <mesh position={[0.8, 2.4, 0.3]} castShadow>
+        <dodecahedronGeometry args={[0.95, 0]} />
+        <meshStandardMaterial color={leafColor} roughness={0.7} flatShading />
+      </mesh>
+      <mesh position={[-0.7, 2.3, -0.3]} castShadow>
+        <dodecahedronGeometry args={[0.9, 0]} />
+        <meshStandardMaterial color={leafColor} roughness={0.7} flatShading />
+      </mesh>
+      <mesh position={[0.1, 3.6, -0.1]} castShadow>
+        <dodecahedronGeometry args={[0.8, 0]} />
+        <meshStandardMaterial color={leafColor} roughness={0.65} flatShading />
+      </mesh>
     </group>
   );
 }
@@ -974,8 +1178,15 @@ export function KyotoBiome({ timeMode = 'night', onGroundTap }) {
         <meshStandardMaterial color={stoneBorder} roughness={0.75} />
       </mesh>
 
-      {/* 4. Yasaka Five-Story Pagoda (Majestic Kyoto Silhouette Landmark) */}
-      <YasakaPagoda position={[-9.2, 0, -9.2]} isNight={isNight} />
+      {/* 4. Chureito Five-Story Red Pagoda (Iconic Landmark Overlooking Mount Fuji) */}
+      <YasakaPagoda position={[-1.8, 0, -8.6]} isNight={isNight} />
+
+      {/* 4B. Golden Autumn Maple Trees (Momiji) Framing Pagoda & Fuji Vista */}
+      <AutumnMomijiTree position={[-4.8, 0, -6.2]} scale={1.25} color="#d97706" isNight={isNight} />
+      <AutumnMomijiTree position={[1.5, 0, -6.8]} scale={1.15} color="#f59e0b" isNight={isNight} />
+      <AutumnMomijiTree position={[3.6, 0, -9.5]} scale={1.3} color="#b45309" isNight={isNight} />
+      <AutumnMomijiTree position={[-7.2, 0, -4.8]} scale={1.1} color="#dc2626" isNight={isNight} />
+      <AutumnMomijiTree position={[0.2, 0, -4.2]} scale={0.9} color="#ea580c" isNight={isNight} />
 
       {/* 5. Gion Traditional Machiya Townhouse with Glowing Shoji & Red Chochin */}
       <KyotoMachiyaHouse position={[-9.2, 0, 2.8]} rotationY={Math.PI / 2} isNight={isNight} />

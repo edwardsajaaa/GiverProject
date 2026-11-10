@@ -33,8 +33,12 @@ Daftar prioritas peningkatan dan optimasi mandiri untuk proyek Web 3D Sandbox & 
 
 ## 🌐 3D Environment, Detail & Imersivitas
 
+- [x] **Transformasi Lanskap Jepang: Pagoda Merah Chureito & Vista Gunung Fuji Bersalju** *(Selesai: 2026-11-10)*:
+  - Merekonstruksi pagoda 5 tingkat menjadi Pagoda Merah Chureito autentik (pilar & pagar vermilion red, dinding putih shoji, atap lengkung teal/cyan gelap, lonceng angin emas fūtaku, dan finial perunggu Sōrin 9 cincin).
+  - Merancang Gunung Fuji bermahkota salju abadi dengan guratan salju radial (*snow furrows*) dan bukit hijau pinus di kaki gunung.
+  - Menghiasi pelataran dan lereng dengan pepohonan maple musim gugur (*momiji*) berdaun emas-amber dan jingga kemerahan sesuai foto referensi pengguna.
 - [x] **Ekspansi 10 Dunia Biome 3D Lengkap** *(Selesai: 2026-11-10)*:
-  - Menghubungkan seluruh 10 dunia diorama 3D di `WorldEnvironment.jsx`, `worldPresets.js`, dan `WorldStyleModal.jsx` (Paris, Kyoto, Miniature Tokyo, Origami Floating Sanctuary, London, Venice, Cyber Neon Metropolis, Fantasy Crystal Island, Mountain Sanctuary, Zen Garden).
+  - Menghubungkan seluruh 10 dunia diorama 3D di `WorldEnvironment.jsx`, `worldPresets.js`, dan `WorldStyleModal.jsx` (Paris, Kyoto/Fujiyoshida, Miniature Tokyo, Origami Floating Sanctuary, London, Venice, Cyber Neon Metropolis, Fantasy Crystal Island, Mountain Sanctuary, Zen Garden).
   - Merancang set ikon SVG vektor emblem presisi untuk masing-masing biome di `WorldStyleModal.jsx`.
 - [x] **Pencahayaan Sinematik & Interactive Object Light Emitters (`DynamicLights.jsx`)** *(Selesai: 2026-11-10)*:
   - Menambahkan directional moonlight rim light (cahaya tepi siluet rembulan) di mode malam dan warm GI bounce light di mode siang.

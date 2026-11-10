@@ -8,10 +8,10 @@ export const BIOMES = [
   },
   {
     id: 'kyoto_blossom',
-    name: 'Kyoto Sakura',
-    badge: 'Spring in Japan',
+    name: 'Fuji & Chureito Pagoda',
+    badge: 'Iconic Japan Vista',
     icon: 'kyoto_blossom',
-    desc: 'Lanskap romantis Jepang berlatar Gunung Fuji, kelopak sakura berguguran, jembatan lengkung Taiko-bashi, dan lentera kertas terapung.'
+    desc: 'Panorama legendaris Gunung Fuji bersalju abadi berdampingan dengan Pagoda Merah Chureito 5 tingkat (atap lengkung teal), pepohonan emas musim gugur (momiji), dan gerbang Torii.'
   },
   {
     id: 'tokyo_miniature',
