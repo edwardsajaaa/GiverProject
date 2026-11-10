@@ -16,7 +16,7 @@ export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
       {/* Torn Paper Scrapbook Guide Sheet */}
       <div style={{
         position: 'relative',
-        maxWidth: 540, width: '90%',
+        maxWidth: 560, width: '92%', maxHeight: '88vh', overflowY: 'auto',
         backgroundColor: isNight ? '#161616' : '#FAF7F2',
         border: '2px solid #121212',
         padding: '32px 36px',
@@ -93,6 +93,32 @@ export function OnboardingModal({ isNight, showTutorial, setShowTutorial }) {
               </svg>
             </div>
             <div><strong style={{ fontWeight: 800 }}>Siang & Malam Romantis:</strong> Ubah suasana dari siang yang cerah menjadi malam bertabur bintang dengan pencahayaan hangat.</div>
+          </div>
+        </div>
+
+        {/* Pintasan Tombol Keyboard (Shortcuts Guide) */}
+        <div style={{
+          backgroundColor: isNight ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
+          border: '1px dashed #121212',
+          padding: '12px 14px',
+          margin: '0 0 20px 0',
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: 11,
+        }}>
+          <div style={{ fontWeight: 800, letterSpacing: '1px', marginBottom: 8, color: '#a61324', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span>⌨️ PINTASAN KEYBOARD CEPAT:</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px 10px', color: isNight ? '#ccc' : '#444' }}>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>T</kbd> Geser Objek</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>R</kbd> Putar Objek</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>S</kbd> Skala Objek</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>D</kbd> Duplikasi Objek</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>Del</kbd> Hapus Objek</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>Space</kbd> Rotasi Otomatis</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>Ctrl+Z</kbd> Batalkan (Undo)</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>Ctrl+Y</kbd> Ulangi (Redo)</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>Esc</kbd> Batal Seleksi</div>
+            <div><kbd style={{ padding: '2px 5px', border: '1px solid #777', borderRadius: 3, fontWeight: 700, fontSize: 10 }}>?</kbd> Buka Bantuan Ini</div>
           </div>
         </div>
 

@@ -238,12 +238,14 @@ export function useSandboxState() {
         setTransformMode('scale');
       } else if (e.key.toLowerCase() === 'd') {
         if (selectedId) handleDuplicateSelected();
+      } else if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        setShowTutorial((prev) => !prev);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleUndo, handleRedo, selectedId, handleDeleteSelected, handleDuplicateSelected]);
+  }, [handleUndo, handleRedo, selectedId, handleDeleteSelected, handleDuplicateSelected, setShowTutorial]);
 
   // Context Loss Handler
   useEffect(() => {

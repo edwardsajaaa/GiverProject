@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SecurityEngine } from '../../utils/securityEngine';
 import { AudioStorage } from '../../utils/audioStorage';
 import { WashiTape, BlackTape } from './TornPaper';
@@ -55,7 +55,10 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
   const [lyrics, setLyrics] = useState('');
   const [uploadFileName, setUploadFileName] = useState('');
 
-  useEffect(() => {
+  const [prevTrack, setPrevTrack] = useState(track);
+
+  if (track !== prevTrack) {
+    setPrevTrack(track);
     if (track) {
       setTitle(track.title || '');
       setArtist(track.artist || '');
@@ -72,7 +75,7 @@ export function EditTrackModal({ isOpen, onClose, track, onSaveTrack, onDeleteTr
         setLyrics(`“ The music plays, and in every note, I hear your laugh. ”`);
       }
     }
-  }, [track, isOpen]);
+  }
 
   if (!isOpen || !track) return null;
 

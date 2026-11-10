@@ -159,7 +159,7 @@ class CapsuleAudioEngine {
       try {
         this.crackleNode.source.stop();
         this.crackleNode.source.disconnect();
-      } catch (e) {
+      } catch {
         // ignore
       }
       this.crackleNode = null;
@@ -310,7 +310,7 @@ class CapsuleAudioEngine {
       try {
         this.audioElement.pause();
         this.audioElement.currentTime = 0;
-      } catch (e) {
+      } catch {
         // ignore
       }
       this.audioElement = null;

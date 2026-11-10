@@ -819,16 +819,26 @@ function ArashiyamaBambooPath({ position = [0, 0, 0], isNight }) {
 function KyotoSakuraPetals({ count = 56, isNight }) {
   const petalsRef = useRef();
   const petalData = useMemo(() => {
-    return Array.from({ length: count }).map(() => ({
-      x: (Math.random() - 0.5) * 22,
-      y: Math.random() * 8 + 0.5,
-      z: (Math.random() - 0.5) * 22,
-      speedY: 0.014 + Math.random() * 0.024,
-      speedRot: 0.02 + Math.random() * 0.04,
-      sway: 0.4 + Math.random() * 0.8,
-      phase: Math.random() * Math.PI * 2,
-      scale: 0.08 + Math.random() * 0.06,
-    }));
+    return Array.from({ length: count }).map((_, i) => {
+      const r1 = Math.sin(i * 1.17 + 0.1) * 0.5 + 0.5;
+      const r2 = Math.sin(i * 2.33 + 0.2) * 0.5 + 0.5;
+      const r3 = Math.sin(i * 3.49 + 0.3) * 0.5 + 0.5;
+      const r4 = Math.sin(i * 4.61 + 0.4) * 0.5 + 0.5;
+      const r5 = Math.sin(i * 5.77 + 0.5) * 0.5 + 0.5;
+      const r6 = Math.sin(i * 6.91 + 0.6) * 0.5 + 0.5;
+      const r7 = Math.sin(i * 7.13 + 0.7) * 0.5 + 0.5;
+      const r8 = Math.sin(i * 8.27 + 0.8) * 0.5 + 0.5;
+      return {
+        x: (r1 - 0.5) * 22,
+        y: r2 * 8 + 0.5,
+        z: (r3 - 0.5) * 22,
+        speedY: 0.014 + r4 * 0.024,
+        speedRot: 0.02 + r5 * 0.04,
+        sway: 0.4 + r6 * 0.8,
+        phase: r7 * Math.PI * 2,
+        scale: 0.08 + r8 * 0.06,
+      };
+    });
   }, [count]);
 
   useFrame((state) => {

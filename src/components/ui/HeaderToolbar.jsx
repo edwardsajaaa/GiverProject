@@ -200,6 +200,35 @@ export function HeaderToolbar({
           <span>SEMESTA & GAYA</span>
         </button>
 
+        {setCentralModalOpen && (
+          <button 
+            onClick={() => { setCentralModalOpen(true); SoundEngine.playPop(); }} 
+            title={`Kustomisasi Altar Pusat (${getHeroLabel()})`} 
+            style={{
+              ...btnBaseStyle,
+              backgroundColor: isNight ? '#262626' : '#fff',
+              border: '1px solid #121212',
+              clipPath: 'polygon(0% 1px, 2% 0%, 98% 0%, 100% 1px, 99% 99%, 100% 100%, 1% 100%, 0% 99%)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = isNight ? '#333' : '#f0ece1';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = isNight ? '#262626' : '#fff';
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+            <span>{getHeroLabel().toUpperCase()}</span>
+          </button>
+        )}
+
         <div style={{ width: 1, height: 20, background: isNight ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)', margin: '0 2px' }} />
 
         {/* Audio & Rotate */}

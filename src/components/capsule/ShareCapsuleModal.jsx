@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { CapsuleShareEngine } from '../../utils/capsuleShareEngine';
-import { VINYL_COLLECTION } from './pages/VinylPlayerPage';
+import { VINYL_COLLECTION } from '../../constants/vinylPresets';
 import { TornEdgeTop, TornEdgeBottom, WashiTape, BlackTape } from './TornPaper';
 
-export function ShareCapsuleModal({ isOpen, onClose, capsuleData, onUpdateData }) {
-  if (!isOpen) return null;
-
-  const [sender, setSender] = useState(capsuleData.sender || 'Alex');
-  const [recipient, setRecipient] = useState(capsuleData.recipient || 'Sarah');
-  const [dedicatedTrackId, setDedicatedTrackId] = useState(capsuleData.dedicatedTrackId || 1);
+export function ShareCapsuleModal({ isOpen, onClose, capsuleData = {}, onUpdateData }) {
+  const [sender, setSender] = useState(capsuleData?.sender || 'Alex');
+  const [recipient, setRecipient] = useState(capsuleData?.recipient || 'Sarah');
+  const [dedicatedTrackId, setDedicatedTrackId] = useState(capsuleData?.dedicatedTrackId || 1);
   const [copied, setCopied] = useState(false);
+
+  if (!isOpen) return null;
 
   // Ambil daftar lagu (baik dari localStorage kustom jika ada, atau default VINYL_COLLECTION)
   const availableTracks = (() => {

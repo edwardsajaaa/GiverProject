@@ -6,7 +6,7 @@ import * as THREE from 'three';
 // ============================================================================
 // 1. FLOWER 3D - Handcrafted Origami Blossom with Gold Stamen
 // ============================================================================
-export function Flower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Flower3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const groupRef = useRef();
   useFrame((state) => {
     if (groupRef.current) {
@@ -86,7 +86,7 @@ export function Flower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 2. TREE 3D - Handcrafted Papercraft Bonsai with Gold Leaf Contours
 // ============================================================================
-export function Tree3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Tree3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const groupRef = useRef();
   useFrame((state) => {
     if (groupRef.current) {
@@ -153,7 +153,7 @@ export function Tree3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 3. ROCK 3D - Japanese Kintsugi Garden Stone with Gold Veins
 // ============================================================================
-export function Rock3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Rock3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   return (
     <group position={position}>
       {/* Primary River Stone */}
@@ -191,7 +191,7 @@ export function Rock3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 4. LAMP 3D - Handcrafted Japanese Toro / Andon Lantern with Candle Light
 // ============================================================================
-export function Lamp3D({ position = [0, 0, 0], timeMode = 'night', artStyle = 'lowpoly' }) {
+export function Lamp3D({ position = [0, 0, 0], timeMode = 'night', _artStyle = 'lowpoly' }) {
   const isNight = timeMode === 'night';
   const bulbIntensity = isNight ? 2.6 : 0.8;
 
@@ -251,7 +251,7 @@ export function Lamp3D({ position = [0, 0, 0], timeMode = 'night', artStyle = 'l
 // ============================================================================
 // 5. CRYSTAL 3D - Levitating Faceted Gemstone with Orbiting Shards
 // ============================================================================
-export function Crystal3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Crystal3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const groupRef = useRef();
   const shardsRef = useRef();
 
@@ -322,7 +322,7 @@ export function Crystal3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 6. MUSHROOM 3D - Handcrafted Papercraft Forest Mushroom
 // ============================================================================
-export function Mushroom3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Mushroom3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const capRef = useRef();
   useFrame((state) => {
     if (capRef.current) {
@@ -375,7 +375,7 @@ export function Mushroom3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 7. PYRAMID 3D - Tiered Origami Obelisk with Hovering Apex
 // ============================================================================
-export function Pyramid3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Pyramid3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const topRef = useRef();
   useFrame((state) => {
     if (topRef.current) {
@@ -427,7 +427,7 @@ export function Pyramid3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 8. FOUNTAIN 3D - Handcrafted Tiered Stone Basin with Rippling Water
 // ============================================================================
-export function Fountain3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Fountain3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const waterRef = useRef();
   useFrame((state) => {
     if (waterRef.current) {
@@ -479,7 +479,7 @@ export function Fountain3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 9. TOWER 3D - Handcrafted Papercraft Pagoda with Swept Eaves
 // ============================================================================
-export function Tower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Tower3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   return (
     <group position={position}>
       {/* Base Foundation */}
@@ -526,7 +526,7 @@ export function Tower3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 10. CACTUS 3D - Folded Origami Desert Succulent with Blossom
 // ============================================================================
-export function Cactus3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Cactus3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   return (
     <group position={position}>
       {/* Terracotta Pot */}
@@ -575,7 +575,7 @@ export function Cactus3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 11. CAMPFIRE 3D - Miniature Hearth with Kintsugi Pebbles & Origami Flames
 // ============================================================================
-export function Campfire3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Campfire3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   const flameRef = useRef();
   useFrame((state) => {
     if (flameRef.current) {
@@ -641,7 +641,7 @@ export function Campfire3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
 // ============================================================================
 // 12. MONUMENT 3D - Miniature Romantic Torii / Love Archway
 // ============================================================================
-export function Monument3D({ position = [0, 0, 0], artStyle = 'lowpoly' }) {
+export function Monument3D({ position = [0, 0, 0], _artStyle = 'lowpoly' }) {
   return (
     <group position={position}>
       {/* Stone Base Plinth */}
