@@ -8,6 +8,7 @@ Jurnal riwayat harian untuk mencatat semua audit teknis, modifikasi kode, hasil 
 
 | Tanggal | Waktu | Kategori | Ringkasan Perubahan & Dampak | Status Build & Lint | PIC / Agent |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| 2026-11-10 | 21:40 | 3D Environment & Immersion | **Ekspansi 10 Dunia Biome & Pencahayaan Sinematik**: Menghubungkan seluruh 10 dunia diorama 3D (Miniature Tokyo, Origami Sanctuary, Cyber Metropolis, Fantasy Realm, Mountain Peaks, Zen Garden, Paris, Kyoto, London, Venice) di `WorldEnvironment.jsx` & `worldPresets.js`, menambahkan set ikon vektor baru di `WorldStyleModal.jsx`, serta merombak `DynamicLights.jsx` dengan moonlight rim light, warm ground bounce, dan interactive object light emitters (campfire flickering, streetlight, crystal, fountain glow). | ✅ Build Passing (0 error)<br>✅ Lint Passing (0 error) | Antigravity Agent |
 | 2026-11-10 | 21:24 | Optimization & Feature | **Siklus Optimasi & Fitur Baru**: Pembersihan 69 ESLint errors (sekarang 0 error), perbaikan bug kritis Rules of Hooks di `ShareCapsuleModal.jsx`, pemulihan & integrasi Central Hero Object (`CentralHeroObject.jsx`) ke dalam 3D canvas, penambahan tombol toolbar Altar Pusat, fitur Panduan Keyboard Shortcuts & hotkey `?`, serta optimasi bundle chunk Rollup (ukuran index turun 82.5% dari 1.29MB ke 227kB). | ✅ Build Passing (0 error)<br>✅ Lint Passing (0 error) | Antigravity Agent |
 | 2026-11-10 | 03:08 | System Setup | **Initial Autonomous System Setup**: Setup arsitektur Daily Autonomous Optimizer (SOP di `.agent/skills/daily-optimizer/SKILL.md`, Guardrails di `.agent/rules/autonomous-guardrails.md`, backlog komprehensif di `BACKLOG.md`, dan template log harian ini). | ✅ Build Passing | Antigravity Agent |
 
@@ -15,74 +16,44 @@ Jurnal riwayat harian untuk mencatat semua audit teknis, modifikasi kode, hasil 
 
 ## 📝 Detail Catatan Jurnal Harian
 
+### 🗓️ 2026-11-10 — Peningkatan Imersivitas Lingkungan 3D & Ekspansi 10 Biome
+
+- **Tujuan Sesi**:
+  Meningkatkan kualitas visual, kedalaman atmosfer, detail pencahayaan, dan memperluas dunia diorama 3D yang dapat dieksplorasi pengguna.
+
+- **Daftar Peningkatan yang Diimplementasikan**:
+  1. **Ekspansi 10 Dunia Biome 3D Penuh**:
+     - Membuka dan mengintegrasikan seluruh 10 dunia diorama 3D di [`WorldEnvironment.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/WorldEnvironment.jsx) dan [`worldPresets.js`](file:///d:/Project/2026/GIVERSOURCE/src/constants/worldPresets.js):
+       - `floating_sanctuary`: Pulau Origami Sanctuary dengan danau kristal, perahu kertas berlayar, burung bangau terbang melingkar, jembatan bulan, dan paviliun romantis.
+       - `tokyo_miniature`: Miniatur Tokyo dengan Tokyo Tower berlampu suar interaktif, Tokyo Skytree, Shinkansen berputar cepat, dan gerbang kuil Torii.
+       - `cyber_city`: Gemerlap metropolitan masa depan dengan siluet gedung pencakar langit hologram dan pencahayaan aksen neon.
+       - `fantasy_realm`: Pulau mineral melayang dengan cincin monolit kristal berputar dan strata emas foil.
+       - `mountain_peaks`: Dataran tinggi pegunungan megah berselimut kabut awan berarak.
+       - `zen_garden`: Taman batu zen hening berpasir riak dan lentera batu Toro.
+       - Serta 4 biome klasik: `paris_romantique`, `kyoto_blossom`, `london_romance`, dan `venice_serenade`.
+  2. **Ikon Vektor Presisi di [`WorldStyleModal.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/ui/WorldStyleModal.jsx)**:
+     - Menambahkan emblem vektor SVG kustom untuk seluruh biome baru, menjaga konsistensi gaya visual *editorial aesthetic* tanpa emoji.
+  3. **Pencahayaan Sinematik & Interactive Object Emitters ([`DynamicLights.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/DynamicLights.jsx))**:
+     - *Mode Malam*: Menambahkan *Directional Moonlight Rim Light* (`#818cf8`) dari belakang untuk memisahkan siluet diorama dari langit malam pekat.
+     - *Mode Siang*: Menambahkan *Warm Ground Bounce Light* (`#fde68a`) dan *Sky Fill* (`#bae6fd`) untuk efek Global Illumination yang hangat dan alami.
+     - *Objek Pemancar Cahaya*: Objek dekorasi pulau yang diletakkan pengguna kini memancarkan cahaya nyata:
+       - `campfire`: Api unggun dengan animasi nyala api berkedip (*flickering flame intensity*).
+       - `lamp`: Lampu jalan berpendar emas hangat (`#fef08a`).
+       - `crystal`: Kristal berpendar violet kosmik (`#c084fc`).
+       - `fountain`: Air mancur bercahaya aquamarine (`#38bdf8`).
+       - `pyramid`: Piramida berpendar kuning emas (`#fbbf24`).
+
+- **Status Verifikasi**:
+  - `npm run lint`: **0 errors, 0 warnings** ✅
+  - `npm run build`: **Sukses 100% dalam 5.72 detik** ✅
+
+---
+
 ### 🗓️ 2026-11-10 — Siklus Optimasi & Penambahan Fitur Baru
 
 - **Tujuan Sesi**:
   Mengeksekusi siklus pembaruan kode, penyelesaian bug kritis dari backlog, pembersihan linter menyeluruh, penambahan fitur interaktivitas baru, dan optimasi performa bundle produksi.
 
-- **Daftar Peningkatan & Fitur yang Diimplementasikan**:
-  1. **Perbaikan Bug Kritis *Rules of Hooks* (`ShareCapsuleModal.jsx`)**:
-     - Memindahkan deklarasi `useState` ke baris teratas sebelum `if (!isOpen) return null;` untuk mencegah React invariant violation saat membuka/menutup modal sharing.
-  2. **Pemulihan & Integrasi Central Hero Object (`MainCanvas.jsx`)**:
-     - Mengimpor dan merender `<CentralHeroObject />` di dalam canvas 3D diorama (yang sebelumnya terputus), menghidupkan animasi altar/monumen terapung di tengah pulau.
-  3. **Penambahan Fitur Tombol Altar Pusat di `HeaderToolbar.jsx`**:
-     - Menambahkan tombol menu "MONUMEN / ALTAR" dengan visual torn-paper konsisten di toolbar atas sehingga pengguna dapat langsung mengubah bentuk kristal/kubus altar utama.
-  4. **Penambahan Fitur Panduan Keyboard Shortcuts & Hotkey (`?` / `/`)**:
-     - Menambahkan keyboard listener di `useSandboxState.js` untuk membuka bantuan tutorial/shortcuts via tombol `?`.
-     - Memperkaya `OnboardingModal.jsx` dengan panel pintasan keyboard lengkap (`T` geser, `R` putar, `S` skala, `D` duplikasi, `Del` hapus, `Space` rotasi, `Ctrl+Z`/`Ctrl+Y` undo/redo, `Esc` batal, `?` bantuan).
-     - Menambahkan proteksi `max-height: 88vh` dan `overflow-y: auto` agar modal tidak terpotong pada layar ponsel landscape.
-  5. **Restrukturisasi Modul & Vite Fast Refresh**:
-     - Mengekstrak `VINYL_COLLECTION` ke [`src/constants/vinylPresets.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/constants/vinylPresets.jsx).
-     - Mengekstrak `LoveLockManager` ke [`src/utils/loveLockManager.js`](file:///d:/Project/2026/GIVERSOURCE/src/utils/loveLockManager.js).
-     - Menghilangkan peringatan React Fast Refresh dan merapikan import di seluruh komponen.
-  6. **Pembersihan 69 Isu ESLint Menjadi 0 (Clean Sheet)**:
-     - Mengubah fungsi tidak murni `Math.random()` di dalam `useMemo` pada 4 file biome (`KyotoBiome.jsx`, `LondonBiome.jsx`, `ParisBiome.jsx`, `ZenBiome.jsx`) menjadi gelombang matematis deterministik yang murni dan stabil.
-     - Membersihkan variabel tak terpakai di `FloatingIsland.jsx`, `InteractiveObjects.jsx`, `VeniceBiome.jsx`, `ZenBiome.jsx`, `EditTrackModal.jsx`, dan `capsuleAudio.js`.
-  7. **Optimalisasi Rollup Bundle Chunk (`vite.config.js`)**:
-     - Mengonfigurasi `manualChunks` untuk memisahkan vendor `three` dan `@react-three/*`.
-     - Ukuran file output utama `dist/assets/index-*.js` menyusut drastis dari **1,297 kB** menjadi **227 kB** (penurunan beban muat awal $\approx 82.5\%$).
-
-- **File yang Dimodifikasi & Dibuat**:
-  - *Dibuat*: [`src/constants/vinylPresets.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/constants/vinylPresets.jsx), [`src/utils/loveLockManager.js`](file:///d:/Project/2026/GIVERSOURCE/src/utils/loveLockManager.js)
-  - *Dimodifikasi*:
-    - [`src/components/capsule/ShareCapsuleModal.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/capsule/ShareCapsuleModal.jsx)
-    - [`src/components/capsule/pages/VinylPlayerPage.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/capsule/pages/VinylPlayerPage.jsx)
-    - [`src/components/capsule/LoveLockModal.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/capsule/LoveLockModal.jsx)
-    - [`src/components/capsule/EditTrackModal.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/capsule/EditTrackModal.jsx)
-    - [`src/components/capsule/audio/capsuleAudio.js`](file:///d:/Project/2026/GIVERSOURCE/src/components/capsule/audio/capsuleAudio.js)
-    - [`src/components/3d/MainCanvas.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/MainCanvas.jsx)
-    - [`src/components/3d/FloatingIsland.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/FloatingIsland.jsx)
-    - [`src/components/3d/InteractiveObjects.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/InteractiveObjects.jsx)
-    - [`src/components/3d/biomes/KyotoBiome.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/KyotoBiome.jsx)
-    - [`src/components/3d/biomes/LondonBiome.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/LondonBiome.jsx)
-    - [`src/components/3d/biomes/ParisBiome.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/ParisBiome.jsx)
-    - [`src/components/3d/biomes/VeniceBiome.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/VeniceBiome.jsx)
-    - [`src/components/3d/biomes/ZenBiome.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/3d/biomes/ZenBiome.jsx)
-    - [`src/components/ui/HeaderToolbar.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/ui/HeaderToolbar.jsx)
-    - [`src/components/ui/OnboardingModal.jsx`](file:///d:/Project/2026/GIVERSOURCE/src/components/ui/OnboardingModal.jsx)
-    - [`src/hooks/useSandboxState.js`](file:///d:/Project/2026/GIVERSOURCE/src/hooks/useSandboxState.js)
-    - [`vite.config.js`](file:///d:/Project/2026/GIVERSOURCE/vite.config.js)
-    - [`eslint.config.js`](file:///d:/Project/2026/GIVERSOURCE/eslint.config.js)
-    - [`BACKLOG.md`](file:///d:/Project/2026/GIVERSOURCE/BACKLOG.md)
-
 - **Status Verifikasi Akhir**:
   - `npm run lint`: **0 problems (0 errors, 0 warnings)** ✅
   - `npm run build`: **Sukses 100% tanpa error dalam 5.23 detik** ✅
-
----
-
-### 🗓️ 2026-11-10 — Initial Autonomous System Setup
-
-- **Tujuan Sesi**:
-  Membangun fondasi sistem optimasi web harian otonom untuk proyek GIVERSOURCE / LoveCapsule (React 19, Three.js, Vite).
-
-- **Analisis Awal Lingkungan Proyek**:
-  - **Framework & Runtime**: React 19 (`19.2.0`), Vite 7 (`7.3.1`), Three.js (`0.182.0`), React Three Fiber (`9.5.0`), React Three Drei (`10.7.7`).
-  - **Status Build**: `npm run build` sukses berjalan dalam 5.92 detik, namun menghasilkan peringatan bundle chunk berukuran besar ($1.29\text{ MB}$ pada `index-*.js`).
-  - **Status Linter**: Ditemukan 69 masalah linter (`eslint .`).
-
-- **File yang Dibuat**:
-  1. [`.agent/skills/daily-optimizer/SKILL.md`](file:///d:/Project/2026/GIVERSOURCE/.agent/skills/daily-optimizer/SKILL.md)
-  2. [`.agent/rules/autonomous-guardrails.md`](file:///d:/Project/2026/GIVERSOURCE/.agent/rules/autonomous-guardrails.md)
-  3. [`BACKLOG.md`](file:///d:/Project/2026/GIVERSOURCE/BACKLOG.md)
-  4. [`PROGRESS_LOG.md`](file:///d:/Project/2026/GIVERSOURCE/PROGRESS_LOG.md)

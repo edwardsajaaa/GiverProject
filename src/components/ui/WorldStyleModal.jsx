@@ -31,6 +31,43 @@ const BiomeIcons = {
       <path d="M3 15c4 2 14 2 18-2-2 4-10 5-18 2z" fill="currentColor" opacity="0.3" />
       <path d="M18 10l-4 6M19 8c1 0 2 1 2 2" />
     </svg>
+  ),
+  tokyo_miniature: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v20M8 22l4-18 4 18M7 16h10M9 10h6" />
+      <circle cx="12" cy="2" r="1.5" fill="#ef4444" stroke="none" />
+    </svg>
+  ),
+  floating_sanctuary: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 12 12 9 22 12 12 2" />
+      <polygon points="12 9 6 15 12 22 18 15 12 9" />
+    </svg>
+  ),
+  cyber_city: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="10" width="6" height="12" />
+      <rect x="9" y="4" width="6" height="18" />
+      <rect x="15" y="8" width="6" height="14" />
+      <line x1="12" y1="1" x2="12" y2="4" />
+    </svg>
+  ),
+  fantasy_realm: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 19 8 12 22 5 8 12 2" />
+      <line x1="5" y1="8" x2="19" y2="8" />
+    </svg>
+  ),
+  mountain_peaks: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 20l7-12 5 8 3-5 3 9H3z" />
+    </svg>
+  ),
+  zen_garden: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 2a10 10 0 0 0 0 20M12 7a5 5 0 0 1 0 10" />
+    </svg>
   )
 };
 

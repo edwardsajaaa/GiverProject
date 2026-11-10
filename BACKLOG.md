@@ -31,12 +31,14 @@ Daftar prioritas peningkatan dan optimasi mandiri untuk proyek Web 3D Sandbox & 
 
 ---
 
-## 🚀 Fitur & Interaktivitas
+## 🌐 3D Environment, Detail & Imersivitas
 
-- [x] **Pemulihan & Tombol Kustomisasi Central Hero Object (Altar Cinta/Monumen)** *(Selesai: 2026-11-10)*:
-  - Mengintegrasikan kembali `<CentralHeroObject />` ke dalam `MainCanvas.jsx` sehingga objek sentral 3D terapung di pulau aktif dan beranimasi.
-  - Menambahkan tombol menu "MONUMEN / ALTAR" langsung di `HeaderToolbar.jsx` agar pengguna dapat langsung membuka `CentralObjectModal.jsx`.
+- [x] **Ekspansi 10 Dunia Biome 3D Lengkap** *(Selesai: 2026-11-10)*:
+  - Menghubungkan seluruh 10 dunia diorama 3D di `WorldEnvironment.jsx`, `worldPresets.js`, dan `WorldStyleModal.jsx` (Paris, Kyoto, Miniature Tokyo, Origami Floating Sanctuary, London, Venice, Cyber Neon Metropolis, Fantasy Crystal Island, Mountain Sanctuary, Zen Garden).
+  - Merancang set ikon SVG vektor emblem presisi untuk masing-masing biome di `WorldStyleModal.jsx`.
+- [x] **Pencahayaan Sinematik & Interactive Object Light Emitters (`DynamicLights.jsx`)** *(Selesai: 2026-11-10)*:
+  - Menambahkan directional moonlight rim light (cahaya tepi siluet rembulan) di mode malam dan warm GI bounce light di mode siang.
+  - Menjadikan objek diorama (Lampu jalan, Api unggun dengan animasi nyala api berkedip/flicker, Kristal kosmik, Air mancur aquamarine, dan Piramida emas) sebagai pemancar cahaya titik (*point light emitters*) yang dinamis dan hidup.
 - [ ] **Enhancement Screenshot Exporter (Polaroid / Aesthetic Frame)**: Perkaya `screenshotHelper.js` dengan opsi pemberian bingkai estetis ala foto polaroid instan, tanggal diorama, atau kutipan kapsul saat diunduh.
 - [ ] **Pengatur Volume Halus & Audio Crossfade**: Tambahkan slider kontrol volume di header atau capsule journal serta transisi *crossfade* saat berpindah track piringan hitam (*vinyl*).
-- [ ] **Pratinjau Thumbnail Biome di WorldStyleModal**: Tampilkan gambar pratinjau kecil (*thumbnail cards*) untuk masing-masing biome (Kyoto, CyberCity, Paris, Venice, Tokyo) agar pengguna dapat melihat visual gaya dunia sebelum memilih.
 - [ ] **Haptic Feedback untuk Interaksi Mobile**: Implementasikan getaran ringan (`navigator.vibrate`) ketika pengguna meletakkan objek 3D di pulau terapung atau mengunci Love Lock pada layar sentuh yang mendukung.
