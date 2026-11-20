@@ -578,19 +578,6 @@ export function PhotoGalleryPage({
           </span>
         </div>
 
-        <span
-          className="photo-gallery-dedication"
-          style={{
-            fontStyle: 'italic',
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: '16px',
-            color: '#121212',
-            letterSpacing: '0.5px',
-          }}
-        >
-          dibuat dengan cinta oleh {authorName}
-        </span>
-
         <EditorialButton
           variant="black"
           onClick={onNext}
@@ -735,9 +722,6 @@ export function PhotoGalleryPage({
           }
           .photo-gallery-header span {
             font-size: 10px !important;
-          }
-          .photo-gallery-dedication {
-            display: none !important;
           }
           .photo-gallery-footer {
             padding-top: 6px !important;
