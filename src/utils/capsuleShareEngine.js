@@ -175,14 +175,14 @@ export const CapsuleShareEngine = {
     };
 
     if (Array.isArray(data.photos) && data.photos.length > 0) {
-      sanitized.photos = data.photos.slice(0, 3).map((p, idx) => ({
+      sanitized.photos = data.photos.slice(0, 12).map((p, idx) => ({
         id: p.id || idx + 1,
-        url: SecurityEngine.sanitizeText(p.url || DEFAULT_CAPSULE_DATA.photos[idx]?.url, 1000),
-        caption: SecurityEngine.sanitizeText(p.caption || DEFAULT_CAPSULE_DATA.photos[idx]?.caption, 120),
+        url: SecurityEngine.sanitizeText(p.url || DEFAULT_CAPSULE_DATA.photos[idx % DEFAULT_CAPSULE_DATA.photos.length]?.url, 500000),
+        caption: SecurityEngine.sanitizeText(p.caption || 'Momen indah bersama', 120),
         tagLeft: p.tagLeft ? SecurityEngine.sanitizeText(p.tagLeft, 40) : undefined,
         tagRight: p.tagRight ? SecurityEngine.sanitizeText(p.tagRight, 40) : undefined,
-        rotate: typeof p.rotate === 'number' ? p.rotate : (DEFAULT_CAPSULE_DATA.photos[idx]?.rotate || 0),
-        tapeType: p.tapeType || 'washi',
+        rotate: typeof p.rotate === 'number' ? p.rotate : 0,
+        tapeType: p.tapeType || (idx % 2 === 0 ? 'black' : 'washi'),
         hasCrown: Boolean(p.hasCrown),
       }));
     }
@@ -228,9 +228,11 @@ export const CapsuleShareEngine = {
       } : null,
       biome: data.biome,
       pin: data.pin || '',
-      photos: (data.photos || []).map(p => ({
+      photos: (data.photos || []).slice(0, 12).map((p, idx) => ({
         id: p.id,
-        url: p.url,
+        url: (typeof p.url === 'string' && p.url.startsWith('data:') && p.url.length > 15000)
+          ? (DEFAULT_CAPSULE_DATA.photos[idx % DEFAULT_CAPSULE_DATA.photos.length]?.url || '')
+          : p.url,
         caption: p.caption,
         tagLeft: p.tagLeft,
         tagRight: p.tagRight,
