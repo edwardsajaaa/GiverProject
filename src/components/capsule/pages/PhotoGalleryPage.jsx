@@ -11,36 +11,6 @@ import { EditPhotoModal } from '../EditPhotoModal';
 
 const MAX_PHOTOS = 12;
 
-const DEFAULT_PHOTOS = [
-  {
-    id: 1,
-    url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=900&auto=format&fit=crop',
-    alt: 'Warm Embrace',
-    caption: 'Every sweet moment with you',
-    rotate: -1.8,
-    tapeType: 'black',
-  },
-  {
-    id: 2,
-    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=900&auto=format&fit=crop',
-    alt: 'The prettiest smile',
-    caption: 'My favorite person in every universe',
-    tagLeft: "alex's gallery",
-    tagRight: 'my pretty girl',
-    rotate: 1.2,
-    tapeType: 'washi',
-    hasCrown: true,
-  },
-  {
-    id: 3,
-    url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=900&auto=format&fit=crop',
-    alt: 'Close To You',
-    caption: 'In your eyes, I found my home',
-    rotate: -1.2,
-    tapeType: 'black',
-  }
-];
-
 export function PhotoGalleryPage({
   onNext,
   authorName = 'Alex',
@@ -50,13 +20,13 @@ export function PhotoGalleryPage({
   isReceiver = false
 }) {
   const [photos, setPhotos] = useState(
-    Array.isArray(customPhotos) && customPhotos.length > 0 ? customPhotos : DEFAULT_PHOTOS
+    Array.isArray(customPhotos) ? customPhotos : []
   );
   const [activePhoto, setActivePhoto] = useState(null);
   const [modalState, setModalState] = useState({ open: false, isNew: false, index: -1, photo: null });
 
   useEffect(() => {
-    if (Array.isArray(customPhotos) && customPhotos.length > 0) {
+    if (Array.isArray(customPhotos)) {
       setPhotos(customPhotos);
     }
   }, [customPhotos]);
@@ -93,10 +63,6 @@ export function PhotoGalleryPage({
   const handleDeletePhoto = (index, item, e) => {
     e.stopPropagation();
     if (isReceiver) return;
-    if (photos.length <= 1) {
-      alert('Minimal harus ada 1 foto di dalam galeri.');
-      return;
-    }
     if (!window.confirm(`Hapus foto "${item.caption || 'ini'}" dari galeri?`)) return;
     const updated = photos.filter((_, i) => i !== index);
     commitPhotos(updated);
@@ -228,8 +194,66 @@ export function PhotoGalleryPage({
           padding: '18px 14px 14px 14px',
           margin: '4px -6px',
           WebkitOverflowScrolling: 'touch',
+          display: photos.length === 0 ? 'flex' : 'block',
+          alignItems: photos.length === 0 ? 'center' : undefined,
+          justifyContent: photos.length === 0 ? 'center' : undefined,
         }}
       >
+        {photos.length === 0 ? (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            gap: '14px',
+            padding: '24px 20px',
+            width: '100%',
+            maxWidth: '340px',
+            border: '2px dashed #85101c',
+            backgroundColor: 'rgba(255, 253, 249, 0.8)',
+          }}>
+            <span style={{
+              fontFamily: "'Pinyon Script', cursive",
+              fontSize: '30px',
+              color: '#85101c',
+              lineHeight: 1.1,
+            }}>
+              {isReceiver ? 'Belum ada foto kenangan' : 'Galeri Masih Kosong'}
+            </span>
+            <p style={{
+              margin: 0,
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: '11px',
+              color: '#555',
+              lineHeight: 1.5,
+            }}>
+              {isReceiver
+                ? `${authorName} belum menambahkan foto ke dalam kapsul ini.`
+                : 'Tambahkan foto kenangan spesialmu. Foto yang sudah kamu isi akan otomatis tersimpan.'}
+            </p>
+            {!isReceiver && (
+              <button
+                type="button"
+                onClick={handleOpenAdd}
+                style={{
+                  backgroundColor: '#85101c',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '10px 20px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  letterSpacing: '1.5px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(133, 16, 28, 0.35)',
+                }}
+              >
+                + TAMBAH FOTO PERTAMA
+              </button>
+            )}
+          </div>
+        ) : (
         <div
           className="photo-gallery-grid"
           style={{
@@ -425,27 +449,25 @@ export function PhotoGalleryPage({
                     >
                       ✎ UBAH
                     </button>
-                    {photos.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={(e) => handleDeletePhoto(idx, item, e)}
-                        style={{
-                          backgroundColor: '#85101c',
-                          color: '#fff',
-                          fontSize: '9px',
-                          fontWeight: 800,
-                          padding: '4px 7px',
-                          borderRadius: '0px',
-                          cursor: 'pointer',
-                          border: '1px solid rgba(255,255,255,0.35)',
-                          fontFamily: "'Montserrat', sans-serif",
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
-                        }}
-                        title="Hapus foto ini"
-                      >
-                        ✕
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeletePhoto(idx, item, e)}
+                      style={{
+                        backgroundColor: '#85101c',
+                        color: '#fff',
+                        fontSize: '9px',
+                        fontWeight: 800,
+                        padding: '4px 7px',
+                        borderRadius: '0px',
+                        cursor: 'pointer',
+                        border: '1px solid rgba(255,255,255,0.35)',
+                        fontFamily: "'Montserrat', sans-serif",
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
+                      }}
+                      title="Hapus foto ini"
+                    >
+                      ✕
+                    </button>
                   </div>
                 )}
               </div>
@@ -517,6 +539,7 @@ export function PhotoGalleryPage({
             </button>
           )}
         </div>
+        )}
       </div>
 
       <div

@@ -2,6 +2,12 @@ import { SecurityEngine } from './securityEngine';
 
 const STORAGE_KEY = 'giver_capsule_data_v2';
 
+const LEGACY_DEFAULT_PHOTO_URLS = new Set([
+  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=900&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=900&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=900&auto=format&fit=crop',
+]);
+
 export const DEFAULT_CAPSULE_DATA = {
   sender: 'Alex',
   recipient: 'Sarah',
@@ -9,32 +15,8 @@ export const DEFAULT_CAPSULE_DATA = {
   letterHeading: "Girl, I'm so in love with You",
   letterText: `Every moment since the day we met has felt like finding a rare constellation in a quiet sky.\n\nYou bring warmth into ordinary days, and in your laugh, I've found my favorite melody. I built this little capsule so that whenever the world feels loud, you can return here and remember how deeply, endlessly, and tenderly you are cherished.\n\nThank you for being my peace, my adventure, and my love.`,
   letterSignature: 'Forever Yours, Alex',
-  photos: [
-    {
-      id: 1,
-      url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=900&auto=format&fit=crop',
-      caption: 'Every sweet moment with you',
-      rotate: -1.8,
-      tapeType: 'black',
-    },
-    {
-      id: 2,
-      url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=900&auto=format&fit=crop',
-      caption: 'My favorite person in every universe',
-      tagLeft: "alex's gallery",
-      tagRight: "my pretty girl",
-      rotate: 1.2,
-      tapeType: 'washi',
-      hasCrown: true,
-    },
-    {
-      id: 3,
-      url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=900&auto=format&fit=crop',
-      caption: 'In your eyes, I found my home',
-      rotate: -1.2,
-      tapeType: 'black',
-    }
-  ],
+  photos: [],
+  photosCustomized: false,
   dedicatedTrackId: 1,
   dedicatedTrack: null,
   biome: 'paris_romantique',
@@ -130,6 +112,15 @@ export const CapsuleShareEngine = {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        if (
+          parsed &&
+          !parsed.photosCustomized &&
+          Array.isArray(parsed.photos) &&
+          parsed.photos.length > 0 &&
+          parsed.photos.every((p) => p && LEGACY_DEFAULT_PHOTO_URLS.has(p.url))
+        ) {
+          parsed.photos = [];
+        }
         return {
           isReceiver: false,
           data: this.sanitizeCapsuleData(parsed),
@@ -174,18 +165,24 @@ export const CapsuleShareEngine = {
       pin: SecurityEngine.sanitizeText(data.pin || '', 10),
     };
 
-    if (Array.isArray(data.photos) && data.photos.length > 0) {
-      sanitized.photos = data.photos.slice(0, 12).map((p, idx) => ({
-        id: p.id || idx + 1,
-        url: SecurityEngine.sanitizeText(p.url || DEFAULT_CAPSULE_DATA.photos[idx % DEFAULT_CAPSULE_DATA.photos.length]?.url, 500000),
-        caption: SecurityEngine.sanitizeText(p.caption || 'Momen indah bersama', 120),
-        tagLeft: p.tagLeft ? SecurityEngine.sanitizeText(p.tagLeft, 40) : undefined,
-        tagRight: p.tagRight ? SecurityEngine.sanitizeText(p.tagRight, 40) : undefined,
-        rotate: typeof p.rotate === 'number' ? p.rotate : 0,
-        tapeType: p.tapeType || (idx % 2 === 0 ? 'black' : 'washi'),
-        hasCrown: Boolean(p.hasCrown),
-      }));
+    if (Array.isArray(data.photos)) {
+      sanitized.photos = data.photos
+        .filter((p) => p && typeof p.url === 'string' && p.url.trim().length > 0)
+        .slice(0, 12)
+        .map((p, idx) => ({
+          id: p.id || idx + 1,
+          url: SecurityEngine.sanitizeText(p.url, 500000),
+          caption: SecurityEngine.sanitizeText(p.caption || 'Momen indah bersama', 120),
+          tagLeft: p.tagLeft ? SecurityEngine.sanitizeText(p.tagLeft, 40) : undefined,
+          tagRight: p.tagRight ? SecurityEngine.sanitizeText(p.tagRight, 40) : undefined,
+          rotate: typeof p.rotate === 'number' ? p.rotate : 0,
+          tapeType: p.tapeType || (idx % 2 === 0 ? 'black' : 'washi'),
+          hasCrown: Boolean(p.hasCrown),
+        }));
+    } else {
+      sanitized.photos = [];
     }
+    sanitized.photosCustomized = Boolean(data.photosCustomized || sanitized.photos.length > 0);
 
     return sanitized;
   },
@@ -228,18 +225,19 @@ export const CapsuleShareEngine = {
       } : null,
       biome: data.biome,
       pin: data.pin || '',
-      photos: (data.photos || []).slice(0, 12).map((p, idx) => ({
-        id: p.id,
-        url: (typeof p.url === 'string' && p.url.startsWith('data:') && p.url.length > 15000)
-          ? (DEFAULT_CAPSULE_DATA.photos[idx % DEFAULT_CAPSULE_DATA.photos.length]?.url || '')
-          : p.url,
-        caption: p.caption,
-        tagLeft: p.tagLeft,
-        tagRight: p.tagRight,
-        rotate: p.rotate,
-        tapeType: p.tapeType,
-        hasCrown: p.hasCrown,
-      })),
+      photos: (data.photos || [])
+        .filter((p) => p && typeof p.url === 'string' && !(p.url.startsWith('data:') && p.url.length > 15000))
+        .slice(0, 12)
+        .map((p) => ({
+          id: p.id,
+          url: p.url,
+          caption: p.caption,
+          tagLeft: p.tagLeft,
+          tagRight: p.tagRight,
+          rotate: p.rotate,
+          tapeType: p.tapeType,
+          hasCrown: p.hasCrown,
+        })),
     };
 
     const json = JSON.stringify(compactData);

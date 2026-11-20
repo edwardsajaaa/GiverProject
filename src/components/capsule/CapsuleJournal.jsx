@@ -517,7 +517,7 @@ export function CapsuleJournal({ onEnter3DWorld, initialOpened = false }) {
               authorName={capsuleData.sender}
               recipientName={capsuleData.recipient}
               customPhotos={capsuleData.photos}
-              onUpdatePhotos={(updated) => handleUpdateConfig({ photos: updated })}
+              onUpdatePhotos={(updated) => handleUpdateConfig({ photos: updated, photosCustomized: true })}
               isReceiver={isReceiver}
             />
           )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SecurityEngine } from '../../utils/securityEngine';
 import { TornEdgeTop, TornEdgeBottom, WashiTape, BlackTape } from './TornPaper';
 
-function compressImageFile(file, maxSize = 720, quality = 0.78) {
+function compressImageFile(file, maxSize = 640, quality = 0.72) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
